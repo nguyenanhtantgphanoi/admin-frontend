@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Form</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Dynamic Form</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="dynamicForm">
+                            <div id="fieldsContainer"></div>
+                            
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary w-100">Submit Form</button>
+                            </div>
+                        </form>
+                        
+                        <div class="alert alert-info mt-3 mb-0">
+                            <small><strong>Total Fields:</strong> <span id="fieldCount">2</span></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        class DynamicForm {
+            constructor() {
+                this.fields = [
+                    { id: 1, label: 'Tiêu đề', value: '' },
+                    { id: 2, label: 'Bài đọc', value: '' }
+                ];
+                this.nextId = 3;
+                this.container = document.getElementById('fieldsContainer');
+                this.form = document.getElementById('dynamicForm');
+                
+                this.render();
+                this.attachFormListener();
+            }
+
+            render() {
+                this.container.innerHTML = '';
+                
+                this.fields.forEach((field) => {
+                    const fieldDiv = document.createElement('div');
+                    fieldDiv.className = 'mb-3';
+                    fieldDiv.id = `field-${field.id}`;
+                    
+                    fieldDiv.innerHTML = `
+                        <label for="input-${field.id}" class="form-label">${field.label}</label>
+                        <div class="input-group">
+                            <input 
+                                type="text" 
+                                class="form-control field-input" 
+                                id="input-${field.id}"
+                                name="${field.label.toLowerCase().replace(/\s+/g, '_')}"
+                                placeholder="Enter ${field.label.toLowerCase()}"
+                                value="${field.value}"
+                                data-field-id="${field.id}"
+                            >
+                            <button class="btn btn-outline-secondary add-above-btn" type="button" title="Add field above" data-field-id="${field.id}">
+                                <i class="bi bi-chevron-up">↑</i>
+                            </button>
+                            <button class="btn btn-outline-secondary add-below-btn" type="button" title="Add field below" data-field-id="${field.id}">
+                                <i class="bi bi-chevron-down">↓</i>
+                            </button>
+                            <button class="btn btn-outline-danger remove-btn" type="button" title="Remove field" data-field-id="${field.id}" ${field.id < 3 ? 'disabled' : ''}>
+                                🗑️
+                            </button>
+                        </div>
+                    `;
+                    
+                    this.container.appendChild(fieldDiv);
+                });
+                
+                this.attachEventListeners();
+                this.updateFieldCount();
+            }
+
+            attachEventListeners() {
+                // Input change listeners
+                document.querySelectorAll('.field-input').forEach(input => {
+                    input.addEventListener('change', (e) => {
+                        const fieldId = parseInt(e.target.dataset.fieldId);
+                        const value = e.target.value;
+                        const field = this.fields.find(f => f.id === fieldId);
+                        if (field) field.value = value;
+                    });
+                });
+
+                // Add above buttons
+                document.querySelectorAll('.add-above-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const fieldId = parseInt(e.currentTarget.dataset.fieldId);
+                        this.addAbove(fieldId);
+                    });
+                });
+
+                // Add below buttons
+                document.querySelectorAll('.add-below-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const fieldId = parseInt(e.currentTarget.dataset.fieldId);
+                        this.addBelow(fieldId);
+                    });
+                });
+
+                // Remove buttons
+                document.querySelectorAll('.remove-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const fieldId = parseInt(e.currentTarget.dataset.fieldId);
+                        this.removeField(fieldId);
+                    });
+                });
+            }
+
+            addAbove(fieldId) {
+                const index = this.fields.findIndex(f => f.id === fieldId);
+                const newField = { id: this.nextId, label: `Field ${this.nextId}`, value: '' };
+                this.fields.splice(index, 0, newField);
+                this.nextId++;
+                this.render();
+            }
+
+            addBelow(fieldId) {
+                const index = this.fields.findIndex(f => f.id === fieldId);
+                const newField = { id: this.nextId, label: `Field ${this.nextId}`, value: '' };
+                this.fields.splice(index + 1, 0, newField);
+                this.nextId++;
+                this.render();
+            }
+
+            removeField(fieldId) {
+                if (this.fields.length > 1) {
+                    this.fields = this.fields.filter(f => f.id !== fieldId);
+                    this.render();
+                }
+            }
+
+            updateFieldCount() {
+                document.getElementById('fieldCount').textContent = this.fields.length;
+            }
+
+            attachFormListener() {
+                this.form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    console.log('Form Data:', this.fields);
+                    alert(`Form submitted with ${this.fields.length} field(s)!\nCheck console for details.`);
+                    
+                    // Uncomment to send to server:
+                    // this.submitToServer();
+                });
+            }
+
+            // Optional: Submit form data to Fastify server
+            async submitToServer() {
+                try {
+                    const response = await fetch('/api/form', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ fields: this.fields })
+                    });
+                    
+                    const result = await response.json();
+                    console.log('Server response:', result);
+                    alert('Form submitted successfully!');
+                } catch (error) {
+                    console.error('Error submitting form:', error);
+                    alert('Error submitting form');
+                }
+            }
+        }
+
+        // Initialize form when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            new DynamicForm();
+        });
+    </script>
+</body>
+</html>

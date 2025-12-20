@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>DASHMIN - Bootstrap Admin Template</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    
+</head>
+
+<body>
+    <div class="container-xxl position-relative bg-white d-flex p-0">
+        <!-- Spinner Start -->
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+
+
+        <!-- Sidebar Start -->
+        <div class="sidebar pe-4 pb-3">
+            <nav class="navbar bg-light navbar-light">
+                <a href="index.html" class="navbar-brand mx-4 mb-3">
+                    <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>DASHMIN</h3>
+                </a>
+                <div class="d-flex align-items-center ms-4 mb-4">
+                    <div class="position-relative">
+                        <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="mb-0">Tan Nguyen</h6>
+                        <span>Admin</span>
+                    </div>
+                </div>
+                <div class="navbar-nav w-100">
+                    <a href="/temp-man" class="nav-item nav-link "><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                    <a href="/bien-tap-lich" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Biên tập </a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Elements</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="button.html" class="dropdown-item">Buttons</a>
+                            <a href="typography.html" class="dropdown-item">Typography</a>
+                            <a href="element.html" class="dropdown-item">Other Elements</a>
+                        </div>
+                    </div>
+
+                     <% c_date = new Date(lich[0].date).getMonth(); index = 0; d_o_w = 0; %>
+                    <h1>Tháng <%= c_date+1%></h1>
+                    <% lich.forEach(function(u){%>
+                        <% if(new Date(u.date).getMonth() != c_date){ c_date = new Date(u.date).getMonth()%>
+                            <h1>Tháng <%= c_date+1%></h1>
+                        <%}%>
+                        <% if(new Date(u.date).getDay() == 0){ d_o_w = 0%>
+                            <hr/>
+                        <%}else{d_o_w++}%>
+                        
+                        <a class="mass-date btn btn-light nav-item nav-link" id="<%= u._id%>" >
+                            <%= new Date(u.date).toDateString()%>
+                            <span class="badge rounded-pill bg-danger"><%= d_o_w %></span>
+                            
+                            <input type="hidden" class="index" value="<%= index %>"/>
+                            <% index++ %>
+                        </a>
+            <!-- <div class="container mt-5">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Open Modal
+                </button>
+            </div> -->
+
+        
+                    <%})%>
+
+                    <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Widgets</a>
+                    <a href="form.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Forms</a>
+                    <a href="table.html" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Tables</a>
+                    <a href="chart.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Charts</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Pages</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="signin.html" class="dropdown-item">Sign In</a>
+                            <a href="signup.html" class="dropdown-item">Sign Up</a>
+                            <a href="404.html" class="dropdown-item">404 Error</a>
+                            <a href="blank.html" class="dropdown-item">Blank Page</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <!-- Sidebar End -->
+
+
+        <!-- Content Start -->
+        <div class="content">
+            <!-- Navbar Start -->
+            <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
+                <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
+                    <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
+                </a>
+                <a href="#" class="sidebar-toggler flex-shrink-0">
+                    <i class="fa fa-bars"></i>
+                </a>
+                <form class="d-none d-md-flex ms-4">
+                    <input class="form-control border-0" type="search" placeholder="Search">
+                </form>
+                <div class="navbar-nav align-items-center ms-auto">
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="fa fa-envelope me-lg-2"></i>
+                            <span class="d-none d-lg-inline-flex">Message</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
+                            <a href="#" class="dropdown-item">
+                                <div class="d-flex align-items-center">
+                                    <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                                    <div class="ms-2">
+                                        <h6 class="fw-normal mb-0">Jhon send you a message</h6>
+                                        <small>15 minutes ago</small>
+                                    </div>
+                                </div>
+                            </a>
+                            <hr class="dropdown-divider">
+                            <a href="#" class="dropdown-item">
+                                <div class="d-flex align-items-center">
+                                    <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                                    <div class="ms-2">
+                                        <h6 class="fw-normal mb-0">Jhon send you a message</h6>
+                                        <small>15 minutes ago</small>
+                                    </div>
+                                </div>
+                            </a>
+                            <hr class="dropdown-divider">
+                            <a href="#" class="dropdown-item">
+                                <div class="d-flex align-items-center">
+                                    <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                                    <div class="ms-2">
+                                        <h6 class="fw-normal mb-0">Jhon send you a message</h6>
+                                        <small>15 minutes ago</small>
+                                    </div>
+                                </div>
+                            </a>
+                            <hr class="dropdown-divider">
+                            <a href="#" class="dropdown-item text-center">See all message</a>
+                        </div>
+                    </div>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="fa fa-bell me-lg-2"></i>
+                            <span class="d-none d-lg-inline-flex">Notificatin</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
+                            <a href="#" class="dropdown-item">
+                                <h6 class="fw-normal mb-0">Profile updated</h6>
+                                <small>15 minutes ago</small>
+                            </a>
+                            <hr class="dropdown-divider">
+                            <a href="#" class="dropdown-item">
+                                <h6 class="fw-normal mb-0">New user added</h6>
+                                <small>15 minutes ago</small>
+                            </a>
+                            <hr class="dropdown-divider">
+                            <a href="#" class="dropdown-item">
+                                <h6 class="fw-normal mb-0">Password changed</h6>
+                                <small>15 minutes ago</small>
+                            </a>
+                            <hr class="dropdown-divider">
+                            <a href="#" class="dropdown-item text-center">See all notifications</a>
+                        </div>
+                    </div>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <img class="rounded-circle me-lg-2" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                            <span class="d-none d-lg-inline-flex">John Doe</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
+                            <a href="#" class="dropdown-item">My Profile</a>
+                            <a href="#" class="dropdown-item">Settings</a>
+                            <a href="#" class="dropdown-item">Log Out</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <!-- Navbar End -->
+
+
+            <!-- Sale & Revenue Start -->
+             
+            <!-- Sales Chart End -->
+
+
+            <!-- Recent Sales Start -->
+             
+             
+    <div class="container pt-4 px-4">
+
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col">
+                <div class="form-section">
+                    <div class="form-title" style="font-size: x-large; text-align: center;"><strong id="date"></strong></div>
+                    <form>
+                        <input type="hidden" class="form-control" id="_id">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Tiêu đề</label>                            
+                            <input type="text" class="form-control" id="title" placeholder="Enter title">
+                        </div>
+                        <div class="input-group mb-3">
+                            <button class="input-group-text">URL</button>
+                            <input type="text" class="form-control" id="url">                            
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-text">Mùa Phụng Vụ</div>
+                            <input type="text" class="form-control" id="season">           
+                            <div class="input-group-text">Bậc lễ</div>
+                            <input type="text" class="form-control" id="bac-le">                     
+                        </div>
+                        <div class="btn-group mb-3" role="group" aria-label="Basic radio toggle button group">
+                            <div class="input-group-text">Màu áo lễ</div>
+                            <input type="radio" class="btn-check mau-ao-le" name="mau-ao-le" id="ao-tim" autocomplete="off" value="Tím">
+                            <label class="btn btn-outline-primary" for="ao-tim">Tím</label>
+
+                            <input type="radio" class="btn-check mau-ao-le" name="mau-ao-le" id="ao-hong" autocomplete="off" value="Hồng">
+                            <label class="btn btn-outline-primary" for="ao-hong">Hồng</label>
+
+                            <input type="radio" class="btn-check mau-ao-le" name="mau-ao-le" id="ao-trang" autocomplete="off" value="Trắng">
+                            <label class="btn btn-outline-primary" for="ao-trang">Trắng</label>
+
+                            <input type="radio" class="btn-check mau-ao-le" name="mau-ao-le" id="ao-do" autocomplete="off" value="Đỏ">
+                            <label class="btn btn-outline-primary" for="ao-do">Đỏ</label>
+
+                            <input type="radio" class="btn-check mau-ao-le" name="mau-ao-le" id="ao-xanh" autocomplete="off" value="Xanh">
+                            <label class="btn btn-outline-primary" for="ao-xanh">Xanh</label>
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-text">BĐ1</div>
+                            <input id="bd-1" type="text" class="form-control" placeholder="Eg. St 1, 1-5" aria-label="Input group example" aria-describedby="">
+                            <div class="input-group-text">BĐ2</div>
+                            <input id="bd-2" type="text" class="form-control" placeholder="Eg. Rm 1, 1-5" aria-label="Input group example" aria-describedby="">
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-text">Đáp ca</div>
+                            <input id="dap-ca" type="text" class="form-control" placeholder="Eg. Tv 1, 1-5" aria-label="Input group example" aria-describedby="">
+                            <div class="input-group-text">Alleluia</div>
+                            <input id="alleluia" type="text" class="form-control" placeholder="Eg. Rm 1, 1-5" aria-label="Input group example" aria-describedby="">
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-text">Tin mừng</div>
+                            <input id="tin-mung" type="text" class="form-control" placeholder="Eg. Tv 1, 1-5" aria-label="Input group example" aria-describedby="">                            
+                        </div>
+                        <div class="mb-3">
+                            <label for="cau-loi-chua" class="form-label">Câu Lời Chúa</label>
+                            <input type="text" class="form-control" id="cau-loi-chua" placeholder="Enter Câu Lời Chúa">
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Hiển Thị</h5>
+                                <p class="card-text" id="view-in-lich"></p>
+                            </div>
+                        </div>
+                                                
+                    </form>
+                    <hr/>
+                    <div class="mb-3">
+                        
+                        <button type="button" class="btn btn-danger" id="delete-ngay-lich">Xóa <i class="bi bi-x-square-fill"></i></button>
+                        <button type="button" class="btn btn-success" id="update-ngay-lich">Lưu <i class="bi bi-save-fill"></i></button>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col" id="col-ngay-le">
+                
+            </div>
+            <div class="card card-ngay-le" style="display: none;">
+                <div class="card-header toggle-header"><h5 class="card-title">Card title</h5></div>
+                <div class="card-body">
+                    
+                    <div class="input-group mb-3">
+                        <button class="input-group-text use-url">URL</button>
+                        <input type="text" class="form-control r-url" disabled>                            
+                    </div> 
+                    <div class="input-group mb-3">
+                        <div class="input-group-text">ID</div>
+                        <input type="text" class="form-control r-id" disabled>                            
+                    </div>                      
+                    <div class="input-group mb-3">
+                        <button class="input-group-text use-bac-le">Bậc lễ</button>
+                        <input type="text" class="form-control r-bac-le" >
+                        <button class="input-group-text use-mau-ao-le">Màu phụng vụ</button>
+                        <input type="text" class="form-control r-mau-ao-le">
+                    </div>  
+                    <div class="input-group mb-3">
+                        <div class="input-group-text">Ngày Mừng Lễ</div>
+                        <input type="text" class="r-date form-control"  disabled>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-text">Ngày lễ xếp lại</div>
+                        <input type="date" class="r-assigned-date form-control"  disabled>
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control r-bd-1">
+                        <button class="input-group-text use-bd-1"><i class="bi bi-pencil-square"></i> BĐ1</button>
+                        <input type="text" class="form-control r-bd-2" >
+                        <button class="input-group-text use-bd-2">BĐ2</button>
+                        
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <button class="input-group-text use-dap-ca">Đáp ca</button>
+                        <input id="" type="text" class="form-control r-dap-ca">
+                        <button class="input-group-text use-alleluia">Alleluia</button>
+                        <input id="alleluia" type="text" class="form-control r-alleluia"  >
+                    </div>
+                    <div class="input-group mb-3">
+                        <button class="input-group-text use-tin-mung">Tin mừng</button>
+                        <input  type="text" class="form-control r-tin-mung" >                            
+                    </div>
+                    <div class="input-group mb-3">
+                        <button class="input-group-text use-cau-loi-chua">Câu lời Chúa</button>
+                        <input  type="text" class="form-control r-cau-loi-chua" >                            
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+      
+           
+ 
+</div>
+            <!-- Recent Sales End -->
+
+
+<script>
+    $(document).ready(function(){
+        $(".toggle-header").click(function(){
+            $(this).siblings(".card-body").toggle()
+        })
+        $("#delete-ngay-lich").click(function(){
+            if(confirm("Có chắc chắn muốn xóa "+ $("input#title").val())){
+                $.get("/delete-ngay-lich",{_id: $("input#_id").val()}, function(data, status){
+                    if(status == "success"){
+                        alert("Xóa thành công!")
+                        location.reload()
+                    }else{
+                        alert("Xóa thất bại!")
+                    }
+                })
+            }else{
+                alert("Bạn đã hủy bỏ việc xóa "+  $("input#title").val())
+            }
+        })
+        $('#update-ngay-lich').click(function(){
+            let to_send = {}
+            to_send._id = $("form input#_id").val()
+            to_send.title = $("form input#title").val()
+            to_send.url = $("form input#url").val()
+            to_send.mua_phung_vu = $("form input#season").val()
+            to_send.bac_le = $("form input#bac-le").val()
+
+            to_send.mau_ao_le = $("form input.mau-ao-le:checked").val()
+            to_send.bd_1 = $("form input#bd-1").val()
+            to_send.bd_2 = $("form input#bd-2").val()
+            to_send.dap_ca = $("form input#dap-ca").val()
+            to_send.alleluia = $("form input#alleluia").val()
+            to_send.tin_mung = $("form input#tin-mung").val()
+            to_send.cau_loi_chua = $("form input#cau-loi-chua").val()
+            console.log(to_send)
+            $.get("/update-ngay-lich",to_send, function(data, status){
+                if(status == "success"){
+                    console.log("Cập nhật thành công "+ data._id )
+
+                }else{
+                    alert("Cập nhật không thành công")
+                }
+            })
+        })
+        $(".use-url").click(function(){
+            $("#url").val($(this).siblings("input.r-url").val())
+        })
+        $(".use-bac-le").click(function(){
+            $("#bac-le").val($(this).siblings("input.r-bac-le").val())
+        })
+        $(".use-mau-ao-le").click(function(){
+            if($(this).siblings("input.r-mau-ao-le").val() == "Tím"){
+                $("form input.mau-ao-le").prop("checked", false)
+                $("form input#ao-tim").prop("checked", true)                
+            }else if($(this).siblings("input.r-mau-ao-le").val() == "Hồng"){
+                $("form input.mau-ao-le").prop("checked", false)
+                $("form input#ao-hong").prop("checked", true)                
+            }else if($(this).siblings("input.r-mau-ao-le").val() == "Trắng"){
+                $("form input.mau-ao-le").prop("checked", false)
+                $("form input#ao-trang").prop("checked", true)                
+            }else if($(this).siblings("input.r-mau-ao-le").val() == "Đỏ"){
+                $("form input.mau-ao-le").prop("checked", false)
+                $("form input#ao-do").prop("checked", true)                
+            }else if($(this).siblings("input.r-mau-ao-le").val() == "Xanh"){
+                $("form input.mau-ao-le").prop("checked", false)
+                $("form input#ao-xanh").prop("checked", true)                
+            }
+        })
+        $(".use-bd-1").click(function(){
+            $("#bd-1").val($(this).siblings("input.r-bd-1").val())
+        })
+        $(".use-bd-2").click(function(){
+            $("#bd-2").val($(this).siblings("input.r-bd-2").val())
+        })
+        $(".use-dap-ca").click(function(){
+            $("#dap-ca").val($(this).siblings("input.r-dap-ca").val())
+        })
+        $(".use-alleluia").click(function(){
+            $("#alleluia").val($(this).siblings("input.r-alleluia").val())
+        })
+        $(".use-tin-mung").click(function(){
+            $("#tin-mung").val($(this).siblings("input.r-tin-mung").val())
+        })
+        // $(".use-season").click(function(){
+        //     $("#season").val($(this).siblings("input.r-season").val())
+        // })
+        $(".mass-date").click(function(){
+            let id = $(this).attr("id")
+            let index = $(this).siblings("input.index").val()
+            console.log(id)
+            $(this).siblings("a.mass-date.active").removeClass("active")
+            $(this).addClass("active")
+            $.get("/get-lich",{_id: id}, function(data, status){
+                console.log("Data: " + data.toString() + "\nStatus: " + status);
+                if(status == "success"){
+                    console.log(data.lich._id)
+                    console.log(data.lich.title)
+                    console.log(data.lich.mau_ao_le)
+                    console.log(data.lich.date)
+                    console.log("Số lễ có thể cử hành: "+data.ngay_le.length)
+
+                    let l_id = id
+                    let l_date = $("#date")
+                    let l_title = $("#title")
+                    let l_url = $("#url")
+                    let l_season = $("#season")
+                    let l_bac_le = $("#bac-le")
+                    let l_mau_ao_le = $(".mau-ao-le")
+                    let l_bd_1 = $("#bd-1")
+                    let l_bd_2 = $("#bd-2")
+                    let l_dap_ca = $("#dap-ca")
+                    let l_alleluia = $("#alleluia")
+                    let l_tin_mung = $("#tin-mung")
+                    let l_cau_loi_chua = $("#cau-loi-chua")
+                 
+                    l_date.val("") 
+                    l_title.val("")
+                    l_url.val("")
+                    l_season.val("")
+                    // l_mau_ao_le = $(".mau-ao-le")
+                    l_bd_1.val("")
+                    l_bd_2.val("")
+                    l_dap_ca.val("")
+                    l_alleluia.val("")
+                    l_tin_mung.val("")
+                    l_cau_loi_chua.val("")
+
+                    $("#_id").val(l_id)
+                    if(data.lich.date != undefined){
+                        let d = new Date(data.lich.date)
+                        l_date.text("Ngày "+d.getDate()+ " Tháng "+ (d.getMonth()+1) + " Năm " + d.getFullYear())
+                    }
+                    
+                    if(data.lich.title != undefined){
+                        l_title.val(data.lich.title)
+                    }
+                    
+                    if(data.lich.mau_ao_le == "Tím"){
+                        $(".mau-ao-le").prop("checked", false)
+                        $("#ao-tim").prop("checked", true)
+                    }else if(data.lich.mau_ao_le == "Hồng"){
+                        $(".mau-ao-le").prop("checked", false)
+                        $("#ao-hong").prop("checked", true)
+                    }else if(data.lich.mau_ao_le == "Trắng"){
+                        $(".mau-ao-le").prop("checked", false)
+                        $("#ao-trang").prop("checked", true)
+                    }else if(data.lich.mau_ao_le == "Đỏ"){
+                        $(".mau-ao-le").prop("checked", false)
+                        $("#ao-do").prop("checked", true)
+                    }else if(data.lich.mau_ao_le == "Xanh"){
+                        $(".mau-ao-le").prop("checked", false)
+                        $("#ao-xanh").prop("checked", true)
+                    }else{
+                        $(".mau-ao-le").prop("checked", false)
+                        // $("#ao-xanh").prop("checked", true)
+                    }
+                    
+                    if(data.lich.url != undefined){
+                        l_url.val("")
+                        l_url.val(data.lich.url)
+                    }
+                    if(data.lich.season != undefined){
+                        l_url.val("")
+                        l_url.val(data.lich.season)
+                    }
+                    if(data.lich.bac_le != undefined){
+                        l_url.val("")
+                        l_url.val(data.lich.bac_le)
+                    }
+                    if(data.lich.bd_1 != undefined){
+                        l_bd_1.val(data.lich.bd_1)
+                    }
+                    if(data.lich.bd_2 != undefined){
+                        l_bd_2.val(data.lich.bd_2)
+                    }
+                    if(data.lich.dap_ca != undefined){
+                        l_dap_ca.val(data.lich.dap_ca)
+                    }
+                    if(data.lich.alleluia != undefined){
+                        l_alleluia.val(data.lich.alleluia)
+                    }
+                    if(data.lich.tin_mung != undefined){
+                        l_tin_mung.val(data.lich.tin_mung)
+                    }
+                    if(data.lich.cau_loi_chua != undefined){
+                        l_cau_loi_chua.val(data.lich.cau_loi_chua)
+                    }
+
+                    $("#col-ngay-le").empty()
+                    data.ngay_le.forEach(function(e){
+                        console.log("---->"+e.title)
+                        let card_ngay_le = $(".card-ngay-le").clone(true, true)
+                        card_ngay_le.appendTo("#col-ngay-le")
+                        // console.log(card_ngay_le.html())
+                        card_ngay_le.show()
+
+                        card_ngay_le.find(".card-title").text(e.title)
+                        card_ngay_le.find(".r-id").val(e._id)
+
+                        if(e.date != undefined && e.date != ""){
+                            card_ngay_le.find(".r-date").val(e.date)
+                        }
+                        if(e.bac_le != undefined && e.bac_le != ""){
+                            card_ngay_le.find(".r-bac-le").val(e.bac_le)
+                        }
+                        
+                        if(e.mau_ao_le != undefined && e.mau_ao_le != ""){
+                            card_ngay_le.find(".r-mau-ao-le").val(e.mau_ao_le)
+                        }
+                        if(e.url != undefined && e.url != ""){
+                            card_ngay_le.find(".r-url").val(e.url)
+                        }
+                        if(e.assigned_date != undefined){
+                            card_ngay_le.find(".r-assigned-date").val(data.lich.date)
+                        }
+                        
+                        if(e.ban_van != undefined){
+                            
+                            if(e.ban_van["Bài Ðọc I:"] != undefined){
+                                console.log(e.ban_van["Bài Ðọc I:"])
+                                let tmp = $.parseHTML(e.ban_van["Bài Ðọc I:"])
+                                console.log(tmp[0])                            
+                                card_ngay_le.find(".r-bd-1").val($(tmp[0]).text().split(":")[1].trim())
+                            }
+
+                            if(e.ban_van["Bài Ðọc II:"] != undefined){
+                                console.log(e.ban_van["Bài Ðọc II:"])
+                                let tmp = $.parseHTML(e.ban_van["Bài Ðọc II:"])
+                                console.log(tmp[0])   
+                                card_ngay_le.find(".r-bd-2").val($(tmp[0]).text().split(":")[1].trim())
+                            }
+
+                            if(e.ban_van["Ðáp Ca:"] != undefined){
+                                let tmp = $.parseHTML(e.ban_van["Ðáp Ca:"])
+                                card_ngay_le.find(".r-dap-ca").val($(tmp[0]).text().split(":")[1].trim())
+                            }
+
+                            if(e.ban_van["Alleluia:"] != undefined){
+                                let tmp = $.parseHTML(e.ban_van["Alleluia:"])
+                                card_ngay_le.find(".r-alleluia").val($(tmp[0]).text().split(":")[1].trim())
+                            }
+
+                            if(e.ban_van["Phúc Âm:"] != undefined){
+                                 let tmp = $.parseHTML(e.ban_van["Phúc Âm:"])
+                                card_ngay_le.find(".r-tin-mung").val($(tmp[0]).text().split(":")[1].trim())
+                            }
+                        }
+                        
+                    })
+                }else{
+                    console.log("Status is not success")
+                }
+            });
+        })
+    })
+
+</script>
+            <!-- Footer Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="bg-light rounded-top p-4">
+                    <div class="row">
+                        <div class="col-12 col-sm-6 text-center text-sm-start">
+                            &copy; <a href="#">Your Site Name</a>, All Right Reserved. 
+                        </div>
+                        <div class="col-12 col-sm-6 text-center text-sm-end">
+                            <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+                            Designed By <a href="https://htmlcodex.com">HTML Codex</a>
+                        </br>
+                        Distributed By <a class="border-bottom" href="https://themewagon.com" target="_blank">ThemeWagon</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer End -->
+        </div>
+        <!-- Content End -->
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/chart/chart.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="lib/tempusdominus/js/moment.min.js"></script>
+    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+</body>
+
+</html>
