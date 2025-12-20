@@ -10,7 +10,7 @@
     "startb": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "test": "node --test test/**/*.test.js",
     "start": "fastify start -l info app.js",
-    "dev:server": "fastify start -a 0.0.0.0 -w -l info -P app.js",
+    "dev:server": "fastify start -p 3000 -a 0.0.0.0 -w -l info -P app.js",
     "dev:client": "cd ../../my-react-app && npm run dev"
   },
   "keywords": [],
