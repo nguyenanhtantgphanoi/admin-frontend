@@ -251,15 +251,21 @@ module.exports = async function (fastify, opts) {
           p_y--
         }else{
           p_m--
+          if(p_m < 10){
+            p_m = "0"+p_m
+          }
         }
 
         let n_m = month
         let n_y = year
         if(n_m == 12){
-          n_m = 1
+          n_m = "01"
           n_y++
         }else{
           n_m++
+          if(n_m < 10){
+            n_m = "0"+n_m
+          }
         }
         // console.log(year)
         // console.log(month)
