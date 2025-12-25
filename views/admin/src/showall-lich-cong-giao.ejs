@@ -228,8 +228,12 @@
                     <form>
                         <input type="hidden" class="form-control" id="_id">
                         <div class="mb-3">
-                            <label for="title" class="form-label">Tiêu đề</label>                            
+                            <label for="title" class="form-label"><strong>Tiêu đề</strong></label>                            
                             <input type="text" class="form-control" id="title" placeholder="Enter title">
+                        </div>
+                        <div class="mb-3">
+                            <label for="under-title" class="form-label"><strong>Lưu ý sau tiêu đề</strong></label>
+                            <textarea class="form-control" id="under-title"></textarea>
                         </div>
                         <div class="input-group mb-3">
                             <button class="input-group-text">URL</button>
@@ -271,24 +275,24 @@
                             <input id="alleluia" type="text" class="form-control" placeholder="" aria-label="Input group example" aria-describedby="">
                         </div>
                         <div class="input-group mb-3">
-                            <div class="input-group-text">Tin mừng</div>
+                            <div class="input-group-text"><strong>Tin mừng</strong></div>
                             <input id="tin-mung" type="text" class="form-control" placeholder="" aria-label="Input group example" aria-describedby="">                            
                         </div>
                         <div class="mb-3">
-                            <label for="cau-loi-chua" class="form-label">Câu Lời Chúa</label>
+                            <label for="cau-loi-chua" class="form-label"><strong>Câu Lời Chúa</strong></label>
                             <input type="text" class="form-control" id="cau-loi-chua" placeholder="Enter Câu Lời Chúa">
                         </div>
                         <div class="mb-3">
-                            <label for="xu-chau-luot" class="form-label">Xứ Chầu Lượt</label>
+                            <label for="xu-chau-luot" class="form-label"><strong>Xứ Chầu Lượt</strong></label>
                             <textarea class="form-control" id="xu-chau-luot"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="luu-y" class="form-label">Lưu ý</label>
+                            <label for="luu-y" class="form-label"><strong>Lưu ý khác</strong></label>
                             <textarea class="form-control" id="luu-y"></textarea>
                         </div>
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Hiển Thị <a class="btn btn-success" id="show-view-in-lich">Hiển thị</a></h5>
+                                <h5 class="card-title"><a class="btn btn-success" id="show-view-in-lich">Hiển thị</a></h5>
                                 <p class="card-text" id="view-in-lich"></p>
                             </div>
                         </div>
@@ -446,6 +450,7 @@
             to_send.cau_loi_chua = $("form input#cau-loi-chua").val()
             to_send.xu_chau_luot = $("form textarea#xu-chau-luot").val()
             to_send.luu_y = $("form textarea#luu-y").val()
+            to_send.under_title = $("form textarea#under-title").val()
 
             console.log(to_send)
             $.get("/update-ngay-lich",to_send, function(data, status){
@@ -554,6 +559,7 @@
 
                     let l_xu_chau_luot = $("#xu-chau-luot")
                     let l_luu_y = $("#luu-y")
+                    let l_under_title = $("#under-title")
                  
                     l_date.val("") 
                     l_title.val("")
@@ -569,6 +575,7 @@
 
                     l_xu_chau_luot.val("")
                     l_luu_y.val("")
+                    l_under_title.val("")
 
                     $("#_id").val(l_id)
                     if(data.lich.date != undefined){
@@ -636,7 +643,9 @@
                     if(data.lich.luu_y != undefined){
                         l_luu_y.val(data.lich.luu_y)
                     }
-
+                    if(data.lich.under_title != undefined){
+                        l_under_title.val(data.lich.under_title)
+                    }
                     $("#col-ngay-le").empty()
                     data.ngay_le.forEach(function(e){
                         console.log("---->"+e.title)
