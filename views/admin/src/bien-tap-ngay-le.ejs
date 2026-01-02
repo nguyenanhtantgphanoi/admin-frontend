@@ -857,8 +857,9 @@ $(document).ready(function(){
         bac_le : $(this).parents(".form-ngay-le").find('input.bac_le').val(),
         mau_ao_le : $(this).parents(".form-ngay-le").find('input.mau-ao-le').val(),
         _id : $(this).parents(".form-ngay-le").find('input._id').val(),
-
-        ban_van : {
+        
+        }
+        let ban_van = {
             dan_vao_thanh_le: dan_vao_thanh_le.val(),
             ca_nhap_le: ca_nhap_le.val(),
             loi_nguyen_nhap_le: loi_nguyen_nhap_le.val(),
@@ -888,7 +889,6 @@ $(document).ready(function(){
             loi_nguyen_tien_le: loi_nguyen_tien_le.val(),
             ca_hiep_le: ca_hiep_le.val(),
             loi_nguyen_hiep_le: loi_nguyen_hiep_le.val()
-            }
         }
     
         let data = {
@@ -906,10 +906,10 @@ $(document).ready(function(){
             data.season = season
         }
         console.log("Data sent:")
-        console.log(data)
+        console.log(doc)
         alr_suc = $(this).parents(".form-ngay-le").find(".alert-success")
         alr_dan = $(this).parents(".form-ngay-le").find(".alert-danger")
-        $.get("/update-ngay-le", data, function(da, sta){
+        $.get("/update-ngay-le", doc, function(da, sta){
             if(sta == "success"){
                 alr_suc.show()
                 alr_dan.hide()

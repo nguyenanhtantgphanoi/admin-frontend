@@ -113,7 +113,8 @@ module.exports = async function (fastify, opts) {
   fastify.get('/update-ngay-le', async function (request, reply) {
     // Access the parsed JSON body
     const collection = this.mongo.db.collection('ngay-le')
-    const { _id, title, date, bac_le, assigned_date, mau_ao_le, week, season} = request.query
+    // const { _id, title, , bac_le, , mau_ao_le, } = request.query
+    const {_id, title, date, assigned_date, week, season, url, bac_le, mau_ao_le, ban_van} = request.query
     // console.log(`Name: ${title}, date: ${date}, id_le: ${id_le_theo_mua_phung_vu}, mau_ao_le: ${mau_ao_le}`)
     //let lich_cong_giao = this.mongo.db.collection('lich-cong-giao')
     console.log("isNan = "+isNaN(new Date(assigned_date)))
@@ -142,6 +143,12 @@ module.exports = async function (fastify, opts) {
     }
     if(season != undefined){
       doc.season = season
+    }
+    if(url != undefined){
+      doc.url = url
+    }
+    if(ban_van != undefined){
+      doc.ban_van = ban_van
     }
     console.log(doc)
     try{
