@@ -114,7 +114,7 @@ module.exports = async function (fastify, opts) {
     // Access the parsed JSON body
     const collection = this.mongo.db.collection('ngay-le')
     // const { _id, title, , bac_le, , mau_ao_le, } = request.query
-    const {_id, title, date, assigned_date, week, season, url, bac_le, mau_ao_le, ban_van} = request.query
+    const {_id, title, date, assigned_date, week, season, url, bac_le, mau_ao_le} = request.query
     // console.log(`Name: ${title}, date: ${date}, id_le: ${id_le_theo_mua_phung_vu}, mau_ao_le: ${mau_ao_le}`)
     //let lich_cong_giao = this.mongo.db.collection('lich-cong-giao')
     console.log("isNan = "+isNaN(new Date(assigned_date)))
@@ -147,15 +147,15 @@ module.exports = async function (fastify, opts) {
     if(url != undefined){
       doc.url = url
     }
-    if(ban_van != undefined){
-      doc.ban_van = ban_van
-    }
+    // if(ban_van != undefined){
+    //   doc.ban_van = ban_van
+    // }
     console.log(doc)
-    try{
-      await collection.updateOne({_id: new this.mongo.ObjectId(_id)},{$set: doc})
-    }catch(err){
-      return err
-    }
+    // try{
+    //   await collection.updateOne({_id: new this.mongo.ObjectId(_id)},{$set: doc})
+    // }catch(err){
+    //   return err
+    // }
     // Respond with a success message and the received data
     return { message: 'Data received!', data: doc }
   });
