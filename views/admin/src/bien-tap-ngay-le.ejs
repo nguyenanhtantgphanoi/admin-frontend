@@ -478,7 +478,7 @@
                                         }
                                     })
                                 }
-                                $("#update-all-").click(function(){
+                                $("#update-all--").click(function(){
                                     let arr_hc = $(".form-ngay-le")
                                     console.log("arr_hc.length = "+arr_hc.length)
                                     update(0, arr_hc)
@@ -702,7 +702,7 @@
                             <!-- Submit Buttons -->
 
                             <div class="d-flex justify-content-end">
-                                <a type="button" href="/bien-tap-ban-van?_id=<%=u._id%>" class="btn btn-secondary me-2 btn-hieu-chinh">Chỉnh Sửa Bản Văn</a>
+                                <a type="button" href="/xoa-truong?_id=<%=u._id%>" class="btn btn-secondary me-2 btn-hieu-chinh">Chỉnh Sửa Bản Văn</a>
                                 <button type="button" class="btn btn-secondary me-2">Cancel</button>
                                 <button type="submit" class="btn btn-primary btn-save">Save</button>
                             </div>

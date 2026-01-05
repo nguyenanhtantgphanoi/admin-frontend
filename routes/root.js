@@ -94,6 +94,32 @@ module.exports = async function (fastify, opts) {
       return err
     }
   });
+  fastify.get('/xoa-truong', async function (request, reply) {
+    const ngayle = this.mongo.db.collection('ngay-le')
+    if('_id' in request.query){
+      try{        
+        await ngayle.updateMany(
+          {_id: new this.mongo.ObjectId(request.query._id)},
+          {$unset: {
+            "ban_van.Dẫn vào Thánh Lễ":'', 
+            "ban_van.Ca nhập lễ":'',
+            "ban_van.Lời nguyện nhập lễ":'',
+            "ban_van.Bài Ðọc I:":'',
+            "ban_van.Ðáp Ca:":'',
+            "ban_van.Bài Ðọc II:":'',
+            "ban_van.Alleluia:":'',
+            "ban_van.Phúc Âm:":'',
+            "ban_van.Lời nguyện tín hữu":'',
+            "ban_van.Lời nguyện tiến lễ":'',
+            "ban_van.Ca hiệp lễ":'',
+            "ban_van.Lời nguyện hiệp lễ":''
+            
+          }})          
+      }catch(err){
+        return err
+      }
+    }
+  })
   fastify.get('/bien-tap-ban-van', async function (request, reply) {
     const ngayle = this.mongo.db.collection('ngay-le')
     if('_id' in request.query){
@@ -561,6 +587,7 @@ module.exports = async function (fastify, opts) {
   });
   fastify.get('/get-calendar', async function (request, reply) {
     const tb_lich = this.mongo.db.collection('lich-cong-giao')
+    const ngay_le = this.mongo.db.collection('ngay-le')
 
     // const tb_ngayle = this.mongo.db.collection('ngay-le')
     // if the id is an ObjectId format, you need to create a new ObjectId
@@ -610,6 +637,29 @@ module.exports = async function (fastify, opts) {
         cur_month = await tb_lich.find({date: {$regex: `^${year}-${month}-\\d{2}`}}).sort({date: 1}).toArray()
         prev_month = await tb_lich.find({date: {$regex: `^${p_y}-${p_m}-\\d{2}`}}).sort({date: 1}).toArray()
         nxt_month = await tb_lich.find({date: {$regex: `^${n_y}-${n_m}-\\d{2}`}}).sort({date: 1}).toArray()
+        for (let index = 0; index < cur_month.length; index++) {
+          const element = cur_month[index].date;
+          let a_date = new Date(element)
+          let arr_cac_le = await ngay_le.find({['assigned_date.'+a_date.getFullYear()]:element}).toArray()
+          cur_month[index].arr_cac_le = arr_cac_le
+          
+        }
+        for (let index = 0; index < prev_month.length; index++) {
+          const element = prev_month[index].date;
+          let a_date = new Date(element)
+          let arr_cac_le = await ngay_le.findOne({['assigned_date.'+a_date.getFullYear()]:element})
+          prev_month[index].arr_cac_le = arr_cac_le
+          
+        }
+
+        for (let index = 0; index < nxt_month.length; index++) {
+          const element = nxt_month[index].date;
+          let a_date = new Date(element)
+          let arr_cac_le = await ngay_le.findOne({['assigned_date.'+a_date.getFullYear()]:element})
+          nxt_month[index].arr_cac_le = arr_cac_le
+          
+        }
+        
         return {cur_month: cur_month, prev_month: prev_month, nxt_month: nxt_month}
       }else{
         reply.code(400).send({ error: 'Missing required parameter: date or month' });
