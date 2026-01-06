@@ -648,13 +648,13 @@
                                     <!-- <button class="btn btn-secondary hc-bd1-le"><i class="bi bi-arrow-clockwise"></i></button>     -->
                                     <div class="col-md-12 input-group">
                                         <span class="input-group-text"><strong>Trích từ</strong></span>
-                                        <input type="text" class="form-control r-bd1-le-trich-tu" value="<%= u.ban_van.bd1_le_trich_tu%>" >
+                                        <input name="bd1_le_trich_tu" type="text" class="form-control r-bd1-le-trich-tu" value="<%= u.ban_van.bd1_le_trich_tu%>" >
                                     </div>
                                     <div class="col-md-12 input-group">
                                         <span class="input-group-text"><strong>Câu tóm gọn</strong></span>
-                                        <input type="text" class="form-control r-cau-bd1-le-tom-gon" value="<%= u.ban_van.cau_bd1_le_tom_gon%>" >
+                                        <input type="text" class="form-control r-cau-bd1-le-tom-gon" name="cau_bd1_le_tom_gon" value="<%= u.ban_van.cau_bd1_le_tom_gon%>" >
                                     </div>
-                                    <textarea type="text" rows="10"class="form-control r-bd1-le"><%= u.ban_van.bd1_le %></textarea>    
+                                    <textarea type="text" rows="10" name="bd1_le" class="form-control r-bd1-le"><%= u.ban_van.bd1_le %></textarea>    
                                                                 
                                 </div>  
                                 <div class="col-md-6">
@@ -662,9 +662,9 @@
                                     <!-- <button class="btn btn-secondary hc-dap-ca"><i class="bi bi-arrow-clockwise"></i></button> -->
                                     <div class="col-md-12 input-group">
                                         <span class="input-group-text"><strong>Trích từ</strong></span>
-                                        <input type="text" class="form-control r-dap-ca-le-trich-tu" value="<%= u.ban_van.dap_ca_le_trich_tu%>" >
+                                        <input type="text" class="form-control r-dap-ca-le-trich-tu" name="dap_ca_le_trich_tu" value="<%= u.ban_van.dap_ca_le_trich_tu%>" >
                                     </div>
-                                    <textarea type="text" rows="10" class="form-control r-dap-ca-le"><%= u.ban_van.dap_ca_le %></textarea>                                    
+                                    <textarea type="text" rows="10" name="dap_ca_le" class="form-control r-dap-ca-le"><%= u.ban_van.dap_ca_le %></textarea>                                    
                                 </div>  
                                 <div style="background-color: rgba(235, 255, 242, 0.623); text-align: right; padding: 0.5em; margin-top: 0.5em;">
                                     <i class="bi bi-check-circle alrt-success text-success" style="display: none;">Cập nhật thành công</i>
@@ -690,22 +690,22 @@
                                     <!-- <button class="btn btn-secondary hc-bd1-chan"><i class="bi bi-arrow-clockwise"></i></button>   -->
                                     <div class="col-md-12 input-group">
                                         <span class="input-group-text"><strong>Trích từ</strong></span>
-                                        <input type="text" class="form-control r-bd1-chan-trich-tu" value="<%= u.ban_van.bd1_chan_trich_tu%>" >
+                                        <input type="text" class="form-control r-bd1-chan-trich-tu" name="bd1_chan_trich_tu" value="<%= u.ban_van.bd1_chan_trich_tu%>" >
                                     </div>
                                     <div class="col-md-12 input-group">
                                         <span class="input-group-text"><strong>Câu tóm gọn</strong></span>
-                                        <input type="text" class="form-control r-cau-bd1-chan-tom-gon" value="<%= u.ban_van.cau_bd1_chan_tom_gon%>" >
+                                        <input type="text" class="form-control r-cau-bd1-chan-tom-gon" name="cau_bd1_chan_tom_gon" value="<%= u.ban_van.cau_bd1_chan_tom_gon%>" >
                                     </div>
-                                    <textarea type="text" rows="10" class="form-control r-bd1-chan"><%= u.ban_van.bd1_chan %></textarea>                                    
+                                    <textarea type="text" rows="10" class="form-control r-bd1-chan" name="bd1_chan"><%= u.ban_van.bd1_chan %></textarea>                                    
                                 </div>  
                                 <div class="col-md-6">
                                     <span class=""><strong>Ðáp Ca:</strong></span>
                                     <!-- <button class="btn btn-secondary hc-dap-ca"><i class="bi bi-arrow-clockwise"></i></button> -->
                                     <div class="col-md-12 input-group">
                                         <span class="input-group-text"><strong>Trích từ</strong></span>
-                                        <input type="text" class="form-control r-dap-ca-chan-trich-tu" value="<%= u.ban_van.dap_ca_chan_trich_tu%>" >
+                                        <input type="text" class="form-control r-dap-ca-chan-trich-tu" name="dap_ca_chan_trich_tu" value="<%= u.ban_van.dap_ca_chan_trich_tu%>" >
                                     </div>
-                                    <textarea type="text" rows="10"class="form-control r-dap-ca-chan"><%= u.ban_van.dap_ca_chan %></textarea>                                    
+                                    <textarea type="text" rows="10"class="form-control r-dap-ca-chan" name="dap_ca_chan"><%= u.ban_van.dap_ca_chan %></textarea>                                    
                                 </div>  
                                 <div style="background-color: rgba(235, 255, 242, 0.623); text-align: right; padding: 0.5em; margin-top: 0.5em;">
                                     <i class="bi bi-check-circle alrt-success text-success" style="display: none;">Cập nhật thành công</i>
@@ -731,22 +731,22 @@
                                     <!-- <button class="btn btn-secondary hc-bd2"><i class="bi bi-arrow-clockwise"></i></button>   -->
                                     <div class="col-md-12 input-group">
                                         <span class="input-group-text"><strong>Trích từ</strong></span>
-                                        <input type="text" class="form-control r-bd2-trich-tu" value="<%= u.ban_van.bd2_trich_tu%>" >
+                                        <input type="text" class="form-control r-bd2-trich-tu" name="bd2_trich_tu" value="<%= u.ban_van.bd2_trich_tu%>" >
                                     </div>
                                     <div class="col-md-12 input-group">
                                         <span class="input-group-text"><strong>Câu tóm gọn</strong></span>
-                                        <input type="text" class="form-control r-cau-bd2-tom-gon" value="<%= u.ban_van.cau_bd2_tom_gon%>" >
+                                        <input type="text" class="form-control r-cau-bd2-tom-gon" name="cau_bd2_tom_gon" value="<%= u.ban_van.cau_bd2_tom_gon%>" >
                                     </div>
-                                    <textarea type="text" rows="10" class="form-control r-bd2"><%= u.ban_van.bd2 %></textarea>                                    
+                                    <textarea type="text" rows="10" class="form-control r-bd2" name="bd2"><%= u.ban_van.bd2 %></textarea>                                    
                                 </div>    
                                 <div class="col-md-12">
                                     <span class=""><strong>Alleluia:</strong></span>
                                     <!-- <button class="btn btn-secondary hc-alleluia"><i class="bi bi-arrow-clockwise"></i></button>   -->
                                     <div class="col-md-12 input-group">
                                         <span class="input-group-text"><strong>Trích từ</strong></span>
-                                        <input type="text" class="form-control r-alleluia-trich-tu" value="<%= u.ban_van.alleluia_trich_tu%>" >
+                                        <input type="text" class="form-control r-alleluia-trich-tu" name="alleluia_trich_tu" value="<%= u.ban_van.alleluia_trich_tu%>" >
                                     </div>
-                                    <textarea type="text" rows="4" class="form-control r-alleluia"><%= u.ban_van.alleluia %></textarea>                                    
+                                    <textarea type="text" rows="4" class="form-control r-alleluia" name="alleluia"><%= u.ban_van.alleluia %></textarea>                                    
                                 </div>  
                                 <div style="background-color: rgba(235, 255, 242, 0.623); text-align: right; padding: 0.5em; margin-top: 0.5em;">
                                     <i class="bi bi-check-circle alrt-success text-success" style="display: none;">Cập nhật thành công</i>
@@ -772,13 +772,13 @@
                                     <!-- <button class="btn btn-secondary hc-phuc-am"><i class="bi bi-arrow-clockwise"></i></button>   -->
                                     <div class="col-md-12 input-group">
                                         <span class="input-group-text"><strong>Trích từ</strong></span>
-                                        <input type="text" class="form-control r-phuc-am-trich-tu" value="<%= u.ban_van.phuc_am_trich_tu%>" >
+                                        <input type="text" class="form-control r-phuc-am-trich-tu" name="phuc_am_trich_tu" value="<%= u.ban_van.phuc_am_trich_tu%>" >
                                     </div>
                                     <div class="col-md-12 input-group">
                                         <span class="input-group-text"><strong>Câu tóm gọn</strong></span>
-                                        <input type="text" class="form-control r-cau-phuc-am-tom-gon" value="<%= u.ban_van.cau_phuc_am_tom_gon%>" >
+                                        <input type="text" class="form-control r-cau-phuc-am-tom-gon" name="cau_phuc_am_tom_gon" value="<%= u.ban_van.cau_phuc_am_tom_gon%>" >
                                     </div>
-                                    <textarea type="text" rows="10" class="form-control r-phuc-am"><%= u.ban_van.phuc_am %></textarea>                                    
+                                    <textarea type="text" rows="10" class="form-control r-phuc-am" name="phuc_am"><%= u.ban_van.phuc_am %></textarea>                                    
                                 </div>
                                 <div style="background-color: rgba(235, 255, 242, 0.623); text-align: right; padding: 0.5em; margin-top: 0.5em;">
                                     <i class="bi bi-check-circle alrt-success text-success" style="display: none;">Cập nhật thành công</i>
@@ -801,7 +801,7 @@
                                 <input type="hidden" value="<%= u._id%>" class="_id" name="_id">
                                 <div class="col-md-12">
                                     <span class=""><strong>Lời nguyện tín hữu</strong></span>
-                                    <textarea type="text" rows="10" class="form-control r-loi-nguyen-tin-huu"><%= u.ban_van.loi_nguyen_tin_huu %></textarea>                                    
+                                    <textarea type="text" rows="10" class="form-control r-loi-nguyen-tin-huu" name="loi_nguyen_tin_huu"><%= u.ban_van.loi_nguyen_tin_huu %></textarea>                                    
                                 </div>
                                 <div style="background-color: rgba(235, 255, 242, 0.623); text-align: right; padding: 0.5em; margin-top: 0.5em;">
                                     <i class="bi bi-check-circle alrt-success text-success" style="display: none;">Cập nhật thành công</i>
@@ -824,15 +824,15 @@
                                 <input type="hidden" value="<%= u._id%>" class="_id" name="_id">
                                 <div class="col-md-6">
                                     <span class=""><strong>Lời nguyện tiến lễ</strong></span>
-                                    <textarea type="text" rows="6"class="form-control r-loi-nguyen-tien-le"><%= u.ban_van.loi_nguyen_tien_le %></textarea>                                    
+                                    <textarea type="text" rows="6"class="form-control r-loi-nguyen-tien-le" name="loi_nguyen_tien_le"><%= u.ban_van.loi_nguyen_tien_le %></textarea>                                    
                                 </div>     
                                 <div class="col-md-6">
                                     <span class=""><strong>Ca hiệp lễ</strong></span>
-                                    <textarea type="text" rows="6" class="form-control r-ca-hiep-le"><%= u.ban_van.ca_hiep_le %></textarea>                                    
+                                    <textarea type="text" rows="6" class="form-control r-ca-hiep-le" name="ca_hiep_le"><%= u.ban_van.ca_hiep_le %></textarea>                                    
                                 </div>     
                                 <div class="col-md-6">
                                     <span class=""><strong>Lời nguyện hiệp lễ</strong></span>
-                                    <textarea type="text" rows="6" class="form-control r-loi-nguyen-hiep-le"><%= u.ban_van.loi_nguyen_hiep_le %></textarea>                                    
+                                    <textarea type="text" rows="6" class="form-control r-loi-nguyen-hiep-le" name="loi_nguyen_hiep_le"><%= u.ban_van.loi_nguyen_hiep_le %></textarea>                                    
                                 </div>
                                 <div style="background-color: rgba(235, 255, 242, 0.623); text-align: right; padding: 0.5em; margin-top: 0.5em;">
                                     <i class="bi bi-check-circle alrt-success text-success" style="display: none;">Cập nhật thành công</i>

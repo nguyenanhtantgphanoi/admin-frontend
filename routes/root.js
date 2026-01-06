@@ -237,6 +237,20 @@ module.exports = async function (fastify, opts) {
           return err
         }
       }
+      if('alleluia_trich_tu' in request.query){
+        try{        
+          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.alleluia_trich_tu": request.query.alleluia_trich_tu}})          
+        }catch(err){
+          return err
+        }
+      }
+      if('alleluia' in request.query){
+        try{        
+          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.alleluia": request.query.alleluia}})          
+        }catch(err){
+          return err
+        }
+      }
       ///////////////////////////////////////////
       if('phuc_am_trich_tu' in request.query){
         try{        
@@ -277,6 +291,13 @@ module.exports = async function (fastify, opts) {
       if('ca_hiep_le' in request.query){
         try{        
           await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.ca_hiep_le": request.query.ca_hiep_le}})          
+        }catch(err){
+          return err
+        }
+      }
+      if('loi_nguyen_hiep_le' in request.query){
+        try{        
+          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.loi_nguyen_hiep_le": request.query.loi_nguyen_hiep_le}})          
         }catch(err){
           return err
         }
