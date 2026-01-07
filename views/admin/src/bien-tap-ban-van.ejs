@@ -30,6 +30,18 @@
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        .alrt-success{
+            margin-right: 1em;
+            font-weight: bold;
+            font-size: larger;
+        }
+        .alrt-failed{
+            margin-right: 1em;
+            font-weight: bold;
+            font-size: larger;
+        }
+    </style>
      
 </head>
 
@@ -277,181 +289,7 @@
                                 return year+"-"+month+"-"+day
                             }
                               $(document).ready(function(){
-                                // $('.hc-bd1-le').click(function(){
-                                //     $(this).prop("disabled", true)
-                                //     let bd1_le_trich_tu = $(this).parent().find("input.r-bd1-le-trich-tu")
-                                //     let cau_bd1_le_tom_gon = $(this).parent().find("input.r-cau-bd1-le-tom-gon")
-                                //     let bd1_le = $(this).siblings("textarea.r-bd1-le")
 
-                                //     n_dvtl = $(bd1_le.val()).first().text().split(":")[1]
-                                //     bd1_le_trich_tu.val(n_dvtl)
-
-                                //     n_dvtl = $(bd1_le.val()).first().next().text()
-                                //     cau_bd1_le_tom_gon.val(n_dvtl)
-
-                                //     n_dvtl = $("<div>"+bd1_le.val()+"</div>")
-                                //     n_dvtl.find('p').slice(0,2).remove()
-                                //     bd1_le.val(n_dvtl.html())                                    
-                                // })
-                                // $('.hc-bd2').click(function(){
-                                //     $(this).prop("disabled", true)
-                                //     let bd2_le_trich_tu = $(this).parent().find("input.r-bd2-trich-tu")
-                                //     let cau_bd2_le_tom_gon = $(this).parent().find("input.r-cau-bd2-tom-gon")
-                                //     let bd2_le = $(this).siblings("textarea.r-bd2")
-
-                                //     n_dvtl = $(bd2_le.val()).first().text().split(":")[1]
-                                //     bd2_le_trich_tu.val(n_dvtl)
-
-                                //     n_dvtl = $(bd2_le.val()).first().next().text()
-                                //     cau_bd2_le_tom_gon.val(n_dvtl)
-
-                                //     n_dvtl = $("<div>"+bd2_le.val()+"</div>")
-                                //     n_dvtl.find('p').slice(0,2).remove()
-                                //     bd2_le.val(n_dvtl.html())                                    
-                                // })
-                                // $('.hc-dap-ca').click(function(){
-                                //     $(this).prop("disabled", true)
-                                //     let bd2_le_trich_tu = $(this).parent().find("input.r-dap-ca-trich-tu")
-                                    
-                                //     let bd2_le = $(this).siblings("textarea.r-dap-ca")
-
-                                //     n_dvtl = $(bd2_le.val()).first().text().split(":")[1]
-                                //     bd2_le_trich_tu.val(n_dvtl)
-
-
-                                //     n_dvtl = $("<div>"+bd2_le.val()+"</div>")
-                                //     n_dvtl.find('p').slice(0,1).remove()
-                                //     bd2_le.val(n_dvtl.html())                                    
-                                // })
-                                // $('.hc-alleluia').click(function(){
-                                //     $(this).prop("disabled", true)
-                                //     let bd2_le_trich_tu = $(this).parent().find("input.r-alleluia-trich-tu")
-                                    
-                                //     let bd2_le = $(this).siblings("textarea.r-alleluia")
-
-                                //     n_dvtl = $(bd2_le.val()).first().text().split(":")[1]
-                                //     bd2_le_trich_tu.val(n_dvtl)
-
-
-                                //     n_dvtl = $("<div>"+bd2_le.val()+"</div>")
-                                //     n_dvtl.find('p').slice(0,1).remove()
-                                //     bd2_le.val(n_dvtl.html())                                    
-                                // })
-                                // $('.hc-phuc-am').click(function(){
-                                //     $(this).prop("disabled", true)
-                                //     let bd2_le_trich_tu = $(this).parent().find("input.r-phuc-am-trich-tu")
-                                //     let cau_bd2_le_tom_gon = $(this).parent().find("input.r-cau-phuc-am-tom-gon")
-                                //     let bd2_le = $(this).siblings("textarea.r-phuc-am")
-
-                                //     n_dvtl = $(bd2_le.val()).first().text().split(":")[1]
-                                //     bd2_le_trich_tu.val(n_dvtl)
-
-                                //     n_dvtl = $(bd2_le.val()).first().next().text()
-                                //     cau_bd2_le_tom_gon.val(n_dvtl)
-
-                                //     n_dvtl = $("<div>"+bd2_le.val()+"</div>")
-                                //     n_dvtl.find('p').slice(0,2).remove()
-                                //     bd2_le.val(n_dvtl.html())                                    
-                                // })
-                                // $(".btn-hieu-chinh").click(function(){
-                                //     $(this).prop("disabled", true)
-                                //     let dan_vao_thanh_le = $(this).parents(".form-ngay-le").find("textarea.r-dan-vao-thanh-le")
-                                //     let ca_nhap_le = $(this).parents(".form-ngay-le").find("textarea.r-ca-nhap-le")
-                                //     let loi_nguyen_nhap_le = $(this).parents(".form-ngay-le").find("textarea.r-loi-nguyen-nhap-le")
-
-                                //     let bd1_le_trich_tu = $(this).parents(".form-ngay-le").find("input.r-bd1-le-trich-tu")
-                                //     let cau_bd1_le_tom_gon = $(this).parents(".form-ngay-le").find("input.r-cau-bd1-le-tom-gon")
-                                //     let bd1_le = $(this).parents(".form-ngay-le").find("textarea.r-bd1-le")
-
-                                //     let bd1_chan_trich_tu = $(this).parents(".form-ngay-le").find("input.r-bd1-chan-trich-tu")
-                                //     let cau_bd1_chan_tom_gon = $(this).parents(".form-ngay-le").find("input.r-cau-bd1-chan-tom-gon")
-                                //     let bd1_chan = $(this).parents(".form-ngay-le").find("textarea.r-bd1-chan")
-
-                                //     let dap_ca_trich_tu = $(this).parents(".form-ngay-le").find("input.r-dap-ca-trich-tu")                                    
-                                //     let dap_ca = $(this).parents(".form-ngay-le").find("textarea.r-dap-ca")
-                          
-
-                                //     let bd2_trich_tu = $(this).parents(".form-ngay-le").find("input.r-bd2-trich-tu")
-                                //     let cau_bd2_tom_gon = $(this).parents(".form-ngay-le").find("input.r-cau-bd2-tom-gon")
-                                //     let bd2 = $(this).parents(".form-ngay-le").find("textarea.r-bd2")
-
-                                //     let alleluia_trich_tu = $(this).parents(".form-ngay-le").find("input.r-alleluia-trich-tu")                                    
-                                //     let alleluia = $(this).parents(".form-ngay-le").find("textarea.r-alleluia")
-
-                                //     let phuc_am_trich_tu = $(this).parents(".form-ngay-le").find("input.r-phuc-am-trich-tu")
-                                //     let cau_phuc_am_tom_gon = $(this).parents(".form-ngay-le").find("input.r-cau-phuc-am-tom-gon")
-                                //     let phuc_am = $(this).parents(".form-ngay-le").find("textarea.r-phuc-am")
-
-                                //     let loi_nguyen_tin_huu = $(this).parents(".form-ngay-le").find("textarea.r-loi-nguyen-tin-huu")
-                                //     let loi_nguyen_tien_le = $(this).parents(".form-ngay-le").find("textarea.r-loi-nguyen-tien-le")
-                                //     let ca_hiep_le = $(this).parents(".form-ngay-le").find("textarea.r-ca-hiep-le")
-                                //     let loi_nguyen_hiep_le = $(this).parents(".form-ngay-le").find("textarea.r-loi-nguyen-hiep-le")
-
-                                //     let n_dvtl = $(dan_vao_thanh_le.val().replace(/<p[^>]*>[\s\S]*?<\/p>/, ''))
-                                //     dan_vao_thanh_le.val(n_dvtl.text())
-
-                                //     n_dvtl = $(ca_nhap_le.val().replace(/<p[^>]*>[\s\S]*?<\/p>/, ''))
-                                //     ca_nhap_le.val(n_dvtl.text())
-                                    
-                                //     n_dvtl = $(loi_nguyen_nhap_le.val().replace(/<p[^>]*>[\s\S]*?<\/p>/, ''))
-                                //     loi_nguyen_nhap_le.val(n_dvtl.text())
-
-                                //     // n_dvtl = $(dap_ca.val().replace(/<p[^>]*>[\s\S]*?<\/p>/, ''))
-                                //     // dap_ca.val(n_dvtl.text())
-
-                                //     // n_dvtl = $(alleluia.val()).first().text().split(":")[1]
-                                //     // alleluia_trich_tu.val(n_dvtl)
-                                //     // n_dvtl = $(alleluia.val().replace(/<p[^>]*>[\s\S]*?<\/p>/, ''))
-                                //     // alleluia.val(n_dvtl.text())
-                                    
-                                //     n_dvtl = $(loi_nguyen_tien_le.val().replace(/<p[^>]*>[\s\S]*?<\/p>/, ''))
-                                //     loi_nguyen_tien_le.val(n_dvtl.text())
-
-                                //     n_dvtl = $(ca_hiep_le.val().replace(/<p[^>]*>[\s\S]*?<\/p>/, ''))
-                                //     ca_hiep_le.val(n_dvtl.text())
-
-                                //     n_dvtl = $(loi_nguyen_hiep_le.val().replace(/<p[^>]*>[\s\S]*?<\/p>/, ''))
-                                //     loi_nguyen_hiep_le.val(n_dvtl.text())
-
-                                //     n_dvtl = loi_nguyen_tin_huu.val().replace(/<p[^>]*>[\s\S]*?<\/p>/, '')
-                                //     loi_nguyen_tin_huu.val(n_dvtl)
-
-                                //     let ban_van = {
-                                //         dan_vao_thanh_le: dan_vao_thanh_le.val(),
-                                //         ca_nhap_le: ca_nhap_le.val(),
-                                //         loi_nguyen_nhap_le: loi_nguyen_nhap_le.val(),
-
-                                //         bd1_le_trich_tu: bd1_le_trich_tu.val(),
-                                //         cau_bd1_le_tom_gon: cau_bd1_le_tom_gon.val(),
-                                //         bd1_le: bd1_le.val(),
-
-                                //         bd1_chan_trich_tu: bd1_chan_trich_tu.val(),
-                                //         cau_bd1_chan_tom_gon: cau_bd1_chan_tom_gon.val(),
-                                //         bd1_chan: bd1_chan.val(),
-
-                                //         dap_ca_trich_tu: dap_ca_trich_tu.val(),
-                                //         dap_ca: dap_ca.val(),
-                                //         bd2_trich_tu: bd2_trich_tu.val(),
-                                //         cau_bd2_tom_gon: cau_bd2_tom_gon.val(),
-                                //         bd2: bd2.val(),
-
-                                //         alleluia_trich_tu: alleluia_trich_tu.val(),
-                                //         alleluia: alleluia.val(),
-
-                                //         phuc_am_trich_tu: phuc_am_trich_tu.val(),
-                                //         cau_phuc_am_tom_gon: cau_phuc_am_tom_gon.val(),
-                                //         phuc_am: phuc_am.val(),
-
-                                //         loi_nguyen_tin_huu: loi_nguyen_tin_huu.val(),
-                                //         loi_nguyen_tien_le: loi_nguyen_tien_le.val(),
-                                //         ca_hiep_le: ca_hiep_le.val(),
-                                //         loi_nguyen_hiep_le: loi_nguyen_hiep_le.val()
-                                //     }
-
-                                //     console.log(ban_van)
-                                // })
-                                
-                                
                                 $(".date").click(function(){
                                   
                                 })
@@ -590,6 +428,40 @@
                                         
                                     })
                                 })
+                                $('form').submit(function(event) {
+                                    // Prevent the default form submission that causes a page reload
+                                    event.preventDefault();
+
+                                    // Serialize the form data into a URL-encoded string
+                                    let formData = $(this).serialize();   
+                                    formData = formData+"&is_ajax=true"   
+                                    console.log(formData)      
+                                    let f_submit = $(this)         
+                                    f_submit.find('.alrt-success').hide()                                                  
+                                    f_submit.find('.alrt-failed').hide()                                                  
+                                    
+                                    // Perform the AJAX request
+                                    $.ajax({                                        
+                                        url: '/bien-tap-ban-van',
+                                        data: formData,
+                                        success: function(response) {
+                                            // Handle a successful response from the server
+                                            console.log("Success:", response);
+                                            f_submit.find('.alrt-success').fadeIn(700)
+                                            f_submit.find('.alrt-failed').hide()
+                                            // Example: display a success message to the user
+                                            // $('#responseMessage').html('<p>Form submitted successfully!</p>');
+                                        },
+                                        error: function(error) {
+                                            // Handle errors
+                                            console.error("Error:", error);
+                                            f_submit.find('.alrt-success').hide()
+                                            f_submit.find('.alrt-failed').fadeIn(700)
+                                            // Example: display an error message
+                                            // $('#responseMessage').html('<p>An error occurred. Please try again.</p>');
+                                        }
+                                    });
+                                });
                                 
                               })
                             </script>

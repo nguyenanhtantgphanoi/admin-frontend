@@ -303,7 +303,11 @@ module.exports = async function (fastify, opts) {
         }
       }
       let doc = await ngayle.findOne({_id: new this.mongo.ObjectId(request.query._id)})
-      return reply.view('admin/src/bien-tap-ban-van.ejs', { u: doc})
+      if('is_ajax' in request.query){
+        return 'Server message: Update Successful'
+      }else{
+        return reply.view('admin/src/bien-tap-ban-van.ejs', { u: doc})
+      }
     }else{
       return reply.view('admin/src/bien-tap-ban-van.ejs', {u: null})
     }
