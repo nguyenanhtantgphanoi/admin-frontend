@@ -699,6 +699,8 @@ module.exports = async function (fastify, opts) {
           let a_date = new Date(element)
           let arr_cac_le = await ngay_le.find({['assigned_date.'+a_date.getFullYear()]:element}).toArray()
           cur_month[index].arr_cac_le = arr_cac_le
+
+
           
         }
         for (let index = 0; index < prev_month.length; index++) {
@@ -724,6 +726,44 @@ module.exports = async function (fastify, opts) {
       
     } catch (err) {
       return err
+    }
+  });
+  fastify.get('/get-one-day', async function (request, reply) {
+    const tb_lich = this.mongo.db.collection('lich-cong-giao')
+    const ngay_le = this.mongo.db.collection('ngay-le')
+
+    // const tb_ngayle = this.mongo.db.collection('ngay-le')
+    // if the id is an ObjectId format, you need to create a new ObjectId
+    //const id = this.mongo.ObjectId(req.params.id)
+    const {day} = request.query
+    let a_date = new Date(day)
+    //console.log(`${_id}`)
+    try {
+      if(day != undefined && !isNaN(a_date)){
+        day = await tb_lich.find({date: date}).sort({date: 1}).toArray()
+        for (let index = 0; index < day.length; index++) {
+          let arr_cac_le = await ngay_le.find({['assigned_date.'+a_date.getFullYear()]:date}).toArray()
+        }
+
+        return {cur_month: cur_month, prev_month: prev_month, nxt_month: nxt_month}
+      }else{
+        reply.code(400).send({ error: 'Missing required parameter: date' });
+      }                  
+      
+    } catch (err) {
+      return err
+    }
+  });
+  fastify.get('/get-calendar-year', async function (request, reply) {
+    const tb_lich = this.mongo.db.collection('lich-cong-giao')
+    try {
+
+      let year = await tb_lich.find({}).project({date: 1, mau_ao_le: 1, bac_le: 1}).sort({date: 1}).toArray()
+
+
+      return year
+    } catch (err) {
+      return err 
     }
   });
   fastify.get('/update-ngay-lich', async function (request, reply) {
@@ -787,8 +827,24 @@ module.exports = async function (fastify, opts) {
       return err
     }
   });
+  fastify.get('/nghi-thuc-trao-minh-thanh-ngoai-thanh-le', async function (request, reply) {
+    
+    try{
+      return reply.view('nghi-thuc/trao-minh-thanh-ngoai-thanh-le.ejs')
+    }catch(err){
+      return err
+    }
+  });
+  fastify.get('/get-nghi-thuc', async function (request, reply) {
+    const tb_nghi_thuc = this.mongo.db.collection('nghi-thuc')
+    let nghi_thuc =  await tb_nghi_thuc.find({}).toArray()
+    try{
+      return JSON.stringify(nghi_thuc)
+    }catch(err){
+      return err
+    }
+  });
 }
-
 
 
 // fastify.listen({ port: 3000, host: "0.0.0.0" }, err => {
