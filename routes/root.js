@@ -699,7 +699,15 @@ module.exports = async function (fastify, opts) {
           let a_date = new Date(element)
           let arr_cac_le = await ngay_le.find({['assigned_date.'+a_date.getFullYear()]:element}).toArray()
           cur_month[index].arr_cac_le = arr_cac_le
-
+          for (let j = 1; j < arr_cac_le.length; j++) {
+            if(arr_cac_le[j].title == cur_month[index].title){
+              let tmp = arr_cac_le[0]
+              arr_cac_le[0] = arr_cac_le[j]
+              arr_cac_le[j] = tmp
+              break
+            }
+            
+          }
 
           
         }
@@ -708,6 +716,14 @@ module.exports = async function (fastify, opts) {
           let a_date = new Date(element)
           let arr_cac_le = await ngay_le.findOne({['assigned_date.'+a_date.getFullYear()]:element})
           prev_month[index].arr_cac_le = arr_cac_le
+          for (let j = 1; j < arr_cac_le.length; j++) {
+            if(arr_cac_le[j].title == prev_month[index].title){
+              let tmp = arr_cac_le[0]
+              arr_cac_le[0] = arr_cac_le[j]
+              arr_cac_le[j] = tmp
+              break
+            }
+          }
           
         }
 
@@ -716,6 +732,15 @@ module.exports = async function (fastify, opts) {
           let a_date = new Date(element)
           let arr_cac_le = await ngay_le.findOne({['assigned_date.'+a_date.getFullYear()]:element})
           nxt_month[index].arr_cac_le = arr_cac_le
+
+          for (let j = 1; j < arr_cac_le.length; j++) {
+            if(arr_cac_le[j].title == nxt_month[index].title){
+              let tmp = arr_cac_le[0]
+              arr_cac_le[0] = arr_cac_le[j]
+              arr_cac_le[j] = tmp
+              break
+            }
+          }
           
         }
         
@@ -740,12 +765,21 @@ module.exports = async function (fastify, opts) {
     //console.log(`${_id}`)
     try {
       if(day != undefined && !isNaN(a_date)){
-        day = await tb_lich.find({date: date}).sort({date: 1}).toArray()
-        for (let index = 0; index < day.length; index++) {
-          let arr_cac_le = await ngay_le.find({['assigned_date.'+a_date.getFullYear()]:date}).toArray()
+        let a_date = new Date(day)
+        let year = a_date.getFullYear()
+        let month = a_date.getMonth()+1
+        let d = a_date.getDate()
+        if(month < 10){
+          month = "0"+month
         }
-
-        return {cur_month: cur_month, prev_month: prev_month, nxt_month: nxt_month}
+        if(d < 10){
+          d = "0"+d
+        }
+        let day_string = year+"-"+month+"-"+d
+        let today = await tb_lich.findOne({date: day_string})
+        let arr_cac_le = await ngay_le.find({['assigned_date.'+a_date.getFullYear()]:day_string}).toArray()
+        today.arr_cac_le = arr_cac_le
+        return today
       }else{
         reply.code(400).send({ error: 'Missing required parameter: date' });
       }                  
