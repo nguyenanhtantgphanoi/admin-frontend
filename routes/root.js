@@ -823,8 +823,7 @@ module.exports = async function (fastify, opts) {
               arr_cac_le[j].ban_van.dap_ca_le = arr_cac_le[j].ban_van.dap_ca_chan
 
             }
-            // console.log("localeComparing: "+arr_cac_le[j].title+ " with "+ today.title)
-            // console.log("= "+arr_cac_le[j].title.toLowerCase().localeCompare(today.title.toLowerCase()))
+            arr_cac_le[j].ban_van.bd1_le_trich_tu.replace('(Năm II)','').replace('(Năm I)','')
             if(arr_cac_le[j].title.toLowerCase().localeCompare(today.title.toLowerCase()) == 0){
               console.log("switching: "+arr_cac_le[j].title+ " with "+ arr_cac_le[0].title)
               let tmp = arr_cac_le[0]
