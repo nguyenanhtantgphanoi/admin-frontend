@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen">
+    <div id="app" class="p-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <!-- Header -->
+                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white">
+                    <h1 class="text-3xl font-bold mb-2">🔔 Notification Manager</h1>
+                    <p class="text-indigo-100">Send instant notifications or schedule recurring alerts</p>
+                </div>
+                
+                <!-- Tabs -->
+                <div class="flex border-b">
+                    <button onclick="switchTab('manual')" id="tab-manual" class="flex-1 px-6 py-4 font-semibold transition-colors">
+                        📤 Send Now
+                    </button>
+                    <button onclick="switchTab('cron')" id="tab-cron" class="flex-1 px-6 py-4 font-semibold transition-colors">
+                        ⏰ Scheduled
+                    </button>
+                    <button onclick="switchTab('logs')" id="tab-logs" class="flex-1 px-6 py-4 font-semibold transition-colors">
+                        📋 Logs
+                    </button>
+                </div>
+                
+                <!-- Manual Notification Tab -->
+                <div id="content-manual" class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Title</label>
+                        <input type="text" id="manual-title" placeholder="Enter notification title" 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Message</label>
+                        <textarea id="manual-message" placeholder="Enter notification message" rows="4"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Type</label>
+                        <select id="manual-type" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <option value="info">Info</option>
+                            <option value="success">Success</option>
+                            <option value="warning">Warning</option>
+                            <option value="error">Error</option>
+                        </select>
+                    </div>
+                    
+                    <button onclick="sendManualNotification()" 
+                        class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all shadow-lg">
+                        Send Notification
+                    </button>
+                </div>
+                
+                <!-- Cron Tab -->
+                <div id="content-cron" class="p-6 space-y-6 hidden">
+                    <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+                        <h3 class="font-semibold text-indigo-900 mb-3">Add Scheduled Notification</h3>
+                        <div class="space-y-3">
+                            <input type="text" id="cron-title" placeholder="Title"
+                                class="w-full px-4 py-2 border border-indigo-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <textarea id="cron-message" placeholder="Message" rows="2"
+                                class="w-full px-4 py-2 border border-indigo-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none resize-none"></textarea>
+                            <div class="grid grid-cols-2 gap-3">
+                                <select id="cron-schedule" class="px-4 py-2 border border-indigo-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                                    <option value="0 9 * * *">Every day at 9 AM</option>
+                                    <option value="0 * * * *">Every hour</option>
+                                    <option value="0 10 * * 1">Every Monday at 10 AM</option>
+                                    <option value="0 8 * * 1-5">Weekdays at 8 AM</option>
+                                    <option value="*/5 * * * *">Every 5 minutes</option>
+                                    <option value="*/1 * * * *">Every minute (testing)</option>
+                                </select>
+                                <select id="cron-type" class="px-4 py-2 border border-indigo-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                                    <option value="info">Info</option>
+                                    <option value="success">Success</option>
+                                    <option value="warning">Warning</option>
+                                    <option value="error">Error</option>
+                                </select>
+                            </div>
+                            <button onclick="addCronNotification()"
+                                class="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition">
+                                Add Schedule
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="cron-list">
+                        <h3 class="font-semibold text-gray-800 mb-3">Active Schedules</h3>
+                        <div id="cron-items" class="space-y-3"></div>
+                    </div>
+                </div>
+                
+                <!-- Logs Tab -->
+                <div id="content-logs" class="p-6 hidden">
+                    <div class="mb-4 flex justify-between items-center">
+                        <h3 class="font-semibold text-gray-800">Recent Notifications</h3>
+                        <button onclick="loadLogs()" class="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition">
+                            Refresh
+                        </button>
+                    </div>
+                    <div id="logs-list" class="space-y-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'manual';
+        
+        function switchTab(tab) {
+            currentTab = tab;
+            ['manual', 'cron', 'logs'].forEach(t => {
+                document.getElementById(`content-${t}`).classList.toggle('hidden', t !== tab);
+                const tabBtn = document.getElementById(`tab-${t}`);
+                if (t === tab) {
+                    tabBtn.classList.add('bg-indigo-50', 'text-indigo-600', 'border-b-2', 'border-indigo-600');
+                    tabBtn.classList.remove('text-gray-600', 'hover:bg-gray-50');
+                } else {
+                    tabBtn.classList.remove('bg-indigo-50', 'text-indigo-600', 'border-b-2', 'border-indigo-600');
+                    tabBtn.classList.add('text-gray-600', 'hover:bg-gray-50');
+                }
+            });
+            
+            if (tab === 'cron') loadCronNotifications();
+            if (tab === 'logs') loadLogs();
+        }
+        
+        async function sendManualNotification() {
+            const title = document.getElementById('manual-title').value;
+            const message = document.getElementById('manual-message').value;
+            const type = document.getElementById('manual-type').value;
+            
+            if (!title || !message) {
+                alert('Please fill in all fields');
+                return;
+            }else{
+                console.log(JSON.stringify({ title, message, type }))
+            }
+            
+            try {
+                const response = await fetch('/push-notif', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, message, type })
+                });
+                
+                if (response.ok) {
+                    alert('Notification sent successfully!');
+                    console.log(response)
+                    document.getElementById('manual-title').value = '';
+                    document.getElementById('manual-message').value = '';
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + error.error);                    
+                }
+            } catch (error) {
+                alert('Error sending notification: ' + error.message);
+            }
+        }
+        
+        async function addCronNotification() {
+            const title = document.getElementById('cron-title').value;
+            const message = document.getElementById('cron-message').value;
+            const schedule = document.getElementById('cron-schedule').value;
+            const type = document.getElementById('cron-type').value;
+            
+            if (!title || !message) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/notifications/cron', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, message, schedule, type, enabled: true })
+                });
+                
+                if (response.ok) {
+                    document.getElementById('cron-title').value = '';
+                    document.getElementById('cron-message').value = '';
+                    loadCronNotifications();
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + error.error);
+                }
+            } catch (error) {
+                alert('Error adding schedule: ' + error.message);
+            }
+        }
+        
+        async function loadCronNotifications() {
+            try {
+                const response = await fetch('/api/notifications/cron');
+                const notifications = await response.json();
+                
+                const container = document.getElementById('cron-items');
+                if (notifications.length === 0) {
+                    container.innerHTML = '<p class="text-center py-8 text-gray-400">No scheduled notifications</p>';
+                    return;
+                }
+                
+                container.innerHTML = notifications.map(n => `
+                    <div class="border rounded-lg p-4 ${n.enabled ? 'bg-white' : 'bg-gray-50 opacity-60'}">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="px-2 py-1 rounded text-xs font-semibold text-white ${getTypeColor(n.type)}">${n.type}</span>
+                                    <h4 class="font-semibold text-gray-800">${n.title}</h4>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-2">${n.message}</p>
+                                <p class="text-sm text-gray-500">⏰ ${n.schedule}</p>
+                            </div>
+                            <div class="flex gap-2 ml-4">
+                                <button onclick="toggleCron('${n.id}')" 
+                                    class="px-3 py-1 rounded text-sm font-medium ${n.enabled ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-600'}">
+                                    ${n.enabled ? 'Active' : 'Paused'}
+                                </button>
+                                <button onclick="deleteCron('${n.id}')" 
+                                    class="px-3 py-1 rounded text-sm font-medium bg-red-100 text-red-700 hover:bg-red-200">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading cron notifications:', error);
+            }
+        }
+        
+        async function toggleCron(id) {
+            try {
+                await fetch(`/api/notifications/cron/${id}/toggle`, { method: 'PATCH' });
+                loadCronNotifications();
+            } catch (error) {
+                alert('Error toggling notification: ' + error.message);
+            }
+        }
+        
+        async function deleteCron(id) {
+            if (confirm('Are you sure you want to delete this scheduled notification?')) {
+                try {
+                    await fetch(`/api/notifications/cron/${id}`, { method: 'DELETE' });
+                    loadCronNotifications();
+                } catch (error) {
+                    alert('Error deleting notification: ' + error.message);
+                }
+            }
+        }
+        
+        async function loadLogs() {
+            try {
+                const response = await fetch('/api/notifications/logs');
+                const logs = await response.json();
+                
+                const container = document.getElementById('logs-list');
+                if (logs.length === 0) {
+                    container.innerHTML = '<p class="text-center py-8 text-gray-400">No logs yet</p>';
+                    return;
+                }
+                
+                container.innerHTML = logs.reverse().map(log => `
+                    <div class="border rounded-lg p-3 bg-white">
+                        <div class="flex items-center justify-between mb-1">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-1 rounded text-xs font-semibold text-white ${getTypeColor(log.type)}">${log.type}</span>
+                                <span class="font-semibold text-gray-800">${log.title}</span>
+                                <span class="text-xs text-gray-400">[${log.source}]</span>
+                            </div>
+                            <span class="text-xs text-gray-500">${new Date(log.timestamp).toLocaleString()}</span>
+                        </div>
+                        <p class="text-sm text-gray-600">${log.message}</p>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading logs:', error);
+            }
+        }
+        
+        function getTypeColor(type) {
+            const colors = {
+                info: 'bg-blue-500',
+                success: 'bg-green-500',
+                warning: 'bg-yellow-500',
+                error: 'bg-red-500'
+            };
+            return colors[type] || 'bg-gray-500';
+        }
+        
+        // Initialize
+        switchTab('manual');
+        
+        // Auto-refresh logs when on logs tab
+        setInterval(() => {
+            if (currentTab === 'logs') {
+                loadLogs();
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
