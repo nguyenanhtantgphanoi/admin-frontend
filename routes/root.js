@@ -1029,7 +1029,7 @@ module.exports = async function (fastify, opts) {
   });  
   fastify.get('/push-notif', async function (request, reply) {
     
-    let bd = "Nếu bạn không nhìn thấy nút trở về hoặc nút đóng, hãy vuốt màn hình từ trái sang phải để quay trở lại"
+    let bd = "Nếu quý vị không nhìn thấy nút trở về hoặc nút đóng, hãy vuốt màn hình từ trái sang phải để quay trở lại"
     let title = "Hướng dẫn sử dụng App"
     let cmd = `curl --location 'http://localhost:3456/notification/push/all' \--header 'Content-Type: application/json' \--data '{\"title\": \"${title}\",\"body\": \"${bd}\"}'`
     exec(cmd, (error, stdout, stderr) => { // Execute command
