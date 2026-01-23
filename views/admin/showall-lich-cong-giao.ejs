@@ -73,28 +73,44 @@
                     </div> -->
 
                      <% c_date = new Date(lich[0].date).getMonth(); index = 0; d_o_w = 0; %>
-                    <h1>Tháng <%= c_date+1%></h1>
+                    <h1 style="display: none;">Tháng <%= c_date+1%></h1>
                     <% lich.forEach(function(u){%>
+                
                         <% if(new Date(u.date).getMonth() != c_date){ c_date = new Date(u.date).getMonth()%>
-                            <h1>Tháng <%= c_date+1%></h1>
+                            <%if(c_date == 10 || c_date == 11 || c_date < 3){%>
+                                <h1 style="display: none;">Tháng <%= c_date+1%></h1>
+                            <%}else{%>
+                                <h1>Tháng <%= c_date+1%></h1>
+                            <%}%>
                         <%}%>
                         <% if(new Date(u.date).getDay() == 0){ d_o_w = 0%>
                             <hr/>
                         <%}else{d_o_w++}%>
                         
-                        <a class="mass-date btn btn-light nav-item nav-link" id="<%= u._id%>" >
+                        <%if(c_date == 10 || c_date == 11 || c_date < 3){%>
+                        <a style="display: none;" class="mass-date btn btn-light nav-item nav-link" id="<%= u._id%>" >
                             <%= new Date(u.date).toDateString()%>
                             <span class="badge rounded-pill bg-danger"><%= d_o_w %></span>
                             
                             <input type="hidden" class="index" value="<%= index %>"/>
                             <% index++ %>
                         </a>
+                            <%}else{%>
+                                <a class="mass-date btn btn-light nav-item nav-link" id="<%= u._id%>" >
+                            <%= new Date(u.date).toDateString()%>
+                            <span class="badge rounded-pill bg-danger"><%= d_o_w %></span>
+                            
+                            <input type="hidden" class="index" value="<%= index %>"/>
+                            <% index++ %>
+                        </a>
+                            <%}%>
+                        
             <!-- <div class="container mt-5">
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                     Open Modal
                 </button>
             </div> -->
-
+                
         
                     <%})%>
 
@@ -333,7 +349,11 @@
                     <div class="input-group mb-3">
                         <div class="input-group-text">ID</div>
                         <input type="text" class="form-control r-id" disabled>                            
-                    </div>                      
+                    </div>     
+                    <div class="input-group mb-3">
+                        <button class="input-group-text use-mua-phung-vu">Mùa phụng vụ</button>
+                        <input type="text" class="form-control r-mua-phung-vu" disabled>                            
+                    </div>                  
                     <div class="input-group mb-3">
                         <button class="input-group-text use-bac-le">Bậc lễ</button>
                         <input type="text" class="form-control r-bac-le" >
@@ -458,7 +478,7 @@
             to_send.dap_ca = $("form input#dap-ca").val()
             to_send.alleluia = $("form input#alleluia").val()
             to_send.tin_mung = $("form input#tin-mung").val()
-            to_send.cau_loi_chua = $("form input#cau-loi-chua").val()
+            to_send.cau_loi_chua = $("form textarea#cau-loi-chua").val()
             to_send.xu_chau_luot = $("form textarea#xu-chau-luot").val()
             to_send.luu_y = $("form textarea#luu-y").val()
             to_send.under_title = $("form textarea#under-title").val()
@@ -488,6 +508,9 @@
         $(".use-bac-le").click(function(){
             $("#bac-le").val($(this).siblings("input.r-bac-le").val())
         })
+        $(".use-mua-phung-vu").click(function(){
+            $("#season").val($(this).siblings("input.r-mua-phung-vu").val())
+        })
         $(".use-mau-ao-le").click(function(){
             if($(this).siblings("input.r-mau-ao-le").val() == "Tím"){
                 $("form input.mau-ao-le").prop("checked", false)
@@ -506,20 +529,37 @@
                 $("form input#ao-xanh").prop("checked", true)                
             }
         })
-        $(".use-bd-1").click(function(){
-            $(".use-bd-1").removeClass("btn-success")
+        $(".use-bd-1-le").click(function(){
+            $(".use-bd-1-le").removeClass("btn-success")
+            $(".use-bd-1-chan").removeClass("btn-success")
             $(this).addClass("btn-success")
-            $("#bd-1").val($(this).siblings("input.r-bd-1").val())
+            $("#bd-1").val($(this).siblings("input.r-bd-1-le").val())
         })
+
+        $(".use-bd-1-chan").click(function(){
+            $(".use-bd-1-le").removeClass("btn-success")
+            $(".use-bd-1-chan").removeClass("btn-success")
+            $(this).addClass("btn-success")
+            $("#bd-1").val($(this).siblings("input.r-bd-1-chan").val())
+        })
+
         $(".use-bd-2").click(function(){
             $(".use-bd-2").removeClass("btn-success")
             $(this).addClass("btn-success")
             $("#bd-2").val($(this).siblings("input.r-bd-2").val())
         })
-        $(".use-dap-ca").click(function(){
-            $(".use-dap-ca").removeClass("btn-success")
+
+        $(".use-dap-ca-le").click(function(){
+            $(".use-dap-ca-le").removeClass("btn-success")
+            $(".use-dap-ca-chan").removeClass("btn-success")
             $(this).addClass("btn-success")
-            $("#dap-ca").val($(this).siblings("input.r-dap-ca").val())
+            $("#dap-ca").val($(this).siblings("input.r-dap-ca-le").val())
+        })
+        $(".use-dap-ca-chan").click(function(){
+            $(".use-dap-ca-le").removeClass("btn-success")
+            $(".use-dap-ca-chan").removeClass("btn-success")
+            $(this).addClass("btn-success")
+            $("#dap-ca").val($(this).siblings("input.r-dap-ca-chan").val())
         })
         $(".use-alleluia").click(function(){
             $(".use-alleluia").removeClass("btn-success")
@@ -678,6 +718,9 @@
 
                             if(e.date != undefined && e.date != ""){
                                 card_ngay_le.find(".r-date").val(e.date)
+                            }
+                            if(e.season != undefined && e.season != ""){
+                                card_ngay_le.find(".r-mua-phung-vu").val(e.season)
                             }
                             if(e.bac_le != undefined && e.bac_le != ""){
                                 card_ngay_le.find(".r-bac-le").val(e.bac_le)

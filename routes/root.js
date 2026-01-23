@@ -983,6 +983,8 @@ module.exports = async function (fastify, opts) {
   fastify.get('/get-kinh-nguyen', async function (request, reply) {
     const tb_kinh_nguyen = this.mongo.db.collection('kinh-nguyen')
     let kinh_nguyen =  await tb_kinh_nguyen.find({}).toArray()
+    let map = {}
+    
     try{
       return kinh_nguyen
     }catch(err){
@@ -1006,6 +1008,7 @@ module.exports = async function (fastify, opts) {
           r_kinh[`${key}`].data = []
           r_kinh[`${key}`].level = 1
           r_kinh[`${key}`].title = element.group
+          r_kinh[`${key}`]._id = i
         }
         delete element["group"]
         r_kinh[`${key}`].data.push(element)
@@ -1019,7 +1022,9 @@ module.exports = async function (fastify, opts) {
         r_kinh[`${key}`].data = element
         r_kinh[`${key}`].level = 0
         r_kinh[`${key}`].title = element.title
+        r_kinh[`${key}`]._id = i        
       }
+      
     }
     try{
       return r_kinh

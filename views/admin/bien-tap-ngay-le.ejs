@@ -616,9 +616,9 @@
                             </script>
                             <!-- <button type="button" class="btn btn-danger save-all">Save All</button> -->
                               
-<button class="btn btn-primary" id="update-all">Update all</button>                            
+<!-- <button class="btn btn-primary" id="update-all">Update all</button>                             -->
 <% ngay_le.forEach(function(u){%>          
-<%if(u.ban_van.bd1_chan_trich_tu != undefined && u.ban_van.bd1_chan_trich_tu != ''){%>                      
+                     
 <div class="container mt-5 mb-5 form-ngay-le">
         <input type="hidden" value="<%= u._id%>" class="_id">
         <div class="row justify-content-center">
@@ -731,7 +731,7 @@
             </div>
         </div>
     </div>
-<%}%>
+
 <% }) %>
 <script>
 
