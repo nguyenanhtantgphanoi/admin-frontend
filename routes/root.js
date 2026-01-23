@@ -983,7 +983,7 @@ module.exports = async function (fastify, opts) {
   fastify.get('/get-kinh-nguyen', async function (request, reply) {
     const tb_kinh_nguyen = this.mongo.db.collection('kinh-nguyen')
     let kinh_nguyen =  await tb_kinh_nguyen.find({}).toArray()
-    let map = {}
+    
     
     try{
       return kinh_nguyen
@@ -1032,6 +1032,47 @@ module.exports = async function (fastify, opts) {
       return err
     }
   });  
+  fastify.get('/get-nghi-thuc-grouped', async function (request, reply) {
+    const tb_nghi_thuc = this.mongo.db.collection('nghi-thuc')
+    let nghi_thuc =  await tb_nghi_thuc.find({}).toArray()
+    let r_kinh = {}
+    for (let i = 0; i < nghi_thuc.length; i++) {
+      const element = nghi_thuc[i];
+      
+      let key = element.group
+      if(key != undefined && key != ''){
+        key = removeVietnameseTones(key)
+        key = key.toLowerCase().replace(/[^a-z0-9 -]/g, '').replace(/\s+/g, '_').replace(/-+/g, '_');  
+
+        if(r_kinh[`${key}`] == undefined){
+          r_kinh[`${key}`] = {}
+          r_kinh[`${key}`].data = []
+          r_kinh[`${key}`].level = 1
+          r_kinh[`${key}`].title = element.group
+          r_kinh[`${key}`]._id = i
+        }
+        delete element["group"]
+        r_kinh[`${key}`].data.push(element)
+        
+        //delete r_kinh[`${key}`].data[r_kinh[`${key}`].length-1]["group"]
+      }else{
+        let key = element.title
+        key = removeVietnameseTones(key)
+        key = key.toLowerCase().replace(/[^a-z0-9 -]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
+        r_kinh[`${key}`] = {}
+        r_kinh[`${key}`].data = element
+        r_kinh[`${key}`].level = 0
+        r_kinh[`${key}`].title = element.title
+        r_kinh[`${key}`]._id = i        
+      }
+      
+    }
+    try{
+      return r_kinh
+    }catch(err){
+      return err
+    }
+  });
   fastify.get('/notification', async function (request, reply) {
     return reply.view('admin/notification.ejs')
   })
