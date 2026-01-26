@@ -1083,21 +1083,25 @@ module.exports = async function (fastify, opts) {
     let title = request.body.title
     if(!bd || !title){
       return reply.code(500).send({ error: "Not Finding title or message" });
-      //return;
-    }else{
-      console.log(bd)
-      console.log(title)
     }
+
+    console.log(bd)
+    console.log(title)
 
     let cmd = `curl --location 'http://localhost:3456/notification/push/all' \--header 'Content-Type: application/json' \--data '{\"title\": \"${title}\",\"body\": \"${bd}\"}'`
     console.log("Executing command: "+cmd)
-    exec(cmd, (error, stdout, stderr) => { // Execute command
-      if (error) {
-        console.error(`exec error PPP: ${error}`);
-        return reply.code(500).send({ error: stderr });        
-      }
-      return reply.send({ output: stdout });
-      
+    
+    return new Promise((resolve, reject) => {
+      exec(cmd, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`exec error PPP: ${error}`);
+          reply.code(500).send({ error: stderr });
+          reject(error);
+        } else {
+          reply.send({ output: stdout });
+          resolve(stdout);
+        }
+      });
     });
   });
 
