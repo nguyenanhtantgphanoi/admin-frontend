@@ -1076,20 +1076,21 @@ module.exports = async function (fastify, opts) {
   fastify.get('/notification', async function (request, reply) {
     return reply.view('admin/notification.ejs')
   })
-  
+
   fastify.post('/push-notif', async function (request, reply) {
     
     let bd = request.body.message
     let title = request.body.title
     if(!bd || !title){
-      reply.code(500).send({ error: "Not Finding title or message" });
-      return;
+      return reply.code(500).send({ error: "Not Finding title or message" });
+      //return;
     }else{
       console.log(bd)
       console.log(title)
     }
 
     let cmd = `curl --location 'http://localhost:3456/notification/push/all' \--header 'Content-Type: application/json' \--data '{\"title\": \"${title}\",\"body\": \"${bd}\"}'`
+    console.log("Executing command: "+cmd)
     exec(cmd, (error, stdout, stderr) => { // Execute command
       if (error) {
         console.error(`exec error PPP: ${error}`);
