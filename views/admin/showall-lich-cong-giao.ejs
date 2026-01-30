@@ -73,12 +73,12 @@
                     </div> -->
 
                      <% c_date = new Date(lich[0].date).getMonth(); index = 0; d_o_w = 0; %>
-                    <h1 style="display: none;">Tháng <%= c_date+1%></h1>
+                    <h1 style="display: block;">Tháng <%= c_date+1%></h1>
                     <% lich.forEach(function(u){%>
                 
                         <% if(new Date(u.date).getMonth() != c_date){ c_date = new Date(u.date).getMonth()%>
                             <%if(c_date == 10 || c_date == 11 || c_date < 3){%>
-                                <h1 style="display: none;">Tháng <%= c_date+1%></h1>
+                                <h1 style="display: block;">Tháng <%= c_date+1%></h1>
                             <%}else{%>
                                 <h1>Tháng <%= c_date+1%></h1>
                             <%}%>
@@ -88,7 +88,7 @@
                         <%}else{d_o_w++}%>
                         
                         <%if(c_date == 10 || c_date == 11 || c_date < 3){%>
-                        <a style="display: none;" class="mass-date btn btn-light nav-item nav-link" id="<%= u._id%>" >
+                        <a style="display: block;" class="mass-date btn btn-light nav-item nav-link" id="<%= u._id%>" >
                             <%= new Date(u.date).toDateString()%>
                             <span class="badge rounded-pill bg-danger"><%= d_o_w %></span>
                             
