@@ -160,7 +160,7 @@ $(document).ready(function(){
             content: content,
             _id: articleId || undefined
         };
-
+        console.log('Payload:', payload);
         // Send to server
         $.ajax({
             url: '/save-article',

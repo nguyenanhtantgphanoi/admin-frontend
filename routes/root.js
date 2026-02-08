@@ -613,6 +613,12 @@ module.exports = async function (fastify, opts) {
     if(season != undefined){
       doc.season = season
     }
+    if(bac_le != undefined){
+      doc.bac_le = bac_le
+    }
+    if(mau_ao_le != undefined){
+      doc.mau_ao_le = mau_ao_le
+    }
     if(url != undefined){
       doc.url = url
     }

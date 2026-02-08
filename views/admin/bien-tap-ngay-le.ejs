@@ -702,41 +702,41 @@ $(document).ready(function(){
         assigned_date : $(this).parents(".form-ngay-le").find('input.assigned-date').val(),
         week : $(this).parents(".form-ngay-le").find('input.week').val(),
         season : $(this).parents(".form-ngay-le").find('input.season').val(),
-        bac_le : $(this).parents(".form-ngay-le").find('input.bac_le').val(),
+        bac_le : $(this).parents(".form-ngay-le").find('input.bac-le').val(),
         mau_ao_le : $(this).parents(".form-ngay-le").find('input.mau-ao-le').val(),
         _id : $(this).parents(".form-ngay-le").find('input._id').val(),
 
-        ban_van : {
-            dan_vao_thanh_le: dan_vao_thanh_le.val(),
-            ca_nhap_le: ca_nhap_le.val(),
-            loi_nguyen_nhap_le: loi_nguyen_nhap_le.val(),
+        // ban_van : {
+        //     dan_vao_thanh_le: dan_vao_thanh_le.val(),
+        //     ca_nhap_le: ca_nhap_le.val(),
+        //     loi_nguyen_nhap_le: loi_nguyen_nhap_le.val(),
 
-            bd1_le_trich_tu: bd1_le_trich_tu.val(),
-            cau_bd1_le_tom_gon: cau_bd1_le_tom_gon.val(),
-            bd1_le: bd1_le.val(),
+        //     bd1_le_trich_tu: bd1_le_trich_tu.val(),
+        //     cau_bd1_le_tom_gon: cau_bd1_le_tom_gon.val(),
+        //     bd1_le: bd1_le.val(),
 
-            bd1_chan_trich_tu: bd1_chan_trich_tu.val(),
-            cau_bd1_chan_tom_gon: cau_bd1_chan_tom_gon.val(),
-            bd1_chan: bd1_chan.val(),
+        //     bd1_chan_trich_tu: bd1_chan_trich_tu.val(),
+        //     cau_bd1_chan_tom_gon: cau_bd1_chan_tom_gon.val(),
+        //     bd1_chan: bd1_chan.val(),
 
-            dap_ca_trich_tu: dap_ca_trich_tu.val(),
-            dap_ca: dap_ca.val(),
-            bd2_trich_tu: bd2_trich_tu.val(),
-            cau_bd2_tom_gon: cau_bd2_tom_gon.val(),
-            bd2: bd2.val(),
+        //     dap_ca_trich_tu: dap_ca_trich_tu.val(),
+        //     dap_ca: dap_ca.val(),
+        //     bd2_trich_tu: bd2_trich_tu.val(),
+        //     cau_bd2_tom_gon: cau_bd2_tom_gon.val(),
+        //     bd2: bd2.val(),
 
-            alleluia_trich_tu: alleluia_trich_tu.val(),
-            alleluia: alleluia.val(),
+        //     alleluia_trich_tu: alleluia_trich_tu.val(),
+        //     alleluia: alleluia.val(),
 
-            phuc_am_trich_tu: phuc_am_trich_tu.val(),
-            cau_phuc_am_tom_gon: cau_phuc_am_tom_gon.val(),
-            phuc_am: phuc_am.val(),
+        //     phuc_am_trich_tu: phuc_am_trich_tu.val(),
+        //     cau_phuc_am_tom_gon: cau_phuc_am_tom_gon.val(),
+        //     phuc_am: phuc_am.val(),
 
-            loi_nguyen_tin_huu: loi_nguyen_tin_huu.val(),
-            loi_nguyen_tien_le: loi_nguyen_tien_le.val(),
-            ca_hiep_le: ca_hiep_le.val(),
-            loi_nguyen_hiep_le: loi_nguyen_hiep_le.val()
-        }
+        //     loi_nguyen_tin_huu: loi_nguyen_tin_huu.val(),
+        //     loi_nguyen_tien_le: loi_nguyen_tien_le.val(),
+        //     ca_hiep_le: ca_hiep_le.val(),
+        //     loi_nguyen_hiep_le: loi_nguyen_hiep_le.val()
+        // }
         }
         
         console.log("Data sent:")
@@ -745,7 +745,7 @@ $(document).ready(function(){
         
         alr_suc = $(this).parents(".form-ngay-le").find(".alert-success")
         alr_dan = $(this).parents(".form-ngay-le").find(".alert-danger")
-        $.get("/update-ngay-le", ban_van, function(da, sta){
+        $.get("/update-ngay-le", doc, function(da, sta){
             if(sta == "success"){
                 alr_suc.show()
                 alr_dan.hide()
