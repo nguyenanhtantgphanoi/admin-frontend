@@ -1,0 +1,216 @@
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><%= article && article._id ? 'Edit Article' : 'Create New Article' %></h5>
+                    <a href="/bien-tap-suy-niem" class="btn btn-sm btn-light">
+                        <i class="bi bi-x"></i> Back
+                    </a>
+                </div>
+                <div class="card-body">
+                    <form id="article-form">
+                        <input type="hidden" id="article-id" value="<%= article && article._id ? article._id : '' %>">
+                        
+                        <!-- Title Input -->
+                        <div class="mb-3">
+                            <label for="article-title" class="form-label"><strong>Article Title</strong></label>
+                            <input type="text" class="form-control" id="article-title" placeholder="Enter article title" 
+                                value="<%= article && article.title ? article.title : '' %>" required>
+                        </div>
+
+                        <!-- Author Input -->
+                        <div class="mb-3">
+                            <label for="article-author" class="form-label"><strong>Author</strong></label>
+                            <input type="text" class="form-control" id="article-author" placeholder="Enter author name"
+                                value="<%= article && article.author ? article.author : '' %>" required>
+                        </div>
+
+                        <!-- Content Input with Rich Text Editor -->
+                        <div class="mb-3">
+                            <label for="article-content" class="form-label"><strong>Content</strong></label>
+                            <div id="editor-toolbar" class="mb-2 btn-group" role="group">
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="bold-btn" title="Bold">
+                                    <i class="bi bi-type-bold"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="italic-btn" title="Italic">
+                                    <i class="bi bi-type-italic"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="underline-btn" title="Underline">
+                                    <i class="bi bi-type-underline"></i>
+                                </button>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" id="heading-btn" title="Heading">
+                                        <i class="bi bi-type-h2"></i>
+                                    </button>
+                                </div>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="ul-btn" title="Bullet List">
+                                    <i class="bi bi-list-ul"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="ol-btn" title="Numbered List">
+                                    <i class="bi bi-list-ol"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="link-btn" title="Insert Link">
+                                    <i class="bi bi-link-45deg"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="clear-btn" title="Clear Formatting">
+                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                </button>
+                            </div>
+                            <div id="article-content" class="form-control" style="min-height: 400px; resize: vertical; padding: 10px; overflow-y: auto;" 
+                                contenteditable="true"><%= article && article.content ? article.content : '' %></div>
+                        </div>
+
+                        <!-- Success/Error Messages -->
+                        <div class="alert alert-success alert-dismissible fade show d-none" id="success-alert" role="alert">
+                            Article saved successfully!
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        <div class="alert alert-danger alert-dismissible fade show d-none" id="error-alert" role="alert">
+                            <span id="error-message">An error occurred while saving the article.</span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="/bien-tap-suy-niem" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check"></i> Save Article
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function(){
+    
+    // Rich text editor functions
+    function execCommand(command, value = null) {
+        document.execCommand(command, false, value);
+        $('#article-content').focus();
+    }
+
+    // Toolbar button handlers
+    $('#bold-btn').click(function(e) {
+        e.preventDefault();
+        execCommand('bold');
+    });
+
+    $('#italic-btn').click(function(e) {
+        e.preventDefault();
+        execCommand('italic');
+    });
+
+    $('#underline-btn').click(function(e) {
+        e.preventDefault();
+        execCommand('underline');
+    });
+
+    $('#heading-btn').click(function(e) {
+        e.preventDefault();
+        execCommand('formatBlock', '<h2>');
+    });
+
+    $('#ul-btn').click(function(e) {
+        e.preventDefault();
+        execCommand('insertUnorderedList');
+    });
+
+    $('#ol-btn').click(function(e) {
+        e.preventDefault();
+        execCommand('insertOrderedList');
+    });
+
+    $('#link-btn').click(function(e) {
+        e.preventDefault();
+        const url = prompt('Enter the URL:');
+        if(url) {
+            execCommand('createLink', url);
+        }
+    });
+
+    $('#clear-btn').click(function(e) {
+        e.preventDefault();
+        execCommand('removeFormat');
+    });
+
+    // Form submission
+    $('#article-form').on('submit', function(e) {
+        e.preventDefault();
+
+        const articleId = $('#article-id').val();
+        const title = $('#article-title').val().trim();
+        const author = $('#article-author').val().trim();
+        const content = $('#article-content').html();
+
+        // Validation
+        if(!title || !author || !content.trim()) {
+            $('#error-alert').removeClass('d-none');
+            $('#error-message').text('Please fill in all required fields.');
+            return;
+        }
+
+        const payload = {
+            title: title,
+            author: author,
+            content: content,
+            _id: articleId || undefined
+        };
+
+        // Send to server
+        $.ajax({
+            url: '/save-article',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(payload),
+            success: function(response) {
+                $('#success-alert').removeClass('d-none');
+                $('#error-alert').addClass('d-none');
+                setTimeout(function() {
+                    window.location.href = '/bien-tap-suy-niem';
+                }, 1500);
+            },
+            error: function(err) {
+                $('#error-alert').removeClass('d-none');
+                $('#success-alert').addClass('d-none');
+                $('#error-message').text('Failed to save article. Please try again.');
+                console.error('Error:', err);
+            }
+        });
+    });
+
+    // Focus editor on load
+    $('#article-content').focus();
+});
+</script>
+
+<style>
+    #article-content {
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+        background-color: #fff;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        line-height: 1.5;
+    }
+
+    #article-content:focus {
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    #editor-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .btn-outline-secondary.btn-sm {
+        padding: 0.375rem 0.5rem;
+        font-size: 0.85rem;
+    }
+</style>
