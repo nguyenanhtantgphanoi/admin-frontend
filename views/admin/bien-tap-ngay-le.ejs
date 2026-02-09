@@ -477,7 +477,7 @@
                             <!-- Submit Buttons -->
 
                             <div class="d-flex justify-content-end">
-                                <a type="button" target="_blank" href="/bien-tap-suy-niem?_id=<%=u._id%>" class="btn btn-secondary me-2 btn-hieu-chinh">Suy niệm</a>
+                                <a type="button" target="_blank" href="/bien-tap-suy-niem?_id=<%=u._id%>&ngay_le_title=<%= encodeURIComponent(u.title || '') %>" class="btn btn-secondary me-2 btn-hieu-chinh">Suy niệm</a>
                                 <a type="button" target="_blank" href="/bien-tap-ban-van?_id=<%=u._id%>" class="btn btn-secondary me-2 btn-hieu-chinh">Chỉnh Sửa Bản Văn</a>
                                 <button type="button" class="btn btn-secondary me-2">Cancel</button>
                                 <button type="submit" class="btn btn-primary btn-save">Save</button>

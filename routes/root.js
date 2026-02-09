@@ -153,15 +153,48 @@ module.exports = async function (fastify, opts) {
   fastify.get('/bien-tap-suy-niem', async function (request, reply) {
      if('_id' in request.query){
       try {
-        const articlesCollection = this.mongo.db.collection('ngay-le')
-        const articles = await articlesCollection.findOne({_id: new this.mongo.ObjectId(request.query._id)})
-        return reply.viewWithLayout('admin/bien-tap-suy-niem.ejs', { articles: articles.reflections })
+        const ngay_le = this.mongo.db.collection('ngay-le')
+        const articlesCollection = this.mongo.db.collection('articles')
+        
+        const articlesOfNgayLe = await ngay_le.findOne({_id: new this.mongo.ObjectId(request.query._id)})
+        let reflections_ids = articlesOfNgayLe.reflections || []
+        const articles = await articlesCollection.find({_id: {$in: reflections_ids.map(id => new this.mongo.ObjectId(id))}}).toArray()
+        return reply.viewWithLayout('admin/bien-tap-suy-niem.ejs', { articles: articles, urlParams: request.query, ngayLe: articlesOfNgayLe })
       } catch (err) {
         console.error(err)
-        return reply.viewWithLayout('admin/bien-tap-suy-niem.ejs', { articles: [] })
+        return reply.viewWithLayout('admin/bien-tap-suy-niem.ejs', { articles: [], urlParams: request.query, ngayLe: null })
       }
     }else{
-      return reply.viewWithLayout('admin/bien-tap-suy-niem.ejs', { articles: [] })
+      try {
+        const articlesCollection = this.mongo.db.collection('articles')
+        const ngay_le = this.mongo.db.collection('ngay-le')
+
+        let articles = await articlesCollection.find({}).toArray()
+
+        // For each article, find the ngay-le that includes it in reflections
+        for (let i = 0; i < articles.length; i++) {
+          const art = articles[i]
+          try {
+            const parent = await ngay_le.findOne({ reflections: { $in: [art._id] } })
+            if (parent) {
+              art.ngay_le_title = parent.title || ''
+              art.ngay_le_id = parent._id
+            } else {
+              art.ngay_le_title = ''
+              art.ngay_le_id = null
+            }
+          } catch (innerErr) {
+            console.error('Error finding parent ngay-le for article', art._id, innerErr)
+            art.ngay_le_title = ''
+            art.ngay_le_id = null
+          }
+        }
+
+        return reply.viewWithLayout('admin/bien-tap-suy-niem.ejs', { articles: articles, urlParams: {} })
+      } catch (err) {
+        console.error(err)
+        return reply.viewWithLayout('admin/bien-tap-suy-niem.ejs', { articles: [], urlParams: {} })
+      }
     }
   })
   fastify.get('/bien-tap-suy-niem-edit', async function (request, reply) {
@@ -174,12 +207,22 @@ module.exports = async function (fastify, opts) {
         console.error(err)
       }
     }
-    return reply.viewWithLayout('admin/bien-tap-suy-niem-edit.ejs', { article: article })
+    // load list of ngay-le for selector when needed
+    let ngayLeList = []
+    try {
+      const ngayLeCollection = this.mongo.db.collection('ngay-le')
+      ngayLeList = await ngayLeCollection.find({}).toArray()
+    } catch (err) {
+      console.error('Failed to load ngay-le list:', err)
+    }
+
+    return reply.viewWithLayout('admin/bien-tap-suy-niem-edit.ejs', { article: article, search: request.query, ngayLeList: ngayLeList })
   })
   fastify.post('/save-article', async function (request, reply) {
     try {
-      const { title, author, content, _id } = request.body
+      const { title, author, content, _id, ngay_le_id } = request.body
       const articlesCollection = this.mongo.db.collection('articles')
+      const ngayLeCollection = this.mongo.db.collection('ngay-le')
       
       if(_id && _id.trim() !== '') {
         // Update existing article
@@ -189,13 +232,25 @@ module.exports = async function (fastify, opts) {
         )
       } else {
         // Insert new article
-        await articlesCollection.insertOne({
+        const result = await articlesCollection.insertOne({
           title,
           author,
           content,
           createdAt: new Date(),
           updatedAt: new Date()
         })
+        
+        // Map new article to ngay-le reflections if ngay_le_id is provided
+        if(ngay_le_id && ngay_le_id.trim() !== '') {
+          try {
+            await ngayLeCollection.updateOne(
+              { _id: new this.mongo.ObjectId(ngay_le_id) },
+              { $push: { reflections: result.insertedId } }
+            )
+          } catch (ngayLeErr) {
+            console.error('Error adding article to ngay-le reflections:', ngayLeErr)
+          }
+        }
       }
       
       return { success: true, message: 'Article saved successfully' }
@@ -205,6 +260,32 @@ module.exports = async function (fastify, opts) {
       return { success: false, message: 'Failed to save article', error: err.message }
     }
   })
+
+  fastify.post('/delete-article', async function (request, reply) {
+    try {
+      const { _id } = request.body
+      const articlesCollection = this.mongo.db.collection('articles')
+      const ngayLeCollection = this.mongo.db.collection('ngay-le')
+
+      // Delete article from articles collection
+      await articlesCollection.deleteOne({
+        _id: new this.mongo.ObjectId(_id)
+      })
+
+      // Remove article ID from all ngay-le reflections
+      await ngayLeCollection.updateMany(
+        { reflections: { $in: [new this.mongo.ObjectId(_id)] } },
+        { $pull: { reflections: new this.mongo.ObjectId(_id) } }
+      )
+
+      return { success: true, message: 'Article deleted successfully' }
+    } catch (err) {
+      console.error(err)
+      reply.code(500)
+      return { success: false, message: 'Failed to delete article', error: err.message }
+    }
+  })
+
   fastify.get('/bien-tap-ban-van', async function (request, reply) {
     const ngayle = this.mongo.db.collection('ngay-le')
     if('_id' in request.query){
@@ -612,12 +693,6 @@ module.exports = async function (fastify, opts) {
     }
     if(season != undefined){
       doc.season = season
-    }
-    if(bac_le != undefined){
-      doc.bac_le = bac_le
-    }
-    if(mau_ao_le != undefined){
-      doc.mau_ao_le = mau_ao_le
     }
     if(url != undefined){
       doc.url = url

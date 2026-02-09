@@ -3,7 +3,15 @@
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><%= article && article._id ? 'Edit Article' : 'Create New Article' %></h5>
+                    <h5 class="mb-0">
+                        <%= article && article._id ? 'Ngày lễ' : 'Bài Viết/Suy Niệm Mới' %>
+                        <% let headerNgayLeTitle = '';
+                           if (typeof search !== 'undefined' && search && search.ngay_le_title) headerNgayLeTitle = search.ngay_le_title;
+                           else if (typeof ngayLe !== 'undefined' && ngayLe && ngayLe.title) headerNgayLeTitle = ngayLe.title;
+                           else if (article && article.ngay_le_title) headerNgayLeTitle = article.ngay_le_title;
+                        %>
+                        <% if (headerNgayLeTitle && headerNgayLeTitle.length) { %> — <%= headerNgayLeTitle %><% } %>
+                    </h5>
                     <a href="/bien-tap-suy-niem" class="btn btn-sm btn-light">
                         <i class="bi bi-x"></i> Back
                     </a>
@@ -11,6 +19,21 @@
                 <div class="card-body">
                     <form id="article-form">
                         <input type="hidden" id="article-id" value="<%= article && article._id ? article._id : '' %>">
+                        <% if (search && search.ngay_le_id) { %>
+                            <input type="hidden" id="ngay-le-id" value="<%= search.ngay_le_id %>">
+                        <% } else { %>
+                            <div class="mb-3">
+                                <label for="ngay-le-id" class="form-label"><strong>Belongs to Ngay-le</strong></label>
+                                <select id="ngay-le-id" class="form-select">
+                                    <option value="">-- Select Ngay-le --</option>
+                                    <% if (typeof ngayLeList !== 'undefined' && ngayLeList.length) { %>
+                                        <% ngayLeList.forEach(function(nl) { %>
+                                            <option value="<%= nl._id %>" <%= article && article.ngay_le_id && (String(article.ngay_le_id) === String(nl._id)) ? 'selected' : '' %>><%= nl.title %></option>
+                                        <% }) %>
+                                    <% } %>
+                                </select>
+                            </div>
+                        <% } %>
                         
                         <!-- Title Input -->
                         <div class="mb-3">
@@ -53,12 +76,17 @@
                                 <button type="button" class="btn btn-outline-secondary btn-sm" id="link-btn" title="Insert Link">
                                     <i class="bi bi-link-45deg"></i>
                                 </button>
+                                <input type="color" id="text-color-btn" class="btn btn-outline-secondary btn-sm" title="Change Text Color" style="width: 40px; height: 38px; padding: 2px; cursor: pointer; border: 1px solid #6c757d;">
                                 <button type="button" class="btn btn-outline-secondary btn-sm" id="clear-btn" title="Clear Formatting">
                                     <i class="bi bi-arrow-counterclockwise"></i>
                                 </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="view-toggle-btn" title="Toggle HTML/Text View">
+                                    <i class="bi bi-code"></i>
+                                </button>
                             </div>
-                            <div id="article-content" class="form-control" style="min-height: 400px; resize: vertical; padding: 10px; overflow-y: auto;" 
-                                contenteditable="true"><%= article && article.content ? article.content : '' %></div>
+                            <div id="article-content" class="form-control editor-view" style="min-height: 400px; resize: vertical; padding: 10px; overflow-y: auto;" 
+                                contenteditable="true"><%- article && article.content ? article.content : '' %></div>
+                            <textarea id="article-content-html" class="form-control editor-view d-none" style="min-height: 400px; resize: vertical; padding: 10px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 0.9rem;" aria-label="HTML source"><%- article && article.content ? article.content : '' %></textarea>
                         </div>
 
                         <!-- Success/Error Messages -->
@@ -133,10 +161,55 @@ $(document).ready(function(){
         }
     });
 
+    $('#text-color-btn').on('change', function(e) {
+        const color = $(this).val();
+        execCommand('foreColor', color);
+    });
+
     $('#clear-btn').click(function(e) {
         e.preventDefault();
         execCommand('removeFormat');
     });
+
+    // Toggle between HTML and text view
+    let isHtmlView = false;
+
+    function setToolbarDisabled(disabled) {
+        $('#editor-toolbar').find('button, input').not('#view-toggle-btn').prop('disabled', disabled);
+        if(disabled) {
+            $('#editor-toolbar').find('button, input').not('#view-toggle-btn').addClass('disabled');
+        } else {
+            $('#editor-toolbar').find('button, input').not('#view-toggle-btn').removeClass('disabled');
+        }
+    }
+
+    $('#view-toggle-btn').click(function(e) {
+        e.preventDefault();
+        isHtmlView = !isHtmlView;
+        
+        if(isHtmlView) {
+            // Switch to HTML view: copy raw HTML into textarea and disable toolbar
+            const htmlContent = $('#article-content').html();
+            $('#article-content-html').val(htmlContent);
+            $('#article-content').addClass('d-none');
+            $('#article-content-html').removeClass('d-none');
+            $('#article-content-html').focus();
+            $(this).addClass('active');
+            setToolbarDisabled(true);
+        } else {
+            // Switch back to visual view: set HTML and enable toolbar
+            const textContent = $('#article-content-html').val();
+            $('#article-content').html(textContent);
+            $('#article-content-html').addClass('d-none');
+            $('#article-content').removeClass('d-none');
+            $('#article-content').focus();
+            $(this).removeClass('active');
+            setToolbarDisabled(false);
+        }
+    });
+
+    // Ensure toolbar enabled by default
+    setToolbarDisabled(false);
 
     // Form submission
     $('#article-form').on('submit', function(e) {
@@ -145,7 +218,14 @@ $(document).ready(function(){
         const articleId = $('#article-id').val();
         const title = $('#article-title').val().trim();
         const author = $('#article-author').val().trim();
-        const content = $('#article-content').html();
+        let content;
+        
+        // Get content from whichever view is currently active
+        if(isHtmlView) {
+            content = $('#article-content-html').val();
+        } else {
+            content = $('#article-content').html();
+        }
 
         // Validation
         if(!title || !author || !content.trim()) {
@@ -154,11 +234,13 @@ $(document).ready(function(){
             return;
         }
 
+        const ngayLeId = $('#ngay-le-id').val();
         const payload = {
             title: title,
             author: author,
             content: content,
-            _id: articleId || undefined
+            _id: articleId || undefined,
+            ngay_le_id: ngayLeId || undefined
         };
         console.log('Payload:', payload);
         // Send to server
@@ -212,5 +294,41 @@ $(document).ready(function(){
     .btn-outline-secondary.btn-sm {
         padding: 0.375rem 0.5rem;
         font-size: 0.85rem;
+    }
+
+    #article-content-html {
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+        background-color: #fff;
+    }
+
+    #article-content-html:focus {
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    #view-toggle-btn.active {
+        background-color: #0d6efd;
+        color: #fff;
+        border-color: #0d6efd;
+    }
+
+    #article-content-html {
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+        background-color: #fff;
+    }
+
+    #article-content-html:focus {
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    #view-toggle-btn.active {
+        background-color: #0d6efd;
+        color: #fff;
+        border-color: #0d6efd;
     }
 </style>
