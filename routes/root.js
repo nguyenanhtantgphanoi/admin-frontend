@@ -786,6 +786,7 @@ module.exports = async function (fastify, opts) {
   fastify.get('/get-calendar', async function (request, reply) {
     const tb_lich = this.mongo.db.collection('lich-cong-giao')
     const ngay_le = this.mongo.db.collection('ngay-le')
+    const articlesCollection = this.mongo.db.collection('articles')
 
     // const tb_ngayle = this.mongo.db.collection('ngay-le')
     // if the id is an ObjectId format, you need to create a new ObjectId
@@ -858,6 +859,18 @@ module.exports = async function (fastify, opts) {
               arr_cac_le[j] = tmp
               //break
             }
+            // Fetch articles from reflections
+            if(arr_cac_le[j].reflections && arr_cac_le[j].reflections.length > 0){
+              try {
+                const reflectionIds = arr_cac_le[j].reflections.map(id => new this.mongo.ObjectId(id))
+                arr_cac_le[j].articles = await articlesCollection.find({_id: {$in: reflectionIds}}).toArray()
+              } catch (err) {
+                console.error('Error fetching articles for reflections:', err)
+                arr_cac_le[j].articles = []
+              }
+            } else {
+              arr_cac_le[j].articles = []
+            }
             
           }
           prev_month[index].arr_cac_le = arr_cac_le
@@ -884,6 +897,18 @@ module.exports = async function (fastify, opts) {
               arr_cac_le[0] = arr_cac_le[j]
               arr_cac_le[j] = tmp
               //break
+            }
+            // Fetch articles from reflections
+            if(arr_cac_le[j].reflections && arr_cac_le[j].reflections.length > 0){
+              try {
+                const reflectionIds = arr_cac_le[j].reflections.map(id => new this.mongo.ObjectId(id))
+                arr_cac_le[j].articles = await articlesCollection.find({_id: {$in: reflectionIds}}).toArray()
+              } catch (err) {
+                console.error('Error fetching articles for reflections:', err)
+                arr_cac_le[j].articles = []
+              }
+            } else {
+              arr_cac_le[j].articles = []
             }
             
           }
@@ -912,6 +937,18 @@ module.exports = async function (fastify, opts) {
               arr_cac_le[0] = arr_cac_le[j]
               arr_cac_le[j] = tmp
               //break
+            }
+            // Fetch articles from reflections
+            if(arr_cac_le[j].reflections && arr_cac_le[j].reflections.length > 0){
+              try {
+                const reflectionIds = arr_cac_le[j].reflections.map(id => new this.mongo.ObjectId(id))
+                arr_cac_le[j].articles = await articlesCollection.find({_id: {$in: reflectionIds}}).toArray()
+              } catch (err) {
+                console.error('Error fetching articles for reflections:', err)
+                arr_cac_le[j].articles = []
+              }
+            } else {
+              arr_cac_le[j].articles = []
             }
             // console.log(arr_cac_le[j].ban_van.bd1_le)
             
