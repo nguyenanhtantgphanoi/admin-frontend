@@ -851,6 +851,7 @@ module.exports = async function (fastify, opts) {
               arr_cac_le[j].ban_van.dap_ca_le = arr_cac_le[j].ban_van.dap_ca_chan
 
             }
+            delete arr_cac_le[j].bai_viet
             if(arr_cac_le[j].title.toLowerCase().localeCompare(prev_month[index].title.toLowerCase()) == 0){
               let tmp = arr_cac_le[0]
               arr_cac_le[0] = arr_cac_le[j]
@@ -877,6 +878,7 @@ module.exports = async function (fastify, opts) {
               arr_cac_le[j].ban_van.dap_ca_le = arr_cac_le[j].ban_van.dap_ca_chan
 
             }
+            delete arr_cac_le[j].bai_viet
             if(arr_cac_le[j].title.toLowerCase().localeCompare(cur_month[index].title.toLowerCase()) == 0){
               let tmp = arr_cac_le[0]
               arr_cac_le[0] = arr_cac_le[j]
@@ -904,6 +906,7 @@ module.exports = async function (fastify, opts) {
               arr_cac_le[j].ban_van.dap_ca_le = arr_cac_le[j].ban_van.dap_ca_chan
 
             }
+            delete arr_cac_le[j].bai_viet
             if(arr_cac_le[j].title.toLowerCase().localeCompare(nxt_month[index].title.toLowerCase()) == 0){
               let tmp = arr_cac_le[0]
               arr_cac_le[0] = arr_cac_le[j]
