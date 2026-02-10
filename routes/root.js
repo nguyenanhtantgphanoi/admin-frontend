@@ -1249,6 +1249,93 @@ module.exports = async function (fastify, opts) {
       return err
     }
   });
+  // Manage Nghi Thức - NEW ROUTES
+  fastify.get('/manage-nghi-thuc', async function (request, reply) {
+    try {
+      return reply.view('nghi-thuc/manage.ejs')
+    } catch (err) {
+      return err
+    }
+  });
+
+  fastify.post('/save-nghi-thuc', async function (request, reply) {
+    const tb_nghi_thuc = this.mongo.db.collection('nghi-thuc')
+    const { title, group, html } = request.body
+
+    if (!title || !html) {
+      return reply.code(400).send({ error: 'Title and HTML content are required' })
+    }
+
+    try {
+      const result = await tb_nghi_thuc.insertOne({
+        title: title,
+        group: group || null,
+        html: html,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      })
+
+      return { _id: result.insertedId, message: 'Document created successfully' }
+    } catch (err) {
+      console.error('Error saving nghi-thuc:', err)
+      return reply.code(500).send({ error: 'Error saving document' })
+    }
+  });
+
+  fastify.post('/update-nghi-thuc', async function (request, reply) {
+    const tb_nghi_thuc = this.mongo.db.collection('nghi-thuc')
+    const { _id, title, group, html } = request.body
+
+    if (!_id || !title || !html) {
+      return reply.code(400).send({ error: 'ID, Title, and HTML content are required' })
+    }
+
+    try {
+      const result = await tb_nghi_thuc.updateOne(
+        { _id: new this.mongo.ObjectId(_id) },
+        {
+          $set: {
+            title: title,
+            group: group || null,
+            html: html,
+            updatedAt: new Date()
+          }
+        }
+      )
+
+      if (result.matchedCount === 0) {
+        return reply.code(404).send({ error: 'Document not found' })
+      }
+
+      return { _id: _id, message: 'Document updated successfully' }
+    } catch (err) {
+      console.error('Error updating nghi-thuc:', err)
+      return reply.code(500).send({ error: 'Error updating document' })
+    }
+  });
+
+  fastify.post('/delete-nghi-thuc', async function (request, reply) {
+    const tb_nghi_thuc = this.mongo.db.collection('nghi-thuc')
+    const { _id } = request.body
+
+    if (!_id) {
+      return reply.code(400).send({ error: 'ID is required' })
+    }
+
+    try {
+      const result = await tb_nghi_thuc.deleteOne({ _id: new this.mongo.ObjectId(_id) })
+
+      if (result.deletedCount === 0) {
+        return reply.code(404).send({ error: 'Document not found' })
+      }
+
+      return { message: 'Document deleted successfully' }
+    } catch (err) {
+      console.error('Error deleting nghi-thuc:', err)
+      return reply.code(500).send({ error: 'Error deleting document' })
+    }
+  });
+
   fastify.get('/notification', async function (request, reply) {
     return reply.view('admin/notification.ejs')
   })
