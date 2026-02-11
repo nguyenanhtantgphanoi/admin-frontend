@@ -1252,7 +1252,7 @@ module.exports = async function (fastify, opts) {
   // Manage Nghi Thức - NEW ROUTES
   fastify.get('/manage-nghi-thuc', async function (request, reply) {
     try {
-      return reply.view('nghi-thuc/manage.ejs')
+      return reply.viewWithLayout('nghi-thuc/manage.ejs', { title: 'Manage Nghi Thuc' })
     } catch (err) {
       return err
     }

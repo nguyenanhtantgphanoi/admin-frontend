@@ -1,32 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <title>Manage Nghi Thức</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-
-    <style>
-        * {
+<style>
+        .nghi-thuc-page * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body {
+        .nghi-thuc-page {
             background: #f8f9fa;
             font-family: 'Heebo', sans-serif;
-            height: 100vh;
+            min-height: 100vh;
             overflow: hidden;
         }
 
-        .editor-container {
+        .nghi-thuc-page .editor-container {
             display: flex;
             height: calc(100vh - 60px);
             gap: 0;
@@ -36,7 +22,7 @@
         }
 
         /* Sidebar - Document List */
-        .nt-sidebar {
+        .nghi-thuc-page .nt-sidebar {
             width: 260px;
             flex-shrink: 0;
             background: #fff;
@@ -47,19 +33,19 @@
             transition: width 0.3s ease, min-width 0.3s ease;
         }
 
-        .nt-sidebar-header {
+        .nghi-thuc-page .nt-sidebar-header {
             padding: 15px;
             border-bottom: 1px solid #dee2e6;
             background: #f8f9fa;
         }
 
-        .nt-sidebar-header h5 {
+        .nghi-thuc-page .nt-sidebar-header h5 {
             margin: 0 0 10px 0;
             font-size: 16px;
             font-weight: 600;
         }
 
-        .btn-new-doc {
+        .nghi-thuc-page .btn-new-doc {
             width: 100%;
             padding: 8px;
             background: #007bff;
@@ -71,17 +57,17 @@
             transition: background 0.2s;
         }
 
-        .btn-new-doc:hover {
+        .nghi-thuc-page .btn-new-doc:hover {
             background: #0056b3;
         }
 
-        .document-list {
+        .nghi-thuc-page .document-list {
             flex: 1;
             overflow-y: auto;
             padding: 10px;
         }
 
-        .doc-item {
+        .nghi-thuc-page .doc-item {
             padding: 10px;
             margin-bottom: 5px;
             background: #f8f9fa;
@@ -95,30 +81,30 @@
             font-size: 13px;
         }
 
-        .doc-item:hover {
+        .nghi-thuc-page .doc-item:hover {
             background: #e9ecef;
             border-color: #007bff;
         }
 
-        .doc-item.active {
+        .nghi-thuc-page .doc-item.active {
             background: #007bff;
             color: white;
             border-color: #0056b3;
         }
 
-        .doc-item-title {
+        .nghi-thuc-page .doc-item-title {
             flex: 1;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
-        .doc-item-actions {
+        .nghi-thuc-page .doc-item-actions {
             display: flex;
             gap: 5px;
         }
 
-        .doc-item-actions button {
+        .nghi-thuc-page .doc-item-actions button {
             padding: 2px 6px;
             background: #dc3545;
             color: white;
@@ -130,16 +116,16 @@
             transition: opacity 0.2s;
         }
 
-        .doc-item-actions button:hover {
+        .nghi-thuc-page .doc-item-actions button:hover {
             opacity: 1;
         }
 
-        .doc-item.active .doc-item-actions button {
+        .nghi-thuc-page .doc-item.active .doc-item-actions button {
             background: #ff6b6b;
         }
 
         /* Main Editor Area */
-        .editor-area {
+        .nghi-thuc-page .editor-area {
             flex: 1;
             min-width: 0;
             display: flex;
@@ -151,7 +137,7 @@
         }
 
         /* Toolbar */
-        .editor-toolbar {
+        .nghi-thuc-page .editor-toolbar {
             background: #f8f9fa;
             border-bottom: 1px solid #ddd;
             padding: 10px 15px;
@@ -161,18 +147,18 @@
             flex-wrap: wrap;
         }
 
-        .toolbar-group {
+        .nghi-thuc-page .toolbar-group {
             display: flex;
             gap: 5px;
             border-right: 1px solid #ddd;
             padding-right: 10px;
         }
 
-        .toolbar-group:last-child {
+        .nghi-thuc-page .toolbar-group:last-child {
             border-right: none;
         }
 
-        .toolbar-btn {
+        .nghi-thuc-page .toolbar-btn {
             padding: 6px 10px;
             background: #fff;
             border: 1px solid #ddd;
@@ -188,18 +174,18 @@
             justify-content: center;
         }
 
-        .toolbar-btn:hover {
+        .nghi-thuc-page .toolbar-btn:hover {
             background: #e9ecef;
             border-color: #adb5bd;
         }
 
-        .toolbar-btn.active {
+        .nghi-thuc-page .toolbar-btn.active {
             background: #007bff;
             color: white;
             border-color: #0056b3;
         }
 
-        .toolbar-select {
+        .nghi-thuc-page .toolbar-select {
             padding: 6px 8px;
             border: 1px solid #ddd;
             border-radius: 3px;
@@ -208,13 +194,13 @@
             min-width: 120px;
         }
 
-        .mode-toggle {
+        .nghi-thuc-page .mode-toggle {
             margin-left: auto;
             display: flex;
             gap: 5px;
         }
 
-        .mode-btn {
+        .nghi-thuc-page .mode-btn {
             padding: 6px 12px;
             background: #fff;
             border: 1px solid #ddd;
@@ -224,14 +210,21 @@
             transition: all 0.2s;
         }
 
-        .mode-btn.active {
+        .nghi-thuc-page .mode-btn.active {
             background: #007bff;
             color: white;
             border-color: #0056b3;
         }
 
+        .nghi-thuc-page .toolbar-disabled .toolbar-group,
+        .nghi-thuc-page .toolbar-disabled .toolbar-select,
+        .nghi-thuc-page .toolbar-disabled .toolbar-btn {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
         /* Editor Content */
-        .editor-content {
+        .nghi-thuc-page .editor-content {
             flex: 1;
             display: flex;
             gap: 0;
@@ -241,7 +234,7 @@
             max-width: 100%;
         }
 
-        .editor-form {
+        .nghi-thuc-page .editor-form {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
@@ -254,20 +247,20 @@
             max-width: 100%;
         }
 
-        .form-group {
+        .nghi-thuc-page .form-group {
             display: flex;
             flex-direction: column;
         }
 
-        .form-group label {
+        .nghi-thuc-page .form-group label {
             margin-bottom: 5px;
             font-weight: 500;
             font-size: 14px;
         }
 
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
+        .nghi-thuc-page .form-group input,
+        .nghi-thuc-page .form-group textarea,
+        .nghi-thuc-page .form-group select {
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -275,14 +268,14 @@
             font-size: 13px;
         }
 
-        .form-group textarea {
+        .nghi-thuc-page .form-group textarea {
             font-family: 'Courier New', monospace;
             font-size: 12px;
             resize: none;
             min-height: 100px;
         }
 
-        .html-editor {
+        .nghi-thuc-page .html-editor {
             flex: 1;
             min-height: 300px;
             border: 1px solid #ddd;
@@ -294,7 +287,7 @@
             max-width: 100%;
         }
 
-        .html-textarea {
+        .nghi-thuc-page .html-textarea {
             flex: 1;
             padding: 10px;
             border: none;
@@ -304,7 +297,7 @@
             outline: none;
         }
 
-        .preview-panel {
+        .nghi-thuc-page .preview-panel {
             flex: 1;
             overflow-y: auto;
             padding: 15px;
@@ -316,14 +309,24 @@
             max-width: 100%;
         }
 
-        .preview-iframe {
+        .nghi-thuc-page .preview-iframe {
             width: 100%;
             height: 100%;
             border: none;
             background: white;
         }
 
-        .editor-footer {
+        .nghi-thuc-page .preview-content {
+            min-height: 100%;
+            outline: none;
+            font-family: 'Times New Roman', serif;
+            line-height: 1.8;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f7f4;
+        }
+
+        .nghi-thuc-page .editor-footer {
             padding: 15px 20px;
             border-top: 1px solid #ddd;
             background: #f8f9fa;
@@ -332,7 +335,7 @@
             justify-content: flex-end;
         }
 
-        .btn {
+        .nghi-thuc-page .btn {
             padding: 8px 16px;
             border: none;
             border-radius: 4px;
@@ -345,34 +348,34 @@
             gap: 5px;
         }
 
-        .btn-primary {
+        .nghi-thuc-page .btn-primary {
             background: #007bff;
             color: white;
         }
 
-        .btn-primary:hover {
+        .nghi-thuc-page .btn-primary:hover {
             background: #0056b3;
         }
 
-        .btn-secondary {
+        .nghi-thuc-page .btn-secondary {
             background: #6c757d;
             color: white;
         }
 
-        .btn-secondary:hover {
+        .nghi-thuc-page .btn-secondary:hover {
             background: #545b62;
         }
 
-        .btn-danger {
+        .nghi-thuc-page .btn-danger {
             background: #dc3545;
             color: white;
         }
 
-        .btn-danger:hover {
+        .nghi-thuc-page .btn-danger:hover {
             background: #c82333;
         }
 
-        .empty-state {
+        .nghi-thuc-page .empty-state {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -381,13 +384,13 @@
             color: #999;
         }
 
-        .empty-state i {
+        .nghi-thuc-page .empty-state i {
             font-size: 48px;
             margin-bottom: 10px;
             opacity: 0.5;
         }
 
-        .header-top {
+        .nghi-thuc-page .header-top {
             position: fixed;
             top: 0;
             left: 0;
@@ -402,14 +405,14 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .header-top h1 {
+        .nghi-thuc-page .header-top h1 {
             margin: 0;
             font-size: 24px;
             font-weight: 600;
             flex: 1;
         }
 
-        .toggle-sidebar-btn {
+        .nghi-thuc-page .toggle-sidebar-btn {
             background: none;
             border: none;
             font-size: 20px;
@@ -423,11 +426,11 @@
             transition: background 0.2s;
         }
 
-        .toggle-sidebar-btn:hover {
+        .nghi-thuc-page .toggle-sidebar-btn:hover {
             background: #f0f0f0;
         }
 
-        .nt-sidebar.collapsed {
+        .nghi-thuc-page .nt-sidebar.collapsed {
             width: 0;
             min-width: 0;
             border-right: none;
@@ -435,42 +438,35 @@
         }
 
         @media (max-width: 1200px) {
-            .nt-sidebar {
+            .nghi-thuc-page .nt-sidebar {
                 width: 220px;
                 min-width: 220px;
             }
         }
 
-        .hide-preview {
+        .nghi-thuc-page .hide-preview {
             display: none !important;
         }
 
-        .hide-editor {
+        .nghi-thuc-page .hide-editor {
             display: none !important;
         }
-        /* Custom styles for Nghi Thức content */
-        body {
-            font-family: 'Times New Roman', serif;
-            /* max-width: 800px; */
-            margin: 0 auto;
-            padding: 20px;
-            line-height: 1.8;
-            background-color: #f9f7f4;
-        }
-        h1 {
+
+        /* Custom styles for Nghi Thuc content */
+        .nghi-thuc-page .preview-content h1 {
             text-align: center;
             color: #8B0000;
             font-size: 24px;
             margin-bottom: 10px;
         }
-        h2 {
+        .nghi-thuc-page .preview-content h2 {
             text-align: center;
             color: #8B0000;
             font-size: 20px;
             margin-top: 30px;
             margin-bottom: 15px;
         }
-        h3 {
+        .nghi-thuc-page .preview-content h3 {
             text-align: center;
             color: #8B0000;
             font-size: 18px;
@@ -478,37 +474,36 @@
             margin-top: 10px;
             margin-bottom: 15px;
         }
-        .italic {
+        .nghi-thuc-page .preview-content .italic {
             font-style: italic;
             color: #555;
             margin: 15px 0;
         }
-        .speaker {
+        .nghi-thuc-page .preview-content .speaker {
             font-weight: bold;
             color: #8B0000;
         }
-        .dialogue {
+        .nghi-thuc-page .preview-content .dialogue {
             margin: 10px 0;
         }
-        .sign {
+        .nghi-thuc-page .preview-content .sign {
             font-weight: bold;
             font-size: 18px;
         }
-        hr {
+        .nghi-thuc-page .preview-content hr {
             border: none;
             border-top: 2px solid #8B0000;
             margin: 30px 0;
         }
-        .red{
+        .nghi-thuc-page .preview-content .red{
             color: red;
         }
-        .italic{
+        .nghi-thuc-page .preview-content .italic{
             font-style: italic;
         }
     </style>
-</head>
 
-<body>
+<div class="nghi-thuc-page">
     <div class="header-top">
         <button class="toggle-sidebar-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
             <i class="fas fa-bars"></i>
@@ -533,7 +528,7 @@
         <!-- Main Editor Area -->
         <div class="editor-area">
             <!-- Toolbar -->
-            <div class="editor-toolbar">
+            <div class="editor-toolbar toolbar-disabled" id="editorToolbar">
                 <div class="toolbar-group">
                     <button class="toolbar-btn" onclick="execCommand('bold')" title="Bold">
                         <i class="fas fa-bold"></i>
@@ -591,11 +586,11 @@
                 </div>
 
                 <div class="mode-toggle">
-                    <button class="mode-btn active" onclick="switchMode('text')">
-                        <i class="fas fa-code"></i> Text Mode
+                    <button class="mode-btn active" onclick="switchMode('coding')">
+                        <i class="fas fa-code"></i> Coding Mode
                     </button>
-                    <button class="mode-btn" onclick="switchMode('preview')">
-                        <i class="fas fa-eye"></i> Preview Mode
+                    <button class="mode-btn" onclick="switchMode('text')">
+                        <i class="fas fa-font"></i> Text Mode
                     </button>
                 </div>
             </div>
@@ -625,7 +620,7 @@
 
                 <!-- Preview Panel -->
                 <div class="preview-panel hide-preview" id="previewMode">
-                    <div id="previewContent" style="font-family: 'Times New Roman', serif; line-height: 1.8;"></div>
+                    <div id="previewContent" class="preview-content" contenteditable="true"></div>
                 </div>
             </div>
 
@@ -643,8 +638,9 @@
             </div>
         </div>
     </div>
+</div>
 
-    <script>
+<script>
         let currentDocId = null;
         let isNewDocument = false;
         let allDocuments = [];
@@ -721,7 +717,7 @@
             updatePreview();
             renderDocumentList();
             document.getElementById('deleteBtn').style.display = 'inline-flex';
-            switchMode('text');
+            switchMode('coding');
         }
 
         // Create new document
@@ -736,14 +732,16 @@
             updatePreview();
             renderDocumentList();
             document.getElementById('deleteBtn').style.display = 'none';
-            switchMode('text');
+            switchMode('coding');
             document.getElementById('title').focus();
         }
 
         // Setup HTML editor preview
         function setupHtmlEditorPreview() {
             const htmlEditor = document.getElementById('htmlEditor');
+            const previewContent = document.getElementById('previewContent');
             htmlEditor.addEventListener('input', updatePreview);
+            previewContent.addEventListener('input', syncFromPreview);
         }
 
         // Update preview
@@ -753,14 +751,26 @@
             previewContent.innerHTML = htmlContent;
         }
 
+        function syncFromPreview() {
+            const previewContent = document.getElementById('previewContent');
+            const htmlEditor = document.getElementById('htmlEditor');
+            htmlEditor.value = previewContent.innerHTML;
+        }
+
         // Execute editor commands
         function execCommand(command, value = null) {
+            if (currentMode !== 'text') {
+                return;
+            }
             document.execCommand(command, false, value);
-            document.getElementById('htmlEditor').focus();
+            document.getElementById('previewContent').focus();
         }
 
         // Insert link dialog
         function insertLink() {
+            if (currentMode !== 'text') {
+                return;
+            }
             const url = prompt('Enter URL:');
             if (url) {
                 const text = prompt('Enter link text:');
@@ -772,6 +782,9 @@
 
         // Insert image dialog
         function insertImage() {
+            if (currentMode !== 'text') {
+                return;
+            }
             const url = prompt('Enter image URL:');
             if (url) {
                 document.execCommand('insertImage', false, url);
@@ -779,22 +792,31 @@
         }
 
         // Switch between text and preview mode
+        let currentMode = 'coding';
+
         function switchMode(mode) {
             const textMode = document.getElementById('textMode');
             const previewMode = document.getElementById('previewMode');
             const modeBtns = document.querySelectorAll('.mode-btn');
+            const toolbar = document.getElementById('editorToolbar');
 
             modeBtns.forEach(btn => btn.classList.remove('active'));
 
-            if (mode === 'text') {
+            if (mode === 'coding') {
+                syncFromPreview();
+                currentMode = 'coding';
                 textMode.classList.remove('hide-editor');
                 previewMode.classList.add('hide-preview');
+                toolbar.classList.add('toolbar-disabled');
                 modeBtns[0].classList.add('active');
             } else {
+                updatePreview();
+                currentMode = 'text';
                 textMode.classList.add('hide-editor');
                 previewMode.classList.remove('hide-preview');
+                toolbar.classList.remove('toolbar-disabled');
                 modeBtns[1].classList.add('active');
-                updatePreview();
+                document.getElementById('previewContent').focus();
             }
         }
 
@@ -906,6 +928,3 @@
             }
         }
     </script>
-</body>
-
-</html>
