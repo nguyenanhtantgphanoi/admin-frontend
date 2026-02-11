@@ -70,7 +70,7 @@
         <div class="col-12">
             <% let editLink = '/bien-tap-suy-niem-edit'; %>
             <% if(typeof urlParams !== 'undefined' && urlParams._id) { %>
-                <% editLink += '?ngay_le_id=' + urlParams._id; %>
+                <% editLink += '?ngay_le_id=' + urlParams._id + '&ngay_le_title=' + encodeURIComponent(ngayLe && ngayLe.title ? ngayLe.title : ''); %>
             <% } %>
             <a href="<%= editLink %>" class="btn btn-success">
                 <i class="bi bi-plus"></i> Add New Article

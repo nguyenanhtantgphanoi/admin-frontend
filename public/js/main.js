@@ -1,3 +1,19 @@
+    // Ngay-le filter for selector
+    $('#ngay-le-filter').on('input', function() {
+        var filter = $(this).val().toLowerCase();
+        $('#ngay-le-id option').each(function() {
+            if ($(this).val() === '') {
+                $(this).show(); // Always show the default option
+                return;
+            }
+            var title = $(this).data('title') ? $(this).data('title').toLowerCase() : '';
+            if (title.indexOf(filter) !== -1) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
 (function ($) {
     "use strict";
 

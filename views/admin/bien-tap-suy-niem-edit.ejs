@@ -23,12 +23,13 @@
                             <input type="hidden" id="ngay-le-id" value="<%= search.ngay_le_id %>">
                         <% } else { %>
                             <div class="mb-3">
-                                <label for="ngay-le-id" class="form-label"><strong>Belongs to Ngay-le</strong></label>
+                                <label for="ngay-le-id" class="form-label"><strong>Bài viết thuộc về ngày lễ:</strong></label>
+                                <input type="text" id="ngay-le-filter" class="form-control mb-2" placeholder="Tìm ngày lễ...">
                                 <select id="ngay-le-id" class="form-select">
-                                    <option value="">-- Select Ngay-le --</option>
+                                    <option value="">-- Chọn Ngày lễ --</option>
                                     <% if (typeof ngayLeList !== 'undefined' && ngayLeList.length) { %>
                                         <% ngayLeList.forEach(function(nl) { %>
-                                            <option value="<%= nl._id %>" <%= article && article.ngay_le_id && (String(article.ngay_le_id) === String(nl._id)) ? 'selected' : '' %>><%= nl.title %></option>
+                                            <option value="<%= nl._id %>" data-title="<%= nl.title %>" <%= article && article.ngay_le_id && (String(article.ngay_le_id) === String(nl._id)) ? 'selected' : '' %>><%= nl.title %></option>
                                         <% }) %>
                                     <% } %>
                                 </select>
@@ -37,21 +38,21 @@
                         
                         <!-- Title Input -->
                         <div class="mb-3">
-                            <label for="article-title" class="form-label"><strong>Article Title</strong></label>
-                            <input type="text" class="form-control" id="article-title" placeholder="Enter article title" 
+                            <label for="article-title" class="form-label"><strong>Tiêu đề bài viết</strong></label>
+                            <input type="text" class="form-control" id="article-title" placeholder="Nhập tiêu đề bài viết" 
                                 value="<%= article && article.title ? article.title : '' %>" required>
                         </div>
 
                         <!-- Author Input -->
                         <div class="mb-3">
-                            <label for="article-author" class="form-label"><strong>Author</strong></label>
-                            <input type="text" class="form-control" id="article-author" placeholder="Enter author name"
+                            <label for="article-author" class="form-label"><strong>Tác giả</strong></label>
+                            <input type="text" class="form-control" id="article-author" placeholder="Nhập tên tác giả"
                                 value="<%= article && article.author ? article.author : '' %>" required>
                         </div>
 
                         <!-- Content Input with Rich Text Editor -->
                         <div class="mb-3">
-                            <label for="article-content" class="form-label"><strong>Content</strong></label>
+                            <label for="article-content" class="form-label"><strong>Nội dung</strong></label>
                             <div id="editor-toolbar" class="mb-2 btn-group" role="group">
                                 <button type="button" class="btn btn-outline-secondary btn-sm" id="bold-btn" title="Bold">
                                     <i class="bi bi-type-bold"></i>
