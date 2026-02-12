@@ -15,7 +15,7 @@ class DOMParser {
 module.exports = async function (fastify, opts) {
   
   fastify.get('/', async function (request, reply) {
-     return reply.viewWithLayout('index.ejs', { message: 'Hello from Fastify!' })
+     return reply.viewWithLayout('index.ejs', { title: 'Truyền Thông TGP Hà Nội Admin' })
     // return { root: true, at: false }
   });
   fastify.get('/helloworld', async function (request, reply) {
