@@ -1210,7 +1210,7 @@ module.exports = async function (fastify, opts) {
   });  
   fastify.get('/get-nghi-thuc-grouped', async function (request, reply) {
     const tb_nghi_thuc = this.mongo.db.collection('nghi-thuc')
-    let nghi_thuc =  await tb_nghi_thuc.find({}).toArray()
+    let nghi_thuc =  await tb_nghi_thuc.find({}).sort({ order: 1}).toArray()
     let r_kinh = {}
     for (let i = 0; i < nghi_thuc.length; i++) {
       const element = nghi_thuc[i];
