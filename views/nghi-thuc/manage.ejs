@@ -81,6 +81,21 @@
             font-size: 13px;
         }
 
+        .nghi-thuc-page .doc-item-main {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .nghi-thuc-page .drag-handle {
+            cursor: grab;
+            color: #6c757d;
+            display: inline-flex;
+            align-items: center;
+        }
+
         .nghi-thuc-page .doc-item:hover {
             background: #e9ecef;
             border-color: #007bff;
@@ -90,6 +105,11 @@
             background: #007bff;
             color: white;
             border-color: #0056b3;
+        }
+
+        .nghi-thuc-page .doc-item.dragging {
+            opacity: 0.6;
+            border-style: dashed;
         }
 
         .nghi-thuc-page .doc-item-title {
@@ -650,6 +670,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             loadDocuments();
             setupHtmlEditorPreview();
+            setupDragAndDrop();
         });
 
         // Toggle sidebar
@@ -691,15 +712,115 @@
             allDocuments.forEach(doc => {
                 const docItem = document.createElement('div');
                 docItem.className = 'doc-item' + (currentDocId === doc._id ? ' active' : '');
+                docItem.setAttribute('draggable', 'true');
+                docItem.dataset.id = doc._id;
                 docItem.innerHTML = `
-                    <span class="doc-item-title" title="${doc.title}">${doc.title}</span>
+                    <div class="doc-item-main">
+                        <span class="drag-handle" title="Drag to reorder">
+                            <i class="fas fa-grip-vertical"></i>
+                        </span>
+                        <span class="doc-item-title" title="${doc.title}">${doc.title}</span>
+                    </div>
                     <div class="doc-item-actions">
-                        <button onclick="event.stopPropagation(); loadDocument('${doc._id}')">Edit</button>
+                        <button draggable="false" onclick="event.stopPropagation(); loadDocument('${doc._id}')">Edit</button>
                     </div>
                 `;
                 docItem.onclick = () => loadDocument(doc._id);
                 listContainer.appendChild(docItem);
             });
+        }
+
+        function setupDragAndDrop() {
+            const listContainer = document.getElementById('documentList');
+            let draggedItem = null;
+            let didReorder = false;
+
+            listContainer.addEventListener('dragstart', function (event) {
+                const item = event.target.closest('.doc-item');
+                if (!item || event.target.closest('.doc-item-actions')) {
+                    return;
+                }
+
+                draggedItem = item;
+                didReorder = false;
+                item.classList.add('dragging');
+                event.dataTransfer.effectAllowed = 'move';
+                event.dataTransfer.setData('text/plain', item.dataset.id || '');
+            });
+
+            listContainer.addEventListener('dragover', function (event) {
+                if (!draggedItem) return;
+
+                event.preventDefault();
+                const targetItem = event.target.closest('.doc-item');
+                if (!targetItem || targetItem === draggedItem) return;
+
+                const rect = targetItem.getBoundingClientRect();
+                const insertAfter = event.clientY > rect.top + rect.height / 2;
+                const referenceNode = insertAfter ? targetItem.nextSibling : targetItem;
+
+                if (referenceNode !== draggedItem) {
+                    listContainer.insertBefore(draggedItem, referenceNode);
+                    didReorder = true;
+                }
+            });
+
+            listContainer.addEventListener('drop', function (event) {
+                if (!draggedItem || !didReorder) return;
+
+                event.preventDefault();
+                syncDocumentsFromDom();
+                persistDocumentOrder();
+            });
+
+            listContainer.addEventListener('dragend', function () {
+                if (draggedItem) {
+                    draggedItem.classList.remove('dragging');
+                }
+                draggedItem = null;
+            });
+        }
+
+        function syncDocumentsFromDom() {
+            const listContainer = document.getElementById('documentList');
+            const orderedIds = Array.from(listContainer.querySelectorAll('.doc-item'))
+                .map(item => item.dataset.id);
+            const orderMap = new Map(orderedIds.map((id, index) => [id, index]));
+
+            allDocuments.sort((a, b) => {
+                const orderA = orderMap.has(a._id) ? orderMap.get(a._id) : 0;
+                const orderB = orderMap.has(b._id) ? orderMap.get(b._id) : 0;
+                return orderA - orderB;
+            });
+        }
+
+        async function persistDocumentOrder() {
+            const listContainer = document.getElementById('documentList');
+            const items = Array.from(listContainer.querySelectorAll('.doc-item'));
+            if (items.length === 0) return;
+
+            const orderPayload = items.map((item, index) => ({
+                _id: item.dataset.id,
+                order: index
+            }));
+
+            try {
+                const response = await fetch('/update-nghi-thuc-order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ order: orderPayload })
+                });
+
+                if (!response.ok) {
+                    const result = await response.json();
+                    alert('Error saving order: ' + (result.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error saving document order:', error);
+                alert('Error saving document order');
+            }
         }
 
         // Load document for editing

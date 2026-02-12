@@ -1149,7 +1149,7 @@ module.exports = async function (fastify, opts) {
   });
   fastify.get('/get-nghi-thuc', async function (request, reply) {
     const tb_nghi_thuc = this.mongo.db.collection('nghi-thuc')
-    let nghi_thuc =  await tb_nghi_thuc.find({}).toArray()
+    let nghi_thuc =  await tb_nghi_thuc.find({}).sort({ order: 1, createdAt: 1, _id: 1 }).toArray()
     try{
       return nghi_thuc
     }catch(err){
@@ -1267,10 +1267,20 @@ module.exports = async function (fastify, opts) {
     }
 
     try {
+      const [maxOrderDoc] = await tb_nghi_thuc
+        .find({ order: { $type: 'number' } })
+        .sort({ order: -1 })
+        .limit(1)
+        .toArray()
+      const nextOrder = maxOrderDoc && Number.isFinite(maxOrderDoc.order)
+        ? maxOrderDoc.order + 1
+        : await tb_nghi_thuc.countDocuments()
+
       const result = await tb_nghi_thuc.insertOne({
         title: title,
         group: group || null,
         html: html,
+        order: nextOrder,
         createdAt: new Date(),
         updatedAt: new Date()
       })
@@ -1311,6 +1321,41 @@ module.exports = async function (fastify, opts) {
     } catch (err) {
       console.error('Error updating nghi-thuc:', err)
       return reply.code(500).send({ error: 'Error updating document' })
+    }
+  });
+
+  fastify.post('/update-nghi-thuc-order', async function (request, reply) {
+    const tb_nghi_thuc = this.mongo.db.collection('nghi-thuc')
+    const { order } = request.body
+
+    if (!Array.isArray(order)) {
+      return reply.code(400).send({ error: 'Order array is required' })
+    }
+
+    const operations = order
+      .filter(item => item && item._id)
+      .map(item => ({
+        updateOne: {
+          filter: { _id: new this.mongo.ObjectId(item._id) },
+          update: {
+            $set: {
+              order: Number.isFinite(item.order) ? item.order : 0,
+              updatedAt: new Date()
+            }
+          }
+        }
+      }))
+
+    if (operations.length === 0) {
+      return { message: 'No updates applied' }
+    }
+
+    try {
+      await tb_nghi_thuc.bulkWrite(operations)
+      return { message: 'Order updated successfully' }
+    } catch (err) {
+      console.error('Error updating nghi-thuc order:', err)
+      return reply.code(500).send({ error: 'Error updating order' })
     }
   });
 
