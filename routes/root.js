@@ -286,205 +286,70 @@ module.exports = async function (fastify, opts) {
     }
   })
 
-  fastify.get('/bien-tap-ban-van', async function (request, reply) {
+  const bienTapBanVanHandler = async function (request, reply) {
     const ngayle = this.mongo.db.collection('ngay-le')
-    if('_id' in request.query){
-      if('dan_vao_thanh_le' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.dan_vao_thanh_le": request.query.dan_vao_thanh_le}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('ca_nhap_le' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.ca_nhap_le": request.query.ca_nhap_le}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('loi_nguyen_nhap_le' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.loi_nguyen_nhap_le": request.query.loi_nguyen_nhap_le}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('bd1_le_trich_tu' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.bd1_le_trich_tu": request.query.bd1_le_trich_tu}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('cau_bd1_le_tom_gon' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.cau_bd1_le_tom_gon": request.query.cau_bd1_le_tom_gon}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('bd1_le' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.bd1_le": request.query.bd1_le}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('dap_ca_le_trich_tu' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.dap_ca_le_trich_tu": request.query.dap_ca_le_trich_tu}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('dap_ca_le' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.dap_ca_le": request.query.dap_ca_le}})          
-        }catch(err){
-          return err
-        }
-      }
-      //////////////////////
-      if('bd1_chan_trich_tu' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.bd1_chan_trich_tu": request.query.bd1_chan_trich_tu}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('cau_bd1_chan_tom_gon' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.cau_bd1_chan_tom_gon": request.query.cau_bd1_chan_tom_gon}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('bd1_chan' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.bd1_chan": request.query.bd1_chan}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('dap_ca_chan_trich_tu' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.dap_ca_chan_trich_tu": request.query.dap_ca_chan_trich_tu}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('dap_ca_chan' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.dap_ca_chan": request.query.dap_ca_chan}})          
-        }catch(err){
-          return err
-        }
-      }
-      ///////////////////////////////////
-      if('bd2_trich_tu' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.bd2_trich_tu": request.query.bd2_trich_tu}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('cau_bd2_tom_gon' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.cau_bd2_tom_gon": request.query.cau_bd2_tom_gon}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('bd2' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.bd2": request.query.bd2}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('alleluia_trich_tu' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.alleluia_trich_tu": request.query.alleluia_trich_tu}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('alleluia' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.alleluia": request.query.alleluia}})          
-        }catch(err){
-          return err
-        }
-      }
-      ///////////////////////////////////////////
-      if('phuc_am_trich_tu' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.phuc_am_trich_tu": request.query.phuc_am_trich_tu}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('cau_phuc_am_tom_gon' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.cau_phuc_am_tom_gon": request.query.cau_phuc_am_tom_gon}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('phuc_am' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.phuc_am": request.query.phuc_am}})          
-        }catch(err){
-          return err
-        }
-      }
-      //////////////////////////////////////
-      if('loi_nguyen_tin_huu' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.loi_nguyen_tin_huu": request.query.loi_nguyen_tin_huu}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('loi_nguyen_tien_le' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.loi_nguyen_tien_le": request.query.loi_nguyen_tien_le}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('ca_hiep_le' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.ca_hiep_le": request.query.ca_hiep_le}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('loi_nguyen_hiep_le' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.loi_nguyen_hiep_le": request.query.loi_nguyen_hiep_le}})          
-        }catch(err){
-          return err
-        }
-      }
-      if('kinh_tien_tung' in request.query){
-        try{        
-          await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: {"ban_van.kinh_tien_tung": request.query.kinh_tien_tung}})          
-        }catch(err){
-          return err
-        }
-      }
-      let doc = await ngayle.findOne({_id: new this.mongo.ObjectId(request.query._id)})
-      if('is_ajax' in request.query){
-        return 'Server message: Update Successful'
-      }else{
-        return reply.viewWithLayout('admin/bien-tap-ban-van.ejs', { u: doc})
-      }
-    }else{
+    const payload = request.method === 'POST' ? (request.body || {}) : (request.query || {})
+
+    if (!('_id' in payload)) {
       return reply.viewWithLayout('admin/bien-tap-ban-van.ejs', {u: null})
     }
-  })
+
+    const updateableFields = [
+      'dan_vao_thanh_le',
+      'ca_nhap_le',
+      'loi_nguyen_nhap_le',
+      'bd1_le_trich_tu',
+      'cau_bd1_le_tom_gon',
+      'bd1_le',
+      'dap_ca_le_trich_tu',
+      'dap_ca_le',
+      'bd1_chan_trich_tu',
+      'cau_bd1_chan_tom_gon',
+      'bd1_chan',
+      'dap_ca_chan_trich_tu',
+      'dap_ca_chan',
+      'bd2_trich_tu',
+      'cau_bd2_tom_gon',
+      'bd2',
+      'alleluia_trich_tu',
+      'alleluia',
+      'phuc_am_trich_tu',
+      'cau_phuc_am_tom_gon',
+      'phuc_am',
+      'loi_nguyen_tin_huu',
+      'loi_nguyen_tien_le',
+      'ca_hiep_le',
+      'loi_nguyen_hiep_le',
+      'kinh_tien_tung'
+    ]
+
+    const banVanUpdates = {}
+    for (const field of updateableFields) {
+      if (field in payload) {
+        banVanUpdates[`ban_van.${field}`] = payload[field]
+      }
+    }
+
+    try {
+      if (Object.keys(banVanUpdates).length > 0) {
+        await ngayle.updateOne(
+          { _id: new this.mongo.ObjectId(payload._id) },
+          { $set: banVanUpdates }
+        )
+      }
+      const doc = await ngayle.findOne({ _id: new this.mongo.ObjectId(payload._id) })
+
+      if ('is_ajax' in payload) {
+        return { message: 'Server message: Update Successful' }
+      }
+      return reply.viewWithLayout('admin/bien-tap-ban-van.ejs', { u: doc })
+    } catch (err) {
+      return err
+    }
+  }
+
+  fastify.get('/bien-tap-ban-van', bienTapBanVanHandler)
+  fastify.post('/bien-tap-ban-van', bienTapBanVanHandler)
   fastify.get('/bien-tap-ban-van--', async function (request, reply) {//Route dùng để hiệu chỉnh bản văn được crawl từ website// đã được sử dụng
     
     const ngayle = this.mongo.db.collection('ngay-le')

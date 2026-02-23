@@ -261,10 +261,12 @@
                                     // Prevent the default form submission that causes a page reload
                                     event.preventDefault();
 
-                                    // Serialize the form data into a URL-encoded string
-                                    let formData = $(this).serialize();   
-                                    formData = formData+"&is_ajax=true"   
-                                    console.log(formData)      
+                                    let formData = {};
+                                    $(this).serializeArray().forEach(function(item) {
+                                        formData[item.name] = item.value;
+                                    });
+                                    formData.is_ajax = true;
+                                    console.log(formData)
                                     let f_submit = $(this)         
                                     f_submit.find('.alrt-success').hide()                                                  
                                     f_submit.find('.alrt-failed').hide()                                                  
@@ -272,7 +274,9 @@
                                     // Perform the AJAX request
                                     $.ajax({                                        
                                         url: '/bien-tap-ban-van',
-                                        data: formData,
+                                        method: 'POST',
+                                        contentType: 'application/json; charset=UTF-8',
+                                        data: JSON.stringify(formData),
                                         success: function(response) {
                                             // Handle a successful response from the server
                                             console.log("Success:", response);
