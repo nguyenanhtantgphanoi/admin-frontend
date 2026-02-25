@@ -985,23 +985,10 @@ module.exports = async function (fastify, opts) {
     }
   });
   fastify.get('/kinh-nguyen-edit', async function (request, reply) {
-    const tb_kinh_nguyen = this.mongo.db.collection('kinh-nguyen')
-    const {_id} = request.query
-    if(_id != undefined){
-
-      try{
-        let kinh_nguyen =  await tb_kinh_nguyen.findOne({_id:new this.mongo.ObjectId(_id)})
-        return reply.view('nghi-thuc/kinh-nguyen-edit.ejs',{kinh_nguyen:kinh_nguyen})
-      }catch(err){
-        return err
-      }
-    }else{
-      let kinh_nguyen =  await tb_kinh_nguyen.find({}).toArray()
-      try{
-        return reply.view('nghi-thuc/kinh-nguyen-edit.ejs',{kinh_nguyen:kinh_nguyen})
-      }catch(err){
-        return err
-      }
+    try {
+      return reply.viewWithLayout('nghi-thuc/kinh-nguyen-edit.ejs', { title: 'Manage Kinh Nguyen' })
+    } catch (err) {
+      return err
     }
   });
   fastify.get('/save-code', async function (request, reply) {
@@ -1023,7 +1010,7 @@ module.exports = async function (fastify, opts) {
   });
   fastify.get('/get-kinh-nguyen', async function (request, reply) {
     const tb_kinh_nguyen = this.mongo.db.collection('kinh-nguyen')
-    let kinh_nguyen =  await tb_kinh_nguyen.find({}).toArray()
+    let kinh_nguyen =  await tb_kinh_nguyen.find({}).sort({ order: 1, createdAt: 1, _id: 1 }).toArray()
     
     
     try{
@@ -1118,6 +1105,25 @@ module.exports = async function (fastify, opts) {
   fastify.get('/manage-nghi-thuc', async function (request, reply) {
     try {
       return reply.viewWithLayout('nghi-thuc/manage.ejs', { title: 'Manage Nghi Thuc' })
+    } catch (err) {
+      return err
+    }
+  });
+
+  fastify.get('/manage-kinh-nguyen', async function (request, reply) {
+    try {
+      return reply.viewWithLayout('nghi-thuc/manage.ejs', {
+        title: 'Manage Kinh Nguyen',
+        manager: {
+          pageTitle: 'Manage Kinh Nguyện',
+          entityLabel: 'Kinh Nguyện',
+          apiGet: '/get-kinh-nguyen',
+          apiSave: '/save-kinh-nguyen',
+          apiUpdate: '/update-kinh-nguyen',
+          apiDelete: '/delete-kinh-nguyen',
+          apiUpdateOrder: '/update-kinh-nguyen-order'
+        }
+      })
     } catch (err) {
       return err
     }
@@ -1242,6 +1248,129 @@ module.exports = async function (fastify, opts) {
       return { message: 'Document deleted successfully' }
     } catch (err) {
       console.error('Error deleting nghi-thuc:', err)
+      return reply.code(500).send({ error: 'Error deleting document' })
+    }
+  });
+
+  fastify.post('/save-kinh-nguyen', async function (request, reply) {
+    const tb_kinh_nguyen = this.mongo.db.collection('kinh-nguyen')
+    const { title, group, html } = request.body
+
+    if (!title || !html) {
+      return reply.code(400).send({ error: 'Title and HTML content are required' })
+    }
+
+    try {
+      const [maxOrderDoc] = await tb_kinh_nguyen
+        .find({ order: { $type: 'number' } })
+        .sort({ order: -1 })
+        .limit(1)
+        .toArray()
+      const nextOrder = maxOrderDoc && Number.isFinite(maxOrderDoc.order)
+        ? maxOrderDoc.order + 1
+        : await tb_kinh_nguyen.countDocuments()
+
+      const result = await tb_kinh_nguyen.insertOne({
+        title: title,
+        group: group || null,
+        html: html,
+        order: nextOrder,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      })
+
+      return { _id: result.insertedId, message: 'Document created successfully' }
+    } catch (err) {
+      console.error('Error saving kinh-nguyen:', err)
+      return reply.code(500).send({ error: 'Error saving document' })
+    }
+  });
+
+  fastify.post('/update-kinh-nguyen', async function (request, reply) {
+    const tb_kinh_nguyen = this.mongo.db.collection('kinh-nguyen')
+    const { _id, title, group, html } = request.body
+
+    if (!_id || !title || !html) {
+      return reply.code(400).send({ error: 'ID, Title, and HTML content are required' })
+    }
+
+    try {
+      const result = await tb_kinh_nguyen.updateOne(
+        { _id: new this.mongo.ObjectId(_id) },
+        {
+          $set: {
+            title: title,
+            group: group || null,
+            html: html,
+            updatedAt: new Date()
+          }
+        }
+      )
+
+      if (result.matchedCount === 0) {
+        return reply.code(404).send({ error: 'Document not found' })
+      }
+
+      return { _id: _id, message: 'Document updated successfully' }
+    } catch (err) {
+      console.error('Error updating kinh-nguyen:', err)
+      return reply.code(500).send({ error: 'Error updating document' })
+    }
+  });
+
+  fastify.post('/update-kinh-nguyen-order', async function (request, reply) {
+    const tb_kinh_nguyen = this.mongo.db.collection('kinh-nguyen')
+    const { order } = request.body
+
+    if (!Array.isArray(order)) {
+      return reply.code(400).send({ error: 'Order array is required' })
+    }
+
+    const operations = order
+      .filter(item => item && item._id)
+      .map(item => ({
+        updateOne: {
+          filter: { _id: new this.mongo.ObjectId(item._id) },
+          update: {
+            $set: {
+              order: Number.isFinite(item.order) ? item.order : 0,
+              updatedAt: new Date()
+            }
+          }
+        }
+      }))
+
+    if (operations.length === 0) {
+      return { message: 'No updates applied' }
+    }
+
+    try {
+      await tb_kinh_nguyen.bulkWrite(operations)
+      return { message: 'Order updated successfully' }
+    } catch (err) {
+      console.error('Error updating kinh-nguyen order:', err)
+      return reply.code(500).send({ error: 'Error updating order' })
+    }
+  });
+
+  fastify.post('/delete-kinh-nguyen', async function (request, reply) {
+    const tb_kinh_nguyen = this.mongo.db.collection('kinh-nguyen')
+    const { _id } = request.body
+
+    if (!_id) {
+      return reply.code(400).send({ error: 'ID is required' })
+    }
+
+    try {
+      const result = await tb_kinh_nguyen.deleteOne({ _id: new this.mongo.ObjectId(_id) })
+
+      if (result.deletedCount === 0) {
+        return reply.code(404).send({ error: 'Document not found' })
+      }
+
+      return { message: 'Document deleted successfully' }
+    } catch (err) {
+      console.error('Error deleting kinh-nguyen:', err)
       return reply.code(500).send({ error: 'Error deleting document' })
     }
   });

@@ -1,3 +1,14 @@
+<%
+    const managerConfig = typeof manager !== 'undefined' ? manager : {};
+    const pageTitle = managerConfig.pageTitle || 'Manage Nghi Thức';
+    const entityLabel = managerConfig.entityLabel || 'Nghi Thức';
+    const apiGet = managerConfig.apiGet || '/get-nghi-thuc';
+    const apiSave = managerConfig.apiSave || '/save-nghi-thuc';
+    const apiUpdate = managerConfig.apiUpdate || '/update-nghi-thuc';
+    const apiDelete = managerConfig.apiDelete || '/delete-nghi-thuc';
+    const apiUpdateOrder = managerConfig.apiUpdateOrder || '/update-nghi-thuc-order';
+%>
+
 <style>
         .nghi-thuc-page * {
             margin: 0;
@@ -528,14 +539,14 @@
         <button class="toggle-sidebar-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
             <i class="fas fa-bars"></i>
         </button>
-        <h1><i class="fas fa-scroll me-2"></i>Manage Nghi Thức</h1>
+        <h1><i class="fas fa-scroll me-2"></i><%= pageTitle %></h1>
     </div>
 
     <div class="editor-container">
         <!-- Sidebar: Document List -->
         <div class="nt-sidebar">
             <div class="nt-sidebar-header">
-                <h5>Documents</h5>
+                <h5><%= entityLabel %></h5>
                 <button class="btn-new-doc" onclick="newDocument()">
                     <i class="fas fa-plus"></i> New Document
                 </button>
@@ -687,7 +698,7 @@
 
         // Load all documents
         function loadDocuments() {
-            fetch('/get-nghi-thuc')
+            fetch('<%= apiGet %>')
                 .then(response => response.json())
                 .then(data => {
                     allDocuments = data;
@@ -805,7 +816,7 @@
             }));
 
             try {
-                const response = await fetch('/update-nghi-thuc-order', {
+                const response = await fetch('<%= apiUpdateOrder %>', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -966,10 +977,10 @@
             try {
                 let url, method;
                 if (isNewDocument) {
-                    url = '/save-nghi-thuc';
+                    url = '<%= apiSave %>';
                     method = 'POST';
                 } else {
-                    url = '/update-nghi-thuc';
+                    url = '<%= apiUpdate %>';
                     payload._id = currentDocId;
                     method = 'POST';
                 }
@@ -1009,7 +1020,7 @@
             }
 
             try {
-                const response = await fetch('/delete-nghi-thuc', {
+                const response = await fetch('<%= apiDelete %>', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
