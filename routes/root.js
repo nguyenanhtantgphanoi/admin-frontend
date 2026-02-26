@@ -867,6 +867,7 @@ module.exports = async function (fastify, opts) {
 
               arr_cac_le[j].ban_van.dap_ca_le_trich_tu = arr_cac_le[j].ban_van.dap_ca_chan_trich_tu
               arr_cac_le[j].ban_van.dap_ca_le = arr_cac_le[j].ban_van.dap_ca_chan
+              delete arr_cac_le[j].bai_viet
               if(arr_cac_le[j].reflections && arr_cac_le[j].reflections.length > 0){
                 try {
                   const reflectionIds = arr_cac_le[j].reflections.map(id => new this.mongo.ObjectId(id))
