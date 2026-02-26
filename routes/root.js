@@ -866,6 +866,17 @@ module.exports = async function (fastify, opts) {
 
               arr_cac_le[j].ban_van.dap_ca_le_trich_tu = arr_cac_le[j].ban_van.dap_ca_chan_trich_tu
               arr_cac_le[j].ban_van.dap_ca_le = arr_cac_le[j].ban_van.dap_ca_chan
+              if(arr_cac_le[j].reflections && arr_cac_le[j].reflections.length > 0){
+                try {
+                  const reflectionIds = arr_cac_le[j].reflections.map(id => new this.mongo.ObjectId(id))
+                  arr_cac_le[j].articles = await articlesCollection.find({_id: {$in: reflectionIds}}).toArray()
+                } catch (err) {
+                  console.error('Error fetching articles for reflections:', err)
+                  arr_cac_le[j].articles = []
+                }
+              } else {
+                arr_cac_le[j].articles = []
+              }
 
             }
             //arr_cac_le[j].ban_van.bd1_le_trich_tu.replace(/\((?i:năm)\s*(?:II|2)\)/,'').replace(/\((?i:năm)\s*(?:I|1)\)/,'')
