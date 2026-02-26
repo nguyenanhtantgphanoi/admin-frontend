@@ -835,6 +835,7 @@ module.exports = async function (fastify, opts) {
   fastify.get('/get-one-day', async function (request, reply) {
     const tb_lich = this.mongo.db.collection('lich-cong-giao')
     const ngay_le = this.mongo.db.collection('ngay-le')
+    const articlesCollection = this.mongo.db.collection('articles')
 
     // const tb_ngayle = this.mongo.db.collection('ngay-le')
     // if the id is an ObjectId format, you need to create a new ObjectId
