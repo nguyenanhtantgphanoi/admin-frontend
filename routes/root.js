@@ -1440,6 +1440,47 @@ module.exports = async function (fastify, opts) {
     }
     return reply.view('admin/notif-scheduling.ejs',{cron_tasks: cron_tasks })
   });
+  fastify.get('/get-quick-utilities', async function (request, reply) {
+    // const tb_quick_utilities = this.mongo.db.collection('quick-utilities')
+    // let quick_utilities =  await tb_quick_utilities.find({}).toArray()
+    let quick_utilities = [
+      {
+          id: 'retreat-confession-schedule',
+          title: 'Lịch tĩnh tâm/giải tội',
+          icon: 'calendar-outline',
+          url: 'https://www.tonggiaophanhanoi.org/lich-tinh-tam-mua-chay-va-tuan-thanh-2026-tai-cac-nha-tho-noi-thanh-ha-noi/',
+      },
+      {
+          id: 'reflection',
+          title: 'Suy tư tản mạn',
+          icon: 'bulb-outline',
+          url: 'https://www.tonggiaophanhanoi.org/category/song-dao/suy-tu-tan-man/',
+      },
+      {
+          id: 'catechism',
+          title: 'Giáo lý', 
+          icon: 'school-outline',
+          url: 'https://www.tonggiaophanhanoi.org/category/song-dao/giao-ly-cho-nguoi-truong-thanh/',
+      },
+      {
+          id: 'saints',
+          title: 'Hạnh các thánh',
+          icon: 'sparkles-outline',
+          url: 'https://www.tonggiaophanhanoi.org/category/phung-vu/hanh-cac-thanh/',
+      },
+      {
+          id: 'test',
+          title: 'Test Utilities',
+          icon: 'sparkles-outline',
+          html: '<div style="padding: 10px; background-color: #f0f0f0; border-radius: 5px;"><h3>Test Utility</h3><p>This is a test utility with custom HTML content.</p></div>',
+      },
+    ]
+    try{
+      return quick_utilities
+    }catch(err){
+      return err
+    }
+  });
 
 }
 
