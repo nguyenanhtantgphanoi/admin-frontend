@@ -1468,12 +1468,7 @@ module.exports = async function (fastify, opts) {
           icon: 'sparkles-outline',
           url: 'https://www.tonggiaophanhanoi.org/category/phung-vu/hanh-cac-thanh/',
       },
-      {
-          id: 'test',
-          title: 'Test Utilities',
-          icon: 'sparkles-outline',
-          html: '<div style="padding: 10px; background-color: #f0f0f0; border-radius: 5px;"><h3>Test Utility</h3><p>This is a test utility with custom HTML content.</p></div>',
-      },
+      
     ]
     try{
       return quick_utilities
