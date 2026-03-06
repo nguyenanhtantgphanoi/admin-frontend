@@ -1494,7 +1494,7 @@ fastify.get('/get-quick-utilities-v2', async function (request, reply) {
         "reading": "#8e44ad",
         "lich": "#16a085",
         "homNay": "#2980b9",
-        "homNayDisable": "#95a5a6",
+        "homNayDisabled": "#95a5a6",
       },
     "data":[
       {
@@ -1527,7 +1527,7 @@ fastify.get('/get-quick-utilities-v2', async function (request, reply) {
       },
       {
           id: 'historical-documents',
-          title: 'Tài liệu lịch sử',
+          title: 'Tư liệu lịch sử',
           icon: 'book-outline',
           "iconBackgroundColor": "#95a5a6",
           url: 'https://www.tonggiaophanhanoi.org/tu-lieu-lich-su/',
