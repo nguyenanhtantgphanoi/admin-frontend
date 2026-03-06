@@ -1475,6 +1475,7 @@ module.exports = async function (fastify, opts) {
           url: 'https://www.tonggiaophanhanoi.org/tu-lieu-lich-su/',
       },
       
+<<<<<<< HEAD
      ]
   //   let quick_utilities =  {
   // "buttonColors": {
@@ -1530,6 +1531,9 @@ module.exports = async function (fastify, opts) {
 
   // ]
 } 
+=======
+    ]
+>>>>>>> parent of e1b004c (s)
     try{
       return quick_utilities
     }catch(err){
