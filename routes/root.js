@@ -1468,6 +1468,12 @@ module.exports = async function (fastify, opts) {
           icon: 'sparkles-outline',
           url: 'https://www.tonggiaophanhanoi.org/category/phung-vu/hanh-cac-thanh/',
       },
+      {
+          id: 'historical-documents',
+          title: 'Tài liệu lịch sử',
+          icon: 'book-outline',
+          url: 'https://www.tonggiaophanhanoi.org/tu-lieu-lich-su/',
+      },
       
     ]
     try{
