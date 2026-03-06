@@ -1475,65 +1475,7 @@ module.exports = async function (fastify, opts) {
           url: 'https://www.tonggiaophanhanoi.org/tu-lieu-lich-su/',
       },
       
-<<<<<<< HEAD
-     ]
-  //   let quick_utilities =  {
-  // "buttonColors": {
-  //   "cgkpv": "#c0392b",
-  //   "reading": "#8e44ad",
-  //   "lich": "#16a085",
-  //   "homNay": "#2980b9",
-  //   "homNayDisabled": "#95a5a6"
-  // },
-  // "data": [
-  //   {
-  //     "id": "1",
-  //     "title": "Giờ lễ",
-  //     "icon": "time-outline",
-  //     "url": "https://example.com/gio-le",
-  //     "iconBackgroundColor": "#1f6feb"
-  //   },
-  //   {
-  //         id: 'retreat-confession-schedule',
-  //         title: 'Lịch tĩnh tâm/giải tội',
-  //         icon: 'calendar-outline',
-  //         "iconBackgroundColor": "#9333ea",
-  //         url: 'https://www.tonggiaophanhanoi.org/lich-tinh-tam-mua-chay-va-tuan-thanh-2026-tai-cac-nha-tho-noi-thanh-ha-noi/',
-  //     },
-  //     {
-  //         id: 'reflection',
-  //         title: 'Suy tư tản mạn',
-  //         icon: 'bulb-outline',
-  //         "iconBackgroundColor": "#9333ea",
-  //         url: 'https://www.tonggiaophanhanoi.org/category/song-dao/suy-tu-tan-man/',
-  //     },
-  //     {
-  //         id: 'catechism',
-  //         title: 'Giáo lý', 
-  //         icon: 'school-outline',
-  //         "iconBackgroundColor": "#9333ea",
-  //         url: 'https://www.tonggiaophanhanoi.org/category/song-dao/giao-ly-cho-nguoi-truong-thanh/',
-  //     },
-  //     {
-  //         id: 'saints',
-  //         title: 'Hạnh các thánh',
-  //         icon: 'sparkles-outline',
-  //         "iconBackgroundColor": "#9333ea",
-  //         url: 'https://www.tonggiaophanhanoi.org/category/phung-vu/hanh-cac-thanh/',
-  //     },
-  //     {
-  //         id: 'historical-documents',
-  //         title: 'Tư liệu lịch sử',
-  //         icon: 'book-outline',
-  //         "iconBackgroundColor": "#9333ea",
-  //         url: 'https://www.tonggiaophanhanoi.org/tu-lieu-lich-su/',
-  //     },
-
-  // ]
-} 
-=======
     ]
->>>>>>> parent of e1b004c (s)
     try{
       return quick_utilities
     }catch(err){
