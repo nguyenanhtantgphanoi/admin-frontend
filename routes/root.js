@@ -1483,7 +1483,7 @@ module.exports = async function (fastify, opts) {
     }
   });
 
-}
+
 fastify.get('/get-quick-utilities-v2', async function (request, reply) {
     // const tb_quick_utilities = this.mongo.db.collection('quick-utilities')
     // let quick_utilities =  await tb_quick_utilities.find({}).toArray()
@@ -1542,7 +1542,7 @@ fastify.get('/get-quick-utilities-v2', async function (request, reply) {
     }
   });
 
-
+}
 function removeVietnameseTones(str) {
     str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a"); 
     str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g,"e"); 
