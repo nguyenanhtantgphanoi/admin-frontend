@@ -1034,7 +1034,7 @@ module.exports = async function (fastify, opts) {
   });
   fastify.get('/get-kinh-nguyen-grouped', async function (request, reply) {
     const tb_kinh_nguyen = this.mongo.db.collection('kinh-nguyen')
-    let kinh_nguyen =  await tb_kinh_nguyen.find({}).toArray()
+    let kinh_nguyen =  await tb_kinh_nguyen.find({}).sort({ order: 1}).toArray()
     let r_kinh = {}
     for (let i = 0; i < kinh_nguyen.length; i++) {
       const element = kinh_nguyen[i];
