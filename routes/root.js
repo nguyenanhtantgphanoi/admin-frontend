@@ -1540,13 +1540,13 @@ fastify.get('/get-quick-utilities-v2', async function (request, reply) {
       {
           id: 'general-prayers',
           title: 'Lời nguyện tín hữu',
-          icon: 'hands-praying-outline',
+          icon: 'hands-praying',
           url: 'https://www.tonggiaophanhanoi.org/loi-nguyen-tin-huu-2/',
       }, 
       {
           id: 'synod-documents',
           title: 'Văn kiện hậu công nghị',
-          icon: 'scroll-outline',
+          icon: 'scroll',
           url: 'https://www.tonggiaophanhanoi.org/van-kien-hau-cong-nghi/',
       }, 
       {
