@@ -1540,7 +1540,7 @@ fastify.get('/get-quick-utilities-v2', async function (request, reply) {
       {
           id: 'general-prayers',
           title: 'Lời nguyện tín hữu',
-          icon: 'prayer-outline',
+          icon: 'hands-praying-outline',
           url: 'https://www.tonggiaophanhanoi.org/loi-nguyen-tin-huu-2/',
       }, 
       {
