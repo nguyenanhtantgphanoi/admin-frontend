@@ -1512,7 +1512,7 @@ fastify.get('/get-quick-utilities-v2', async function (request, reply) {
       {
           id: 'holy-week-rites',
           title: 'Nghi thức Tuần Thánh',
-          icon: 'calendar-outline',
+          icon: 'book',
           "iconBackgroundColor": "#c0392b",
           url: 'https://www.tonggiaophanhanoi.org/nghi-thuc-tuan-thanh/',
       },
@@ -1520,7 +1520,7 @@ fastify.get('/get-quick-utilities-v2', async function (request, reply) {
           id: 'retreat-confession-schedule',
           title: 'Lịch tĩnh tâm/giải tội',
           icon: 'calendar-outline',
-          "iconBackgroundColor": "#c0392b",
+          "iconBackgroundColor": "#2980b9",
           url: 'https://www.tonggiaophanhanoi.org/lich-tinh-tam-mua-chay-va-tuan-thanh-2026-tai-cac-nha-tho-noi-thanh-ha-noi/',
       },
       {
@@ -1548,12 +1548,14 @@ fastify.get('/get-quick-utilities-v2', async function (request, reply) {
           id: 'general-prayers',
           title: 'Lời nguyện tín hữu',
           icon: 'document-text-outline',
+          "iconBackgroundColor": "#2980b9",
           url: 'https://www.tonggiaophanhanoi.org/loi-nguyen-tin-huu-2/',
       }, 
       {
           id: 'synod-documents',
           title: 'Văn kiện hậu công nghị',
           icon: 'document',
+          "iconBackgroundColor": "#c0392b",
           url: 'https://www.tonggiaophanhanoi.org/van-kien-hau-cong-nghi/',
       }, 
       {
