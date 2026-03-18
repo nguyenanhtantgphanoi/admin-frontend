@@ -1033,7 +1033,7 @@ module.exports = async function (fastify, opts) {
     }
   });
   fastify.get('/get-kinh-nguyen-grouped', async function (request, reply) {
-    const tb_kinh_nguyen = this.mongo.db.collection('kinh-nguyen')
+    const tb_kinh_nguyen = this.mongo.db.collection('kinh-nguyen') 
     let kinh_nguyen =  await tb_kinh_nguyen.find({}).sort({ order: 1}).toArray()
     let r_kinh = {}
     for (let i = 0; i < kinh_nguyen.length; i++) {
@@ -1497,6 +1497,13 @@ fastify.get('/get-quick-utilities-v2', async function (request, reply) {
         "homNayDisabled": "#95a5a6",
       },
     "data":[
+      {
+          id: 'holy-week-rites',
+          title: 'Nghi thức Tuần Thánh',
+          icon: 'calendar-outline',
+          "iconBackgroundColor": "#c0392b",
+          url: 'https://www.tonggiaophanhanoi.org/nghi-thuc-tuan-thanh/',
+      },
       {
           id: 'retreat-confession-schedule',
           title: 'Lịch tĩnh tâm/giải tội',
