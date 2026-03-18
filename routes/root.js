@@ -1469,6 +1469,18 @@ module.exports = async function (fastify, opts) {
           url: 'https://www.tonggiaophanhanoi.org/category/phung-vu/hanh-cac-thanh/',
       },
       {
+          id: 'general-prayers',
+          title: 'Lời nguyện tín hữu',
+          icon: 'prayer-outline',
+          url: 'https://www.tonggiaophanhanoi.org/loi-nguyen-tin-huu-2/',
+      }, 
+      {
+          id: 'synod-documents',
+          title: 'Văn kiện hậu công nghị',
+          icon: 'scroll-outline',
+          url: 'https://www.tonggiaophanhanoi.org/van-kien-hau-cong-nghi/',
+      },      
+      {
           id: 'historical-documents',
           title: 'Tài liệu lịch sử',
           icon: 'book-outline',
@@ -1532,6 +1544,18 @@ fastify.get('/get-quick-utilities-v2', async function (request, reply) {
           "iconBackgroundColor": "#2980b9",
           url: 'https://www.tonggiaophanhanoi.org/category/phung-vu/hanh-cac-thanh/',
       },
+      {
+          id: 'general-prayers',
+          title: 'Lời nguyện tín hữu',
+          icon: 'document-text-outline',
+          url: 'https://www.tonggiaophanhanoi.org/loi-nguyen-tin-huu-2/',
+      }, 
+      {
+          id: 'synod-documents',
+          title: 'Văn kiện hậu công nghị',
+          icon: 'document',
+          url: 'https://www.tonggiaophanhanoi.org/van-kien-hau-cong-nghi/',
+      }, 
       {
           id: 'historical-documents',
           title: 'Tư liệu lịch sử',
