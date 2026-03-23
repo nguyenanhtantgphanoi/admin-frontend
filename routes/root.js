@@ -1545,6 +1545,27 @@ fastify.get('/get-quick-utilities-v2', async function (request, reply) {
           url: 'https://www.tonggiaophanhanoi.org/category/phung-vu/hanh-cac-thanh/',
       },
       {
+          id: 'mary-novena',
+          title: 'Tuần cửu nhật kính Đức Mẹ HCG',
+          icon: 'sparkles-outline',
+          "iconBackgroundColor": "#2980b9",
+          url: 'https://www.tonggiaophanhanoi.org/tuan-cuu-nhat-kinh-duc-me-hang-cuu-giup/',
+      },
+      {
+          id: 'joseph-novena',
+          title: 'Tuần cửu nhật kính thánh Giuse',
+          icon: 'sparkles-outline',
+          "iconBackgroundColor": "#2980b9",
+          url: 'https://www.tonggiaophanhanoi.org/tuan-cuu-nhat-kinh-thanh-giuse/',
+      },
+      {
+          id: 'joseph-month-book',
+          title: 'Sách tháng thánh Giuse',
+          icon: 'sparkles-outline',
+          "iconBackgroundColor": "#2980b9",
+          url: 'https://www.tonggiaophanhanoi.org/sach-thang-thanh-giu-se/',
+      },
+      {
           id: 'general-prayers',
           title: 'Lời nguyện tín hữu',
           icon: 'document-text-outline',
