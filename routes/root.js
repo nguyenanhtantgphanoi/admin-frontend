@@ -1517,17 +1517,24 @@ fastify.get('/get-quick-utilities-v2', async function (request, reply) {
           url: 'https://www.tonggiaophanhanoi.org/nghi-thuc-tuan-thanh/',
       },
       {
+          id: 'rites-schedule',
+          title: 'Lịch cử hành Tuần Thánh nội thành Hà Nội',
+          icon: 'calendar-outline',
+          "iconBackgroundColor": "#2980b9",
+          url: 'https://www.tonggiaophanhanoi.org/lich-cu-hanh-tuan-thanh-nam-2026-tai-cac-nha-tho-noi-thanh-ha-noi-2/',
+      },
+      {
           id: 'retreat-confession-schedule',
           title: 'Lịch tĩnh tâm/giải tội',
           icon: 'calendar-outline',
-          "iconBackgroundColor": "#2980b9",
+          "iconBackgroundColor": "#8e44ad",
           url: 'https://www.tonggiaophanhanoi.org/lich-tinh-tam-mua-chay-va-tuan-thanh-2026-tai-cac-nha-tho-noi-thanh-ha-noi/',
       },
       {
           id: 'reflection',
           title: 'Suy tư tản mạn',
           icon: 'bulb-outline',
-          "iconBackgroundColor": "#8e44ad",
+          "iconBackgroundColor": "#f39c12",
           url: 'https://www.tonggiaophanhanoi.org/category/song-dao/suy-tu-tan-man/',
       },
       {
