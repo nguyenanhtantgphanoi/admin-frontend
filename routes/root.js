@@ -1524,6 +1524,13 @@ fastify.get('/get-quick-utilities-v2', async function (request, reply) {
           url: 'https://www.tonggiaophanhanoi.org/lich-cu-hanh-tuan-thanh-nam-2026-tai-cac-nha-tho-noi-thanh-ha-noi-2/',
       },
       {
+          id: 'novena-mercy',
+          title: 'Tuần cửu nhật kính Lòng Thương Xót Chúa',
+          icon: 'star-outline',
+          "iconBackgroundColor": "#f39c12",
+          url: 'https://www.tonggiaophanhanoi.org/tuan-cuu-nhat-kinh-long-chua-thuong-xot/',
+      },
+      {
           id: 'retreat-confession-schedule',
           title: 'Lịch tĩnh tâm/giải tội',
           icon: 'calendar-outline',
