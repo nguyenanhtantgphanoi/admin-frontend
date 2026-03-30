@@ -832,6 +832,185 @@ module.exports = async function (fastify, opts) {
       return err
     }
   });
+  fastify.get('/get-calendar-for-web', async function (request, reply) {
+    const tb_lich = this.mongo.db.collection('lich-cong-giao')
+    const ngay_le = this.mongo.db.collection('ngay-le')
+    const articlesCollection = this.mongo.db.collection('articles')
+
+    // const tb_ngayle = this.mongo.db.collection('ngay-le')
+    // if the id is an ObjectId format, you need to create a new ObjectId
+    //const id = this.mongo.ObjectId(req.params.id)
+    const {date} = request.query
+    //console.log(`${_id}`)
+    try {
+      if (date == undefined) {
+        reply.code(400).send({ error: 'Missing required parameter: date or month' })
+        return
+      }
+
+      const d = new Date(date)
+      if (isNaN(d)) {
+        reply.code(400).send({ error: 'Invalid date parameter' })
+        return
+      }
+
+      const year = d.getFullYear()
+      const monthNum = d.getMonth() + 1
+      const month = monthNum < 10 ? '0' + monthNum : '' + monthNum
+
+      let p_m = monthNum
+      let p_y = year
+      if (p_m === 1) {
+        p_m = 12
+        p_y--
+      } else {
+        p_m--
+      }
+      const prevMonth = p_m < 10 ? '0' + p_m : '' + p_m
+
+      let n_m = monthNum
+      let n_y = year
+      if (n_m === 12) {
+        n_m = 1
+        n_y++
+      } else {
+        n_m++
+      }
+      const nextMonth = n_m < 10 ? '0' + n_m : '' + n_m
+
+      const [cur_month, prev_month, nxt_month] = await Promise.all([
+        tb_lich.find({ date: { $regex: `^${year}-${month}-\\d{2}` } }).sort({ date: 1 }).toArray(),
+        tb_lich.find({ date: { $regex: `^${p_y}-${prevMonth}-\\d{2}` } }).sort({ date: 1 }).toArray(),
+        tb_lich.find({ date: { $regex: `^${n_y}-${nextMonth}-\\d{2}` } }).sort({ date: 1 }).toArray()
+      ])
+
+      const allDays = [...prev_month, ...cur_month, ...nxt_month]
+      if (allDays.length === 0) {
+        return { data: [] }
+      }
+
+      const datesByYear = {}
+      for (const day of allDays) {
+        const dayDate = new Date(day.date)
+        if (isNaN(dayDate)) {
+          continue
+        }
+        const dayYear = dayDate.getFullYear()
+        if (!datesByYear[dayYear]) {
+          datesByYear[dayYear] = new Set()
+        }
+        datesByYear[dayYear].add(day.date)
+      }
+
+      const yearOrConditions = Object.entries(datesByYear).map(([dayYear, dateSet]) => ({
+        [`assigned_date.${dayYear}`]: { $in: Array.from(dateSet) }
+      }))
+
+      const allNgayLe = yearOrConditions.length > 0
+        ? await ngay_le.find({ $or: yearOrConditions }).toArray()
+        : []
+
+      const articleIdSet = new Set()
+      for (const feast of allNgayLe) {
+        if (!Array.isArray(feast.reflections)) {
+          continue
+        }
+        for (const reflectionId of feast.reflections) {
+          articleIdSet.add(reflectionId.toString())
+        }
+      }
+
+      const articleObjectIds = []
+      for (const id of articleIdSet) {
+        try {
+          articleObjectIds.push(new this.mongo.ObjectId(id))
+        } catch (err) {
+          // Skip invalid ObjectId values in reflections.
+        }
+      }
+
+      const allArticles = articleObjectIds.length > 0
+        ? await articlesCollection.find({ _id: { $in: articleObjectIds } }).toArray()
+        : []
+
+      const articlesById = new Map()
+      for (const article of allArticles) {
+        articlesById.set(article._id.toString(), article)
+      }
+
+      const feastByDateYear = new Map()
+      for (const feast of allNgayLe) {
+        if (!feast.assigned_date) {
+          continue
+        }
+        for (const [assignedYear, assignedDate] of Object.entries(feast.assigned_date)) {
+          if (!datesByYear[assignedYear] || !datesByYear[assignedYear].has(assignedDate)) {
+            continue
+          }
+          const mapKey = `${assignedYear}|${assignedDate}`
+          if (!feastByDateYear.has(mapKey)) {
+            feastByDateYear.set(mapKey, [])
+          }
+          feastByDateYear.get(mapKey).push(feast)
+        }
+      }
+
+      const buildArrCacLeForDay = (day) => {
+        const dayDate = new Date(day.date)
+        if (isNaN(dayDate)) {
+          return []
+        }
+
+        const dayYear = dayDate.getFullYear()
+        const mapKey = `${dayYear}|${day.date}`
+        const matchedFeasts = feastByDateYear.get(mapKey) || []
+        const arr_cac_le = []
+
+        for (const sourceFeast of matchedFeasts) {
+          const feast = { ...sourceFeast, ban_van: { ...(sourceFeast.ban_van || {}) } }
+          const hasChanBanVan = feast.ban_van.bd1_chan_trich_tu != '' && feast.ban_van.bd1_chan_trich_tu != undefined
+          if (hasChanBanVan && dayYear % 2 === 0) {
+            feast.ban_van.bd1_le = feast.ban_van.bd1_chan
+            feast.ban_van.bd1_le_trich_tu = feast.ban_van.bd1_chan_trich_tu
+            feast.ban_van.cau_bd1_le_tom_gon = feast.ban_van.cau_bd1_chan_tom_gon
+            feast.ban_van.dap_ca_le_trich_tu = feast.ban_van.dap_ca_chan_trich_tu
+            feast.ban_van.dap_ca_le = feast.ban_van.dap_ca_chan
+          }
+
+          delete feast.bai_viet
+
+          if (Array.isArray(feast.reflections) && feast.reflections.length > 0) {
+            feast.articles = feast.reflections
+              .map((id) => articlesById.get(id.toString()))
+              .filter(Boolean)
+          } else {
+            feast.articles = []
+          }
+
+          arr_cac_le.push(feast)
+        }
+
+        const matchedIndex = arr_cac_le.findIndex((feast) =>
+          feast.title && day.title && feast.title.toLowerCase().localeCompare(day.title.toLowerCase()) === 0
+        )
+        if (matchedIndex > 0) {
+          const first = arr_cac_le[0]
+          arr_cac_le[0] = arr_cac_le[matchedIndex]
+          arr_cac_le[matchedIndex] = first
+        }
+
+        return arr_cac_le
+      }
+
+      for (const day of allDays) {
+        day.arr_cac_le = buildArrCacLeForDay(day)
+      }
+
+      return { data: allDays }
+    } catch (err) {
+      return err
+    }
+  });
   fastify.get('/get-one-day', async function (request, reply) {
     const tb_lich = this.mongo.db.collection('lich-cong-giao')
     const ngay_le = this.mongo.db.collection('ngay-le')
