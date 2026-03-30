@@ -971,7 +971,8 @@ module.exports = async function (fastify, opts) {
             dap_ca_le_trich_tu: dapCaLeTrichTu,
             bd2_trich_tu: sourceBanVan.bd2_trich_tu,
             phuc_am_trich_tu: sourceBanVan.phuc_am_trich_tu,
-            cau_phuc_am_tom_gon: sourceBanVan.cau_phuc_am_tom_gon
+            cau_phuc_am_tom_gon: sourceBanVan.cau_phuc_am_tom_gon,
+            url: sourceBanVan.url
           }
 
           delete feast.bai_viet
