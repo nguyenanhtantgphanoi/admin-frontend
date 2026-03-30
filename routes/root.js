@@ -840,19 +840,8 @@ module.exports = async function (fastify, opts) {
     // const tb_ngayle = this.mongo.db.collection('ngay-le')
     // if the id is an ObjectId format, you need to create a new ObjectId
     //const id = this.mongo.ObjectId(req.params.id)
-    const {date} = request.query
-    //console.log(`${_id}`)
     try {
-      if (date == undefined) {
-        reply.code(400).send({ error: 'Missing required parameter: date or month' })
-        return
-      }
-
-      const d = new Date(date)
-      if (isNaN(d)) {
-        reply.code(400).send({ error: 'Invalid date parameter' })
-        return
-      }
+      const d = new Date()
 
       const year = d.getFullYear()
       const monthNum = d.getMonth() + 1
