@@ -835,7 +835,6 @@ module.exports = async function (fastify, opts) {
   fastify.get('/get-calendar-for-web', async function (request, reply) {
     const tb_lich = this.mongo.db.collection('lich-cong-giao')
     const ngay_le = this.mongo.db.collection('ngay-le')
-    const articlesCollection = this.mongo.db.collection('articles')
 
     // const tb_ngayle = this.mongo.db.collection('ngay-le')
     // if the id is an ObjectId format, you need to create a new ObjectId
@@ -899,34 +898,6 @@ module.exports = async function (fastify, opts) {
         ? await ngay_le.find({ $or: yearOrConditions }).toArray()
         : []
 
-      const articleIdSet = new Set()
-      for (const feast of allNgayLe) {
-        if (!Array.isArray(feast.reflections)) {
-          continue
-        }
-        for (const reflectionId of feast.reflections) {
-          articleIdSet.add(reflectionId.toString())
-        }
-      }
-
-      const articleObjectIds = []
-      for (const id of articleIdSet) {
-        try {
-          articleObjectIds.push(new this.mongo.ObjectId(id))
-        } catch (err) {
-          // Skip invalid ObjectId values in reflections.
-        }
-      }
-
-      const allArticles = articleObjectIds.length > 0
-        ? await articlesCollection.find({ _id: { $in: articleObjectIds } }).toArray()
-        : []
-
-      const articlesById = new Map()
-      for (const article of allArticles) {
-        articlesById.set(article._id.toString(), article)
-      }
-
       const feastByDateYear = new Map()
       for (const feast of allNgayLe) {
         if (!feast.assigned_date) {
@@ -957,7 +928,8 @@ module.exports = async function (fastify, opts) {
 
         for (const sourceFeast of matchedFeasts) {
           const sourceBanVan = sourceFeast.ban_van || {}
-          const feast = { ...sourceFeast, ban_van: {} }
+          const { assigned_date, ...feastWithoutAssignedDate } = sourceFeast
+          const feast = { ...feastWithoutAssignedDate, ban_van: {} }
           let bd1LeTrichTu = sourceBanVan.bd1_le_trich_tu
           let dapCaLeTrichTu = sourceBanVan.dap_ca_le_trich_tu
           const hasChanBanVan = sourceBanVan.bd1_chan_trich_tu != '' && sourceBanVan.bd1_chan_trich_tu != undefined
@@ -976,14 +948,6 @@ module.exports = async function (fastify, opts) {
           }
 
           delete feast.bai_viet
-
-          if (Array.isArray(feast.reflections) && feast.reflections.length > 0) {
-            feast.articles = feast.reflections
-              .map((id) => articlesById.get(id.toString()))
-              .filter(Boolean)
-          } else {
-            feast.articles = []
-          }
 
           arr_cac_le.push(feast)
         }
