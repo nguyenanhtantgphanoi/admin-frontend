@@ -956,14 +956,22 @@ module.exports = async function (fastify, opts) {
         const arr_cac_le = []
 
         for (const sourceFeast of matchedFeasts) {
-          const feast = { ...sourceFeast, ban_van: { ...(sourceFeast.ban_van || {}) } }
-          const hasChanBanVan = feast.ban_van.bd1_chan_trich_tu != '' && feast.ban_van.bd1_chan_trich_tu != undefined
+          const sourceBanVan = sourceFeast.ban_van || {}
+          const feast = { ...sourceFeast, ban_van: {} }
+          let bd1LeTrichTu = sourceBanVan.bd1_le_trich_tu
+          let dapCaLeTrichTu = sourceBanVan.dap_ca_le_trich_tu
+          const hasChanBanVan = sourceBanVan.bd1_chan_trich_tu != '' && sourceBanVan.bd1_chan_trich_tu != undefined
           if (hasChanBanVan && dayYear % 2 === 0) {
-            feast.ban_van.bd1_le = feast.ban_van.bd1_chan
-            feast.ban_van.bd1_le_trich_tu = feast.ban_van.bd1_chan_trich_tu
-            feast.ban_van.cau_bd1_le_tom_gon = feast.ban_van.cau_bd1_chan_tom_gon
-            feast.ban_van.dap_ca_le_trich_tu = feast.ban_van.dap_ca_chan_trich_tu
-            feast.ban_van.dap_ca_le = feast.ban_van.dap_ca_chan
+            bd1LeTrichTu = sourceBanVan.bd1_chan_trich_tu
+            dapCaLeTrichTu = sourceBanVan.dap_ca_chan_trich_tu
+          }
+
+          feast.ban_van = {
+            bd1_le_trich_tu: bd1LeTrichTu,
+            dap_ca_le_trich_tu: dapCaLeTrichTu,
+            bd2_trich_tu: sourceBanVan.bd2_trich_tu,
+            phuc_am_trich_tu: sourceBanVan.phuc_am_trich_tu,
+            cau_phuc_am_tom_gon: sourceBanVan.cau_phuc_am_tom_gon
           }
 
           delete feast.bai_viet
