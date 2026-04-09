@@ -1650,20 +1650,7 @@ fastify.get('/get-quick-utilities-v2', async function (request, reply) {
         "homNayDisabled": "#95a5a6",
       },
     "data":[
-      {
-          id: 'holy-week-rites',
-          title: 'Nghi thức Tuần Thánh',
-          icon: 'book',
-          "iconBackgroundColor": "#c0392b",
-          url: 'https://www.tonggiaophanhanoi.org/nghi-thuc-tuan-thanh/',
-      },
-      {
-          id: 'rites-schedule',
-          title: 'Lịch cử hành Tuần Thánh nội thành Hà Nội',
-          icon: 'calendar-outline',
-          "iconBackgroundColor": "#2980b9",
-          url: 'https://www.tonggiaophanhanoi.org/lich-cu-hanh-tuan-thanh-nam-2026-tai-cac-nha-tho-noi-thanh-ha-noi-2/',
-      },
+      
       {
           id: 'novena-mercy',
           title: 'Tuần cửu nhật kính Lòng Thương Xót Chúa',
@@ -1671,13 +1658,7 @@ fastify.get('/get-quick-utilities-v2', async function (request, reply) {
           "iconBackgroundColor": "#f39c12",
           url: 'https://www.tonggiaophanhanoi.org/tuan-cuu-nhat-kinh-long-chua-thuong-xot/',
       },
-      {
-          id: 'retreat-confession-schedule',
-          title: 'Lịch tĩnh tâm/giải tội',
-          icon: 'calendar-outline',
-          "iconBackgroundColor": "#8e44ad",
-          url: 'https://www.tonggiaophanhanoi.org/lich-tinh-tam-mua-chay-va-tuan-thanh-2026-tai-cac-nha-tho-noi-thanh-ha-noi/',
-      },
+      
       {
           id: 'reflection',
           title: 'Suy tư tản mạn',
