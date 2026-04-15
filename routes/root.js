@@ -1651,13 +1651,7 @@ fastify.get('/get-quick-utilities-v2', async function (request, reply) {
       },
     "data":[
       
-      {
-          id: 'novena-mercy',
-          title: 'Tuần cửu nhật kính Lòng Thương Xót Chúa',
-          icon: 'star-outline',
-          "iconBackgroundColor": "#f39c12",
-          url: 'https://www.tonggiaophanhanoi.org/tuan-cuu-nhat-kinh-long-chua-thuong-xot/',
-      },
+      
       
       {
           id: 'reflection',
