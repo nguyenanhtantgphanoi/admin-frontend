@@ -1651,7 +1651,13 @@ fastify.get('/get-quick-utilities-v2', async function (request, reply) {
       },
     "data":[
       
-      
+      {
+          id: 'announcement',
+          title: 'Thông báo',
+          icon: 'megaphone-outline',
+          "iconBackgroundColor": "#2895fc",
+          url: 'https://www.tonggiaophanhanoi.org/category/thong-bao/',
+      },
       
       {
           id: 'reflection',
