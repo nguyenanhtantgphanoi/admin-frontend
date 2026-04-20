@@ -1,7 +1,9 @@
 'use strict'
 const fastify = require('fastify')()
+const path = require('node:path')
 const { JSDOM } = require('jsdom');
 const { exec } = require('child_process')
+const mammoth = require('mammoth')
 const cron = require('node-cron')
 
 const cron_tasks = []
@@ -9,6 +11,59 @@ class DOMParser {
   parseFromString(s, contentType = 'text/html') {
     return new JSDOM(s, { contentType }).window.document;
   }
+}
+
+function escapeHtml(value = '') {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+function textToHtml(value) {
+  return value
+    .split(/\r?\n\r?\n/)
+    .filter(block => block.trim() !== '')
+    .map(block => `<p>${escapeHtml(block).replace(/\r?\n/g, '<br>')}</p>`)
+    .join('\n')
+}
+
+async function convertUploadedDocumentToHtml(file) {
+  const extension = path.extname(file.filename || '').toLowerCase()
+  const buffer = await file.toBuffer()
+
+  if (!buffer || buffer.length === 0) {
+    throw new Error('The uploaded file is empty.')
+  }
+
+  if (extension === '.docx') {
+    const result = await mammoth.convertToHtml({ buffer })
+    return {
+      html: result.value,
+      messages: result.messages || [],
+      sourceType: 'docx'
+    }
+  }
+
+  if (extension === '.html' || extension === '.htm') {
+    return {
+      html: buffer.toString('utf8'),
+      messages: [],
+      sourceType: 'html'
+    }
+  }
+
+  if (extension === '.txt' || extension === '.md') {
+    return {
+      html: textToHtml(buffer.toString('utf8')),
+      messages: [],
+      sourceType: 'text'
+    }
+  }
+
+  throw new Error('Unsupported file type. Upload a .docx, .html, .htm, .txt, or .md file.')
 }
 
 
@@ -1282,6 +1337,63 @@ module.exports = async function (fastify, opts) {
       return err
     }
   });
+
+  fastify.get('/document-to-html', async function (request, reply) {
+    try {
+      return reply.viewWithLayout('admin/document-to-html.ejs', {
+        title: 'Document to HTML Converter'
+      })
+    } catch (err) {
+      return err
+    }
+  })
+
+  fastify.post('/document-to-html/convert', async function (request, reply) {
+    let upload
+
+    if (!request.isMultipart()) {
+      return reply.code(400).send({
+        success: false,
+        message: 'Choose a file before converting.'
+      })
+    }
+
+    try {
+      upload = await request.file()
+    } catch (err) {
+      const statusCode = err.code === 'FST_REQ_FILE_TOO_LARGE' ? 413 : 400
+      return reply.code(statusCode).send({
+        success: false,
+        message: err.code === 'FST_REQ_FILE_TOO_LARGE'
+          ? 'The uploaded file exceeds the 10 MB limit.'
+          : 'Could not read the uploaded file.'
+      })
+    }
+
+    if (!upload) {
+      return reply.code(400).send({
+        success: false,
+        message: 'Choose a file before converting.'
+      })
+    }
+
+    try {
+      const result = await convertUploadedDocumentToHtml(upload)
+      return {
+        success: true,
+        filename: upload.filename,
+        html: result.html,
+        sourceType: result.sourceType,
+        messages: result.messages
+      }
+    } catch (err) {
+      console.error('Document conversion failed:', err)
+      return reply.code(400).send({
+        success: false,
+        message: err.message || 'Document conversion failed.'
+      })
+    }
+  })
 
   fastify.post('/save-nghi-thuc', async function (request, reply) {
     const tb_nghi_thuc = this.mongo.db.collection('nghi-thuc')

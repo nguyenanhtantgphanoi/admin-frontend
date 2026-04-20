@@ -1,0 +1,222 @@
+<div class="container-fluid pt-4 px-4">
+  <div class="row g-4">
+    <div class="col-12">
+      <div class="bg-light rounded-3 p-4 p-lg-5 shadow-sm border-0">
+        <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-end mb-4">
+          <div>
+            <span class="badge rounded-pill text-bg-dark mb-2 px-3 py-2">Admin Utility</span>
+            <h1 class="display-6 mb-2">Chuyển tài liệu sang HTML</h1>
+            <p class="text-secondary mb-0">Tải tệp lên, chuyển đổi trên server, xem trước HTML và sao chép hoặc tải kết quả ngay trong trình duyệt.</p>
+          </div>
+          <div class="rounded-3 px-3 py-2" style="background: linear-gradient(135deg, #f4ede1, #e7f1ec); min-width: 260px;">
+            <div class="small text-uppercase text-muted fw-semibold">Định dạng hỗ trợ</div>
+            <div class="fw-semibold text-dark">.docx, .html, .htm, .txt, .md</div>
+            <div class="small text-muted">Giới hạn kích thước: 10 MB</div>
+          </div>
+        </div>
+
+        <div class="row g-4 align-items-stretch">
+          <div class="col-12 col-xl-4">
+            <div class="h-100 rounded-3 p-4 text-white" style="background: linear-gradient(145deg, #173b3f, #2f6f61);">
+              <h2 class="h4 mb-3">Tải tệp</h2>
+              <p class="text-white-50 mb-4">Tệp .docx được chuyển bằng Mammoth. Tệp văn bản và HTML được chuẩn hoá để bạn có thể tiếp tục biên tập.</p>
+
+              <form id="document-converter-form" class="d-grid gap-3">
+                <div>
+                  <label for="document-file" class="form-label fw-semibold">Chọn tài liệu</label>
+                  <input id="document-file" name="document" class="form-control form-control-lg" type="file" accept=".docx,.html,.htm,.txt,.md" required>
+                </div>
+                <button id="convert-button" type="submit" class="btn btn-warning btn-lg fw-semibold text-dark">Chuyển sang HTML</button>
+              </form>
+
+              <div id="converter-status" class="alert alert-light text-dark mt-4 mb-0 d-none"></div>
+
+              <div class="mt-4 pt-3 border-top border-light border-opacity-25">
+                <div class="small text-uppercase text-white-50 fw-semibold mb-2">Lưu ý</div>
+                <ul class="small text-white-50 ps-3 mb-0">
+                  <li class="mb-2">Các tệp .doc cũ chưa được hỗ trợ trong bản này.</li>
+                  <li class="mb-2">HTML trả về có thể cần dọn lại một số style hoặc class trước khi xuất bản.</li>
+                  <li class="mb-0">Khung xem trước dùng iframe sandbox để giảm rủi ro chạy script.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-xl-8">
+            <div class="row g-4 h-100">
+              <div class="col-12">
+                <div class="rounded-3 border bg-white p-3 p-lg-4 h-100">
+                  <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center mb-3">
+                    <div>
+                      <h2 class="h4 mb-1">Kết quả HTML</h2>
+                      <div id="result-meta" class="text-muted small">Chưa có dữ liệu chuyển đổi.</div>
+                    </div>
+                    <div class="d-flex gap-2">
+                      <button id="copy-html-button" type="button" class="btn btn-outline-dark" disabled>Sao chép HTML</button>
+                      <button id="download-html-button" type="button" class="btn btn-dark" disabled>Tải file HTML</button>
+                    </div>
+                  </div>
+
+                  <textarea id="html-output" class="form-control font-monospace" rows="14" placeholder="HTML output will appear here" spellcheck="false"></textarea>
+
+                  <div id="conversion-messages" class="mt-3 d-none">
+                    <h3 class="h6 mb-2">Ghi chú chuyển đổi</h3>
+                    <div id="conversion-message-list" class="d-grid gap-2"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <div class="rounded-3 border bg-white p-3 p-lg-4">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="h4 mb-0">Xem trước</h2>
+                    <span class="small text-muted">Rendered from the generated HTML</span>
+                  </div>
+                  <iframe
+                    id="html-preview"
+                    title="HTML Preview"
+                    sandbox=""
+                    class="w-100 border rounded-3"
+                    style="min-height: 420px; background: linear-gradient(180deg, #fffdf8, #ffffff);"
+                  ></iframe>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const form = document.getElementById('document-converter-form')
+    const fileInput = document.getElementById('document-file')
+    const convertButton = document.getElementById('convert-button')
+    const statusBox = document.getElementById('converter-status')
+    const htmlOutput = document.getElementById('html-output')
+    const previewFrame = document.getElementById('html-preview')
+    const resultMeta = document.getElementById('result-meta')
+    const copyButton = document.getElementById('copy-html-button')
+    const downloadButton = document.getElementById('download-html-button')
+    const messagesWrapper = document.getElementById('conversion-messages')
+    const messagesList = document.getElementById('conversion-message-list')
+
+    let currentFilename = 'converted-document.html'
+
+    function setStatus(message, variant) {
+      statusBox.textContent = message
+      statusBox.className = `alert mt-4 mb-0 alert-${variant}`
+      statusBox.classList.remove('d-none')
+    }
+
+    function clearStatus() {
+      statusBox.classList.add('d-none')
+      statusBox.textContent = ''
+    }
+
+    function setMessages(messages) {
+      if (!messages || messages.length === 0) {
+        messagesWrapper.classList.add('d-none')
+        messagesList.innerHTML = ''
+        return
+      }
+
+      messagesList.innerHTML = messages.map((message) => {
+        const type = message.type || 'info'
+        const text = message.message || String(message)
+        return `<div class="border rounded-3 px-3 py-2 small"><strong class="text-uppercase">${type}</strong>: ${text}</div>`
+      }).join('')
+      messagesWrapper.classList.remove('d-none')
+    }
+
+    function setResult(html, filename, sourceType) {
+      currentFilename = (filename || 'converted-document').replace(/\.[^.]+$/, '') + '.html'
+      htmlOutput.value = html
+      previewFrame.srcdoc = html
+      resultMeta.textContent = `${filename} converted from ${sourceType} to HTML.`
+      copyButton.disabled = false
+      downloadButton.disabled = false
+    }
+
+    async function copyHtml() {
+      if (!htmlOutput.value) {
+        return
+      }
+
+      try {
+        await navigator.clipboard.writeText(htmlOutput.value)
+        setStatus('HTML copied to clipboard.', 'success')
+      } catch (err) {
+        htmlOutput.select()
+        document.execCommand('copy')
+        setStatus('HTML copied to clipboard.', 'success')
+      }
+    }
+
+    function downloadHtml() {
+      if (!htmlOutput.value) {
+        return
+      }
+
+      const blob = new Blob([htmlOutput.value], { type: 'text/html;charset=utf-8' })
+      const url = URL.createObjectURL(blob)
+      const anchor = document.createElement('a')
+      anchor.href = url
+      anchor.download = currentFilename
+      document.body.appendChild(anchor)
+      anchor.click()
+      anchor.remove()
+      URL.revokeObjectURL(url)
+    }
+
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault()
+
+      const selectedFile = fileInput.files && fileInput.files[0]
+      if (!selectedFile) {
+        setStatus('Choose a document before converting.', 'warning')
+        return
+      }
+
+      clearStatus()
+      convertButton.disabled = true
+      convertButton.textContent = 'Đang chuyển đổi...'
+      copyButton.disabled = true
+      downloadButton.disabled = true
+      setMessages([])
+
+      try {
+        const formData = new FormData()
+        formData.append('document', selectedFile)
+
+        const response = await fetch('/document-to-html/convert', {
+          method: 'POST',
+          body: formData
+        })
+        const payload = await response.json()
+
+        if (!response.ok || !payload.success) {
+          throw new Error(payload.message || 'Document conversion failed.')
+        }
+
+        setResult(payload.html, payload.filename, payload.sourceType)
+        setMessages(payload.messages)
+        setStatus('Conversion completed.', 'success')
+      } catch (err) {
+        resultMeta.textContent = 'Conversion failed.'
+        htmlOutput.value = ''
+        previewFrame.srcdoc = '<!doctype html><html><body style="font-family: sans-serif; padding: 24px; color: #7f1d1d;">Conversion failed. Check the message panel and try another file.</body></html>'
+        setMessages([])
+        setStatus(err.message || 'Document conversion failed.', 'danger')
+      } finally {
+        convertButton.disabled = false
+        convertButton.textContent = 'Chuyển sang HTML'
+      }
+    })
+
+    copyButton.addEventListener('click', copyHtml)
+    downloadButton.addEventListener('click', downloadHtml)
+  })()
+</script>
