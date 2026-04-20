@@ -1658,7 +1658,13 @@ fastify.get('/get-quick-utilities-v2', async function (request, reply) {
           "iconBackgroundColor": "#2895fc",
           url: 'https://www.tonggiaophanhanoi.org/category/thong-bao/',
       },
-      
+      {
+          id: 'mass-schedule',
+          title: 'Lịch Lễ Nội Thành',
+          icon: 'calendar-outline',
+          "iconBackgroundColor": "#16a085",
+          url: 'https://www.tonggiaophanhanoi.org/gio-le-tai-ha-noi-xep-theo-thu-tu-ten-nha-tho/',
+      },
       {
           id: 'reflection',
           title: 'Suy tư tản mạn',
@@ -1679,27 +1685,6 @@ fastify.get('/get-quick-utilities-v2', async function (request, reply) {
           icon: 'people-sharp',
           "iconBackgroundColor": "#2980b9",
           url: 'https://www.tonggiaophanhanoi.org/category/phung-vu/hanh-cac-thanh/',
-      },
-      {
-          id: 'mary-novena',
-          title: 'Tuần cửu nhật kính Đức Mẹ HCG',
-          icon: 'people-circle',
-          "iconBackgroundColor": "#2980b9",
-          url: 'https://www.tonggiaophanhanoi.org/tuan-cuu-nhat-kinh-duc-me-hang-cuu-giup/',
-      },
-      {
-          id: 'joseph-novena',
-          title: 'Tuần cửu nhật kính thánh Giuse',
-          icon: 'people-circle',
-          "iconBackgroundColor": "#2980b9",
-          url: 'https://www.tonggiaophanhanoi.org/tuan-cuu-nhat-kinh-thanh-giuse/',
-      },
-      {
-          id: 'joseph-month-book',
-          title: 'Sách tháng thánh Giuse',
-          icon: 'book',
-          "iconBackgroundColor": "#2980b9",
-          url: 'https://www.tonggiaophanhanoi.org/sach-thang-thanh-giu-se/',
       },
       {
           id: 'general-prayers',
