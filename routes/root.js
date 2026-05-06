@@ -708,6 +708,81 @@ module.exports = async function (fastify, opts) {
     const ngay_le = this.mongo.db.collection('ngay-le')
     const articlesCollection = this.mongo.db.collection('articles')
 
+    const {date} = request.query
+    try {
+      if (date == undefined) {
+        return reply.code(400).send({ error: 'Missing required parameter: date' })
+      }
+
+      // Build date window: 7 days before and 14 days after the given date
+      const toDateStr = (d) => {
+        const y = d.getFullYear()
+        const m = String(d.getMonth() + 1).padStart(2, '0')
+        const day = String(d.getDate()).padStart(2, '0')
+        return `${y}-${m}-${day}`
+      }
+
+      const center = new Date(date)
+      const startDate = new Date(center)
+      startDate.setDate(startDate.getDate() - 7)
+      const endDate = new Date(center)
+      endDate.setDate(endDate.getDate() + 14)
+
+      const startStr = toDateStr(startDate)
+      const endStr = toDateStr(endDate)
+
+      console.log(`get-calendar range: ${startStr} → ${endStr}`)
+
+      const window_days = await tb_lich.find({
+        date: { $gte: startStr, $lte: endStr }
+      }).sort({ date: 1 }).toArray()
+
+      for (let index = 0; index < window_days.length; index++) {
+        const element = window_days[index].date
+        const a_date = new Date(element)
+        let arr_cac_le = await ngay_le.find({ ['assigned_date.' + a_date.getFullYear()]: element }).toArray()
+
+        for (let j = 0; j < arr_cac_le.length; j++) {
+          if ((arr_cac_le[j].ban_van.bd1_chan_trich_tu != "" && arr_cac_le[j].ban_van.bd1_chan_trich_tu != undefined) && a_date.getFullYear() % 2 == 0) {
+            arr_cac_le[j].ban_van.bd1_le = arr_cac_le[j].ban_van.bd1_chan
+            arr_cac_le[j].ban_van.bd1_le_trich_tu = arr_cac_le[j].ban_van.bd1_chan_trich_tu
+            arr_cac_le[j].ban_van.cau_bd1_le_tom_gon = arr_cac_le[j].ban_van.cau_bd1_chan_tom_gon
+            arr_cac_le[j].ban_van.dap_ca_le_trich_tu = arr_cac_le[j].ban_van.dap_ca_chan_trich_tu
+            arr_cac_le[j].ban_van.dap_ca_le = arr_cac_le[j].ban_van.dap_ca_chan
+          }
+          delete arr_cac_le[j].bai_viet
+          if (arr_cac_le[j].title.toLowerCase().localeCompare(window_days[index].title.toLowerCase()) == 0) {
+            let tmp = arr_cac_le[0]
+            arr_cac_le[0] = arr_cac_le[j]
+            arr_cac_le[j] = tmp
+          }
+          // Fetch articles from reflections
+          if (arr_cac_le[j].reflections && arr_cac_le[j].reflections.length > 0) {
+            try {
+              const reflectionIds = arr_cac_le[j].reflections.map(id => new this.mongo.ObjectId(id))
+              arr_cac_le[j].articles = await articlesCollection.find({ _id: { $in: reflectionIds } }).toArray()
+            } catch (err) {
+              console.error('Error fetching articles for reflections:', err)
+              arr_cac_le[j].articles = []
+            }
+          } else {
+            arr_cac_le[j].articles = []
+          }
+        }
+        window_days[index].arr_cac_le = arr_cac_le
+      }
+
+      return { cur_month: window_days, prev_month: [], nxt_month: [] }
+
+    } catch (err) {
+      return err
+    }
+  });
+  fastify.get('/get-calendar-backup', async function (request, reply) {
+    const tb_lich = this.mongo.db.collection('lich-cong-giao')
+    const ngay_le = this.mongo.db.collection('ngay-le')
+    const articlesCollection = this.mongo.db.collection('articles')
+
     // const tb_ngayle = this.mongo.db.collection('ngay-le')
     // if the id is an ObjectId format, you need to create a new ObjectId
     //const id = this.mongo.ObjectId(req.params.id)
