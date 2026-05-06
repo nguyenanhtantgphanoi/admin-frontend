@@ -1112,13 +1112,13 @@ module.exports = async function (fastify, opts) {
       return err 
     }
   });
-  fastify.get('/update-ngay-lich', async function (request, reply) {
+  fastify.post('/update-ngay-lich', async function (request, reply) {
     const tb_lich = this.mongo.db.collection('lich-cong-giao')
 
     // const tb_ngayle = this.mongo.db.collection('ngay-le')
     // if the id is an ObjectId format, you need to create a new ObjectId
     //const id = this.mongo.ObjectId(req.params.id)
-    const {_id, title, url, mua_phung_vu, bac_le, mau_ao_le, bd_1, bd_2, dap_ca, alleluia, tin_mung, cau_loi_chua, xu_chau_luot, luu_y, under_title} = request.query
+    const {_id, title, url, mua_phung_vu, bac_le, mau_ao_le, bd_1, bd_2, dap_ca, alleluia, tin_mung, cau_loi_chua, xu_chau_luot, luu_y, under_title} = request.body
     //console.log(`${_id}`)
     let update_data = {
       title: title,

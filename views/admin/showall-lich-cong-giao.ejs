@@ -306,13 +306,17 @@
             to_send.under_title = $("form textarea#under-title").val()
 
             console.log(to_send)
-            $.get("/update-ngay-lich",to_send, function(data, status){
-                if(status == "success"){
+            $.ajax({
+                url: "/update-ngay-lich",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(to_send),
+                success: function(data) {
                     console.log("Cập nhật thành công "+ data._id )
                     $(".alert").hide()
                     $("#alert-success").show()
-
-                }else{
+                },
+                error: function() {
                     $(".alert").hide()
                     $("#alert-failed").show()
                 }
