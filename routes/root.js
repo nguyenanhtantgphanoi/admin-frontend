@@ -67,6 +67,36 @@ async function convertUploadedDocumentToHtml(file) {
 }
 
 
+/**
+ * After updating a ngay-le document, propagate its updatedAt value to all
+ * lich-cong-giao documents whose `date` matches any value in the ngay-le's
+ * `assigned_date` map.
+ *
+ * @param {object} db        - MongoDB db instance
+ * @param {object} ObjectId  - MongoDB ObjectId constructor
+ * @param {string} ngayLeId  - _id of the updated ngay-le document
+ * @param {Date}   updatedAt - timestamp to propagate
+ */
+async function propagateUpdatedAtToLich(db, ObjectId, ngayLeId, updatedAt) {
+  try {
+    const ngayLeDoc = await db.collection('ngay-le').findOne(
+      { _id: new ObjectId(ngayLeId) },
+      { projection: { assigned_date: 1 } }
+    )
+    if (!ngayLeDoc || !ngayLeDoc.assigned_date) return
+
+    const dates = Object.values(ngayLeDoc.assigned_date).filter(Boolean)
+    if (dates.length === 0) return
+
+    await db.collection('lich-cong-giao').updateMany(
+      { date: { $in: dates } },
+      { $set: { updatedAt } }
+    )
+  } catch (err) {
+    console.error('propagateUpdatedAtToLich error:', err)
+  }
+}
+
 module.exports = async function (fastify, opts) {
   
   fastify.get('/', async function (request, reply) {
@@ -182,7 +212,8 @@ module.exports = async function (fastify, opts) {
   fastify.get('/xoa-truong-', async function (request, reply) {
     const ngayle = this.mongo.db.collection('ngay-le')
     if('_id' in request.query){
-      try{        
+      try{
+        const _updatedAt = new Date()
         await ngayle.updateMany(
           {_id: new this.mongo.ObjectId(request.query._id)},
           {$unset: {
@@ -199,7 +230,8 @@ module.exports = async function (fastify, opts) {
             "ban_van.Ca hiệp lễ":'',
             "ban_van.Lời nguyện hiệp lễ":''
             
-          }})          
+          }, $set: { updatedAt: _updatedAt }})
+        await propagateUpdatedAtToLich(this.mongo.db, this.mongo.ObjectId, request.query._id, _updatedAt)
       }catch(err){
         return err
       }
@@ -298,10 +330,12 @@ module.exports = async function (fastify, opts) {
         // Map new article to ngay-le reflections if ngay_le_id is provided
         if(ngay_le_id && ngay_le_id.trim() !== '') {
           try {
+            const _updatedAt = new Date()
             await ngayLeCollection.updateOne(
               { _id: new this.mongo.ObjectId(ngay_le_id) },
-              { $push: { reflections: result.insertedId } }
+              { $push: { reflections: result.insertedId }, $set: { updatedAt: _updatedAt } }
             )
+            await propagateUpdatedAtToLich(this.mongo.db, this.mongo.ObjectId, ngay_le_id, _updatedAt)
           } catch (ngayLeErr) {
             console.error('Error adding article to ngay-le reflections:', ngayLeErr)
           }
@@ -328,10 +362,20 @@ module.exports = async function (fastify, opts) {
       })
 
       // Remove article ID from all ngay-le reflections
+      const articleObjectId = new this.mongo.ObjectId(_id)
+      const affectedNgayLeDocs = await ngayLeCollection
+        .find({ reflections: { $in: [articleObjectId] } }, { projection: { _id: 1 } })
+        .toArray()
+      const _updatedAt = new Date()
       await ngayLeCollection.updateMany(
-        { reflections: { $in: [new this.mongo.ObjectId(_id)] } },
-        { $pull: { reflections: new this.mongo.ObjectId(_id) } }
+        { reflections: { $in: [articleObjectId] } },
+        { $pull: { reflections: articleObjectId }, $set: { updatedAt: _updatedAt } }
       )
+
+      // Keep lich-cong-giao timestamps in sync for each updated ngay-le document.
+      for (const doc of affectedNgayLeDocs) {
+        await propagateUpdatedAtToLich(this.mongo.db, this.mongo.ObjectId, doc._id.toString(), _updatedAt)
+      }
 
       return { success: true, message: 'Article deleted successfully' }
     } catch (err) {
@@ -387,10 +431,13 @@ module.exports = async function (fastify, opts) {
 
     try {
       if (Object.keys(banVanUpdates).length > 0) {
+        const _updatedAt = new Date()
+        banVanUpdates.updatedAt = _updatedAt
         await ngayle.updateOne(
           { _id: new this.mongo.ObjectId(payload._id) },
           { $set: banVanUpdates }
         )
+        await propagateUpdatedAtToLich(this.mongo.db, this.mongo.ObjectId, payload._id, _updatedAt)
       }
       const doc = await ngayle.findOne({ _id: new this.mongo.ObjectId(payload._id) })
 
@@ -558,7 +605,10 @@ module.exports = async function (fastify, opts) {
       }
       console.log(doc)
       try{        
+        const _updatedAt = new Date()
+        doc.updatedAt = _updatedAt
         await ngayle.updateOne({_id: new this.mongo.ObjectId(request.query._id)},{$set: doc})
+        await propagateUpdatedAtToLich(this.mongo.db, this.mongo.ObjectId, request.query._id, _updatedAt)
         return reply.view('admin/bien-tap-ban-van.ejs', { u: doc})
       }catch(err){
         return err
@@ -621,8 +671,11 @@ module.exports = async function (fastify, opts) {
     //   doc.ban_van = ban_van
     // }
     console.log(doc)
+    const _updatedAt = new Date()
+    doc.updatedAt = _updatedAt
     try{
       await collection.updateOne({_id: new this.mongo.ObjectId(_id)},{$set: doc})
+      await propagateUpdatedAtToLich(this.mongo.db, this.mongo.ObjectId, _id, _updatedAt)
     }catch(err){
       return err
     }
@@ -640,7 +693,8 @@ module.exports = async function (fastify, opts) {
       title:title,
       date:date,
       id_le_theo_mua_phung_vu: new this.mongo.ObjectId(id_le_theo_mua_phung_vu),
-      mau_ao_le:mau_ao_le
+      mau_ao_le:mau_ao_le,
+      updatedAt: new Date()
     }
     try{
       await users.insertOne(doc)
@@ -1209,7 +1263,8 @@ module.exports = async function (fastify, opts) {
       cau_loi_chua: cau_loi_chua,
       xu_chau_luot: xu_chau_luot,
       luu_y: luu_y,
-      under_title: under_title
+      under_title: under_title,
+      updatedAt: new Date()
     }
     try {
       // console.log(update_data)
