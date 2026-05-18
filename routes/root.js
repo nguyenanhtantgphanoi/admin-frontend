@@ -715,6 +715,29 @@ module.exports = async function (fastify, opts) {
       return err
     }
   });
+  fastify.get('/get-lich-cong-giao-updated-at', async function (request, reply) {
+    const lichCongGiao = this.mongo.db.collection('lich-cong-giao')
+    const { date } = request.query
+
+    if (!date) {
+      return reply.code(400).send({ error: 'Missing required parameter: date' })
+    }
+
+    try {
+      const doc = await lichCongGiao.findOne(
+        { date: date },
+        { projection: { _id: 0, date: 1, updatedAt: 1 } }
+      )
+
+      if (!doc) {
+        return reply.code(404).send({ error: 'No lich-cong-giao document found for the provided date' })
+      }
+
+      return { updatedAt: doc.updatedAt || null }
+    } catch (err) {
+      return err
+    }
+  });
   fastify.get('/get-lich', async function (request, reply) {
     const tb_lich = this.mongo.db.collection('lich-cong-giao')
 
@@ -1398,6 +1421,23 @@ module.exports = async function (fastify, opts) {
     }catch(err){
       return err
     }
+  });
+  fastify.get('/get-kinh-nguyen-latest-updated-at', async function (request, reply) {
+    const tb_kinh_nguyen = this.mongo.db.collection('kinh-nguyen')
+    try {
+      const latestDoc = await tb_kinh_nguyen.findOne(
+        {},
+        { sort: { updatedAt: -1 }, projection: { _id: 0, updatedAt: 1 } }
+      )
+
+      if (!latestDoc || !latestDoc.updatedAt) {
+        return reply.code(404).send({ error: 'No kinh-nguyen documents found or updatedAt field is missing' })
+      }
+
+      return { updatedAt: latestDoc.updatedAt }
+    } catch (err) {
+      return err
+    }
   });  
   fastify.get('/get-nghi-thuc-grouped', async function (request, reply) {
     const tb_nghi_thuc = this.mongo.db.collection('nghi-thuc')
@@ -1437,6 +1477,23 @@ module.exports = async function (fastify, opts) {
     try{
       return r_kinh
     }catch(err){
+      return err
+    }
+  });
+  fastify.get('/get-nghi-thuc-latest-updated-at', async function (request, reply) {
+    const tb_nghi_thuc = this.mongo.db.collection('nghi-thuc')
+    try {
+      const latestDoc = await tb_nghi_thuc.findOne(
+        {},
+        { sort: { updatedAt: -1 }, projection: { _id: 0, updatedAt: 1 } }
+      )
+
+      if (!latestDoc || !latestDoc.updatedAt) {
+        return reply.code(404).send({ error: 'No nghi-thuc documents found or updatedAt field is missing' })
+      }
+
+      return { updatedAt: latestDoc.updatedAt }
+    } catch (err) {
       return err
     }
   });
