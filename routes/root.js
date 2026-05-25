@@ -1535,6 +1535,16 @@ module.exports = async function (fastify, opts) {
     }
   })
 
+  fastify.get('/cgkpv', async function (request, reply) {
+    try {
+      return reply.viewWithLayout('admin/cgkpv.ejs', {
+        title: 'CGKPV'
+      })
+    } catch (err) {
+      return err
+    }
+  })
+
   fastify.post('/document-to-html/convert', async function (request, reply) {
     let upload
 
