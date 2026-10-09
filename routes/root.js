@@ -1953,7 +1953,7 @@ fastify.get('/get-quick-utilities-v2', async function (request, reply) {
     {
       "buttonColors" : {
         "cgkpv": "#c0392b",
-        "reading": "#8e44ad",
+        "reading": "#67ad44",
         "lich": "#16a085",
         "homNay": "#2980b9",
         "homNayDisabled": "#95a5a6",
