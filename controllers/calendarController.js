@@ -1,5 +1,42 @@
 'use strict'
 
+const BAC_LE_SORT_ORDER = [
+  'Canh thức vượt qua',
+  'Tuần thánh',
+  'Tiệc ly',
+  'Bát nhật Phục sinh',
+  'Trọng buộc',
+  'Trọng',
+  'Chúa Nhật',
+  'Theo truyền thống',
+  'Khởi đầu mùa chay',
+  'Kính',
+  'Nhớ (hoặc Kính)',
+  'Nhớ buộc',
+  'Nhớ',
+  'Nhớ không buộc',
+  'Thường'
+]
+
+const BAC_LE_ORDER_MAP = new Map(
+  BAC_LE_SORT_ORDER.map((item, index) => [item.toLocaleLowerCase('vi-VN'), index])
+)
+
+function getBacLeSortIndex (bacLe) {
+  if (typeof bacLe !== 'string') {
+    return Number.MAX_SAFE_INTEGER
+  }
+
+  const normalized = bacLe.trim().toLocaleLowerCase('vi-VN')
+  if (!normalized) {
+    return Number.MAX_SAFE_INTEGER
+  }
+
+  return BAC_LE_ORDER_MAP.has(normalized)
+    ? BAC_LE_ORDER_MAP.get(normalized)
+    : Number.MAX_SAFE_INTEGER
+}
+
 async function getCalendar(request, reply) {
   const tb_lich = this.mongo.db.collection('lich-cong-giao')
   const ngay_le = this.mongo.db.collection('ngay-le')
@@ -44,12 +81,6 @@ async function getCalendar(request, reply) {
           item.ban_van.dap_ca_le = item.ban_van.dap_ca_chan
         }
 
-        if (item.title && dayRecord.title && item.title.toLowerCase().localeCompare(dayRecord.title.toLowerCase()) === 0) {
-          const first = arrCacLe[0]
-          arrCacLe[0] = item
-          arrCacLe[arrCacLe.indexOf(item)] = first
-        }
-
         delete item.bai_viet
 
         if (item.reflections && item.reflections.length > 0) {
@@ -63,6 +94,20 @@ async function getCalendar(request, reply) {
           item.articles = []
         }
       }
+
+      arrCacLe = arrCacLe
+        .map((item, index) => ({ item, index }))
+        .sort((a, b) => {
+          const sortIndexA = getBacLeSortIndex(a.item.bac_le)
+          const sortIndexB = getBacLeSortIndex(b.item.bac_le)
+
+          if (sortIndexA !== sortIndexB) {
+            return sortIndexA - sortIndexB
+          }
+
+          return a.index - b.index
+        })
+        .map((entry) => entry.item)
 
       dayRecord.arr_cac_le = arrCacLe
     }
