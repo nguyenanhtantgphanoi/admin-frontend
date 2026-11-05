@@ -112,7 +112,7 @@ async function getCalendar(request, reply) {
       dayRecord.arr_cac_le = arrCacLe
     }
 
-    return { cur_month: windowDays, prev_month: [], nxt_month: [] }
+    return { cur_month: windowDays, prev_month: [], next_month: [] }
   } catch (err) {
     return err
   }
