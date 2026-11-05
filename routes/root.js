@@ -302,7 +302,7 @@ module.exports = async function (fastify, opts) {
     try {
       let cur_month = []  
       let prev_month = []    
-      let nxt_month = []
+      let next_month = []
       console.log(date)
       if(date != undefined){
         let d = new Date(date)
@@ -341,7 +341,7 @@ module.exports = async function (fastify, opts) {
         //let reg = new RegExp(`^${year}-${month}-\d{2}`)
         cur_month = await tb_lich.find({date: {$regex: `^${year}-${month}-\\d{2}`}}).sort({date: 1}).toArray()
         prev_month = await tb_lich.find({date: {$regex: `^${p_y}-${p_m}-\\d{2}`}}).sort({date: 1}).toArray()
-        nxt_month = await tb_lich.find({date: {$regex: `^${n_y}-${n_m}-\\d{2}`}}).sort({date: 1}).toArray()
+        next_month = await tb_lich.find({date: {$regex: `^${n_y}-${n_m}-\\d{2}`}}).sort({date: 1}).toArray()
         
         for (let index = 0; index < prev_month.length; index++) {
           const element = prev_month[index].date;
@@ -411,8 +411,8 @@ module.exports = async function (fastify, opts) {
           cur_month[index].arr_cac_le = arr_cac_le
           prev_month.push(cur_month[index])
         }
-        for (let index = 0; index < nxt_month.length; index++) {
-          const element = nxt_month[index].date;
+        for (let index = 0; index < next_month.length; index++) {
+          const element = next_month[index].date;
           let a_date = new Date(element)
           let arr_cac_le = await ngay_le.find({['assigned_date.'+a_date.getFullYear()]:element}).toArray()
           
@@ -444,8 +444,8 @@ module.exports = async function (fastify, opts) {
             
           }
           arr_cac_le = sortArrCacLeByBacLe(arr_cac_le)
-          nxt_month[index].arr_cac_le = arr_cac_le
-          prev_month.push(nxt_month[index])
+          next_month[index].arr_cac_le = arr_cac_le
+          prev_month.push(next_month[index])
           
         }
         
@@ -492,13 +492,13 @@ module.exports = async function (fastify, opts) {
       }
       const nextMonth = n_m < 10 ? '0' + n_m : '' + n_m
 
-      const [cur_month, prev_month, nxt_month] = await Promise.all([
+      const [cur_month, prev_month, next_month] = await Promise.all([
         tb_lich.find({ date: { $regex: `^${year}-${month}-\\d{2}` } }).sort({ date: 1 }).toArray(),
         tb_lich.find({ date: { $regex: `^${p_y}-${prevMonth}-\\d{2}` } }).sort({ date: 1 }).toArray(),
         tb_lich.find({ date: { $regex: `^${n_y}-${nextMonth}-\\d{2}` } }).sort({ date: 1 }).toArray()
       ])
 
-      const allDays = [...prev_month, ...cur_month, ...nxt_month]
+      const allDays = [...prev_month, ...cur_month, ...next_month]
       if (allDays.length === 0) {
         return { data: [] }
       }
