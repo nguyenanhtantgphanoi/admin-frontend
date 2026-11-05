@@ -449,7 +449,7 @@ module.exports = async function (fastify, opts) {
           
         }
         
-        return {cur_month: prev_month, prev_month: [], nxt_month: []}
+        return {cur_month: prev_month, prev_month: [], next_month: []}
       }else{
         reply.code(400).send({ error: 'Missing required parameter: date or month' });
       }                  
