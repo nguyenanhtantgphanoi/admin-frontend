@@ -35,6 +35,59 @@ function textToHtml(value) {
     .join('\n')
 }
 
+const BAC_LE_SORT_ORDER = [
+  'Canh thức vượt qua',
+  'Tuần thánh',
+  'Tiệc ly',
+  'Bát nhật Phục sinh',
+  'Trọng buộc',
+  'Trọng',
+  'Chúa Nhật',
+  'Theo truyền thống',
+  'Khởi đầu mùa chay',
+  'Kính',
+  'Nhớ (hoặc Kính)',
+  'Nhớ buộc',
+  'Nhớ',
+  'Nhớ không buộc',
+  'Thường'
+]
+
+const BAC_LE_ORDER_MAP = new Map(
+  BAC_LE_SORT_ORDER.map((item, index) => [item.toLocaleLowerCase('vi-VN'), index])
+)
+
+function getBacLeSortIndex(bacLe) {
+  if (typeof bacLe !== 'string') {
+    return Number.MAX_SAFE_INTEGER
+  }
+
+  const normalized = bacLe.trim().toLocaleLowerCase('vi-VN')
+  if (!normalized) {
+    return Number.MAX_SAFE_INTEGER
+  }
+
+  return BAC_LE_ORDER_MAP.has(normalized)
+    ? BAC_LE_ORDER_MAP.get(normalized)
+    : Number.MAX_SAFE_INTEGER
+}
+
+function sortArrCacLeByBacLe(arrCacLe = []) {
+  return arrCacLe
+    .map((item, index) => ({ item, index }))
+    .sort((a, b) => {
+      const sortIndexA = getBacLeSortIndex(a.item && a.item.bac_le)
+      const sortIndexB = getBacLeSortIndex(b.item && b.item.bac_le)
+
+      if (sortIndexA !== sortIndexB) {
+        return sortIndexA - sortIndexB
+      }
+
+      return a.index - b.index
+    })
+    .map((entry) => entry.item)
+}
+
 async function convertUploadedDocumentToHtml(file) {
   const extension = path.extname(file.filename || '').toLowerCase()
   const buffer = await file.toBuffer()
@@ -306,12 +359,6 @@ module.exports = async function (fastify, opts) {
 
             }
             delete arr_cac_le[j].bai_viet
-            if(arr_cac_le[j].title.toLowerCase().localeCompare(prev_month[index].title.toLowerCase()) == 0){
-              let tmp = arr_cac_le[0]
-              arr_cac_le[0] = arr_cac_le[j]
-              arr_cac_le[j] = tmp
-              //break
-            }
             // Fetch articles from reflections
             if(arr_cac_le[j].reflections && arr_cac_le[j].reflections.length > 0){
               try {
@@ -326,6 +373,7 @@ module.exports = async function (fastify, opts) {
             }
             
           }
+          arr_cac_le = sortArrCacLeByBacLe(arr_cac_le)
           prev_month[index].arr_cac_le = arr_cac_le
           
         }
@@ -345,12 +393,6 @@ module.exports = async function (fastify, opts) {
 
             }
             delete arr_cac_le[j].bai_viet
-            if(arr_cac_le[j].title.toLowerCase().localeCompare(cur_month[index].title.toLowerCase()) == 0){
-              let tmp = arr_cac_le[0]
-              arr_cac_le[0] = arr_cac_le[j]
-              arr_cac_le[j] = tmp
-              //break
-            }
             // Fetch articles from reflections
             if(arr_cac_le[j].reflections && arr_cac_le[j].reflections.length > 0){
               try {
@@ -365,6 +407,7 @@ module.exports = async function (fastify, opts) {
             }
             
           }
+          arr_cac_le = sortArrCacLeByBacLe(arr_cac_le)
           cur_month[index].arr_cac_le = arr_cac_le
           prev_month.push(cur_month[index])
         }
@@ -385,12 +428,6 @@ module.exports = async function (fastify, opts) {
 
             }
             delete arr_cac_le[j].bai_viet
-            if(arr_cac_le[j].title.toLowerCase().localeCompare(nxt_month[index].title.toLowerCase()) == 0){
-              let tmp = arr_cac_le[0]
-              arr_cac_le[0] = arr_cac_le[j]
-              arr_cac_le[j] = tmp
-              //break
-            }
             // Fetch articles from reflections
             if(arr_cac_le[j].reflections && arr_cac_le[j].reflections.length > 0){
               try {
@@ -406,6 +443,7 @@ module.exports = async function (fastify, opts) {
             // console.log(arr_cac_le[j].ban_van.bd1_le)
             
           }
+          arr_cac_le = sortArrCacLeByBacLe(arr_cac_le)
           nxt_month[index].arr_cac_le = arr_cac_le
           prev_month.push(nxt_month[index])
           
@@ -540,16 +578,7 @@ module.exports = async function (fastify, opts) {
           arr_cac_le.push(feast)
         }
 
-        const matchedIndex = arr_cac_le.findIndex((feast) =>
-          feast.title && day.title && feast.title.toLowerCase().localeCompare(day.title.toLowerCase()) === 0
-        )
-        if (matchedIndex > 0) {
-          const first = arr_cac_le[0]
-          arr_cac_le[0] = arr_cac_le[matchedIndex]
-          arr_cac_le[matchedIndex] = first
-        }
-
-        return arr_cac_le
+        return sortArrCacLeByBacLe(arr_cac_le)
       }
 
       for (const day of allDays) {
