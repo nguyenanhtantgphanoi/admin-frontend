@@ -37,6 +37,57 @@ function getBacLeSortIndex (bacLe) {
     : Number.MAX_SAFE_INTEGER
 }
 
+function sortArrCacLeByBacLe (arrCacLe = []) {
+  return arrCacLe
+    .map((item, index) => ({ item, index }))
+    .sort((a, b) => {
+      const sortIndexA = getBacLeSortIndex(a.item.bac_le)
+      const sortIndexB = getBacLeSortIndex(b.item.bac_le)
+
+      if (sortIndexA !== sortIndexB) {
+        return sortIndexA - sortIndexB
+      }
+
+      return a.index - b.index
+    })
+    .map((entry) => entry.item)
+}
+
+async function buildArrCacLeForDate ({ mongo, ngayLeCollection, articlesCollection, date }) {
+  const dayValue = new Date(date)
+  if (isNaN(dayValue)) {
+    return []
+  }
+
+  const query = { ['assigned_date.' + dayValue.getFullYear()]: date }
+  const arrCacLe = await ngayLeCollection.find(query).toArray()
+
+  for (const item of arrCacLe) {
+    if ((item.ban_van && item.ban_van.bd1_chan_trich_tu !== '' && item.ban_van.bd1_chan_trich_tu !== undefined) && dayValue.getFullYear() % 2 === 0) {
+      item.ban_van.bd1_le = item.ban_van.bd1_chan
+      item.ban_van.bd1_le_trich_tu = item.ban_van.bd1_chan_trich_tu
+      item.ban_van.cau_bd1_le_tom_gon = item.ban_van.cau_bd1_chan_tom_gon
+      item.ban_van.dap_ca_le_trich_tu = item.ban_van.dap_ca_chan_trich_tu
+      item.ban_van.dap_ca_le = item.ban_van.dap_ca_chan
+    }
+
+    delete item.bai_viet
+
+    if (item.reflections && item.reflections.length > 0) {
+      try {
+        const reflectionIds = item.reflections.map((id) => new mongo.ObjectId(id))
+        item.articles = await articlesCollection.find({ _id: { $in: reflectionIds } }).toArray()
+      } catch (err) {
+        item.articles = []
+      }
+    } else {
+      item.articles = []
+    }
+  }
+
+  return sortArrCacLeByBacLe(arrCacLe)
+}
+
 async function getCalendar(request, reply) {
   const tb_lich = this.mongo.db.collection('lich-cong-giao')
   const ngay_le = this.mongo.db.collection('ngay-le')
@@ -69,47 +120,12 @@ async function getCalendar(request, reply) {
     }).sort({ date: 1 }).toArray()
 
     for (const dayRecord of windowDays) {
-      const dayValue = new Date(dayRecord.date)
-      let arrCacLe = await ngay_le.find({ ['assigned_date.' + dayValue.getFullYear()]: dayRecord.date }).toArray()
-
-      for (const item of arrCacLe) {
-        if ((item.ban_van && item.ban_van.bd1_chan_trich_tu !== '' && item.ban_van.bd1_chan_trich_tu !== undefined) && dayValue.getFullYear() % 2 === 0) {
-          item.ban_van.bd1_le = item.ban_van.bd1_chan
-          item.ban_van.bd1_le_trich_tu = item.ban_van.bd1_chan_trich_tu
-          item.ban_van.cau_bd1_le_tom_gon = item.ban_van.cau_bd1_chan_tom_gon
-          item.ban_van.dap_ca_le_trich_tu = item.ban_van.dap_ca_chan_trich_tu
-          item.ban_van.dap_ca_le = item.ban_van.dap_ca_chan
-        }
-
-        delete item.bai_viet
-
-        if (item.reflections && item.reflections.length > 0) {
-          try {
-            const reflectionIds = item.reflections.map((id) => new this.mongo.ObjectId(id))
-            item.articles = await articlesCollection.find({ _id: { $in: reflectionIds } }).toArray()
-          } catch (err) {
-            item.articles = []
-          }
-        } else {
-          item.articles = []
-        }
-      }
-
-      arrCacLe = arrCacLe
-        .map((item, index) => ({ item, index }))
-        .sort((a, b) => {
-          const sortIndexA = getBacLeSortIndex(a.item.bac_le)
-          const sortIndexB = getBacLeSortIndex(b.item.bac_le)
-
-          if (sortIndexA !== sortIndexB) {
-            return sortIndexA - sortIndexB
-          }
-
-          return a.index - b.index
-        })
-        .map((entry) => entry.item)
-
-      dayRecord.arr_cac_le = arrCacLe
+      dayRecord.arr_cac_le = await buildArrCacLeForDate({
+        mongo: this.mongo,
+        ngayLeCollection: ngay_le,
+        articlesCollection,
+        date: dayRecord.date
+      })
     }
 
     return { cur_month: windowDays, prev_month: [], next_month: [] }
@@ -138,6 +154,8 @@ async function getCalendarYear(request, reply) {
 
 async function getOneDay(request, reply) {
   const tb_lich = this.mongo.db.collection('lich-cong-giao')
+  const ngay_le = this.mongo.db.collection('ngay-le')
+  const articlesCollection = this.mongo.db.collection('articles')
   const { day } = request.query
 
   if (!day) {
@@ -146,7 +164,18 @@ async function getOneDay(request, reply) {
 
   try {
     const item = await tb_lich.findOne({ date: day })
-    return item || { date: day }
+    if (!item) {
+      return { date: day }
+    }
+
+    item.arr_cac_le = await buildArrCacLeForDate({
+      mongo: this.mongo,
+      ngayLeCollection: ngay_le,
+      articlesCollection,
+      date: item.date
+    })
+
+    return item
   } catch (err) {
     return err
   }
