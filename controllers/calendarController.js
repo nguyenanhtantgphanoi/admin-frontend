@@ -138,15 +138,15 @@ async function getCalendarYear(request, reply) {
 
 async function getOneDay(request, reply) {
   const tb_lich = this.mongo.db.collection('lich-cong-giao')
-  const { date } = request.query
+  const { day } = request.query
 
-  if (!date) {
-    return reply.code(400).send({ error: 'Missing required parameter: date' })
+  if (!day) {
+    return reply.code(400).send({ error: 'Missing required parameter: day' })
   }
 
   try {
-    const item = await tb_lich.findOne({ date })
-    return item || { date }
+    const item = await tb_lich.findOne({ date: day })
+    return item || { date: day }
   } catch (err) {
     return err
   }
