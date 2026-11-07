@@ -193,7 +193,7 @@ module.exports = async function (fastify, opts) {
   fastify.get('/submitdata', async function (request, reply) {
     // Access the parsed JSON body
     const users = this.mongo.db.collection('lich-cong-giao')
-    const { title, date, id_le_theo_mua_phung_vu, mau_ao_le } = request.query
+    const { title, date, old_date, id_le_theo_mua_phung_vu, mau_ao_le } = request.query
     // console.log(`Name: ${title}, date: ${date}, id_le: ${id_le_theo_mua_phung_vu}, mau_ao_le: ${mau_ao_le}`)
     //let lich_cong_giao = this.mongo.db.collection('lich-cong-giao')
     
@@ -204,13 +204,38 @@ module.exports = async function (fastify, opts) {
       mau_ao_le:mau_ao_le,
       updatedAt: new Date()
     }
+    const normalizedOldDate = typeof old_date === 'string' ? old_date.trim() : ''
+    const normalizedDate = typeof date === 'string' ? date.trim() : ''
     try{
+      if (normalizedOldDate !== '') {
+        if (normalizedDate === '') {
+          const deleted = await users.deleteOne({ date: normalizedOldDate })
+          if (deleted.deletedCount === 0) {
+            reply.code(404)
+            return { message: 'Không tìm thấy bản ghi theo old_date để xóa', data: title }
+          }
+
+          return { message: 'Data deleted!', data: title }
+        }
+
+        const updated = await users.updateOne(
+          { date: normalizedOldDate },
+          { $set: doc }
+        )
+
+        if (updated.matchedCount === 0) {
+          reply.code(404)
+          return { message: 'Không tìm thấy bản ghi theo old_date để cập nhật', data: title }
+        }
+
+        return { message: 'Data updated!', data: title }
+      }
+
       await users.insertOne(doc)
+      return { message: 'Data inserted!', data: title }
     }catch(err){
       return err
     }
-    // Respond with a success message and the received data
-    return { message: 'Data received!', data: title }
   });
   fastify.get('/get-lich-cong-giao', async function (request, reply) {
     const users = this.mongo.db.collection('lich-cong-giao')

@@ -30,6 +30,15 @@
     <!-- Template Stylesheet -->
     <link href="/css/style.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+      .sticky-save-bar {
+        position: sticky;
+        bottom: 0;
+        z-index: 1030;
+        background: #fff;
+        border-top: 1px solid #dee2e6;
+      }
+    </style>
     
 </head>
 
@@ -322,89 +331,80 @@
                                     })
                                 })
 
-                                $(".btn-save").click(function(){
-                                  let title = $(this).parents("tr").find("td.title").text()
-                                  let date = $(this).parents("tr").find("input.i-date").val()
-                                  let id_le_theo_mua_phung_vu = $(this).siblings(".id_le_theo_mua_phung_vu").val()
+                                function buildSaveRequest(button){
+                                  let row = button.parents("tr")
+                                  let dateInput = row.find("input.i-date")
                                   let mau_ao_le = ""
-                                  if($(this).parents("tr").find(".mau_ao_le").length == 1){
-                                    
-                                    mau_ao_le = $(this).parents("tr").find(".mau_ao_le").val()
+                                  if(row.find("input.mau_ao_le[type='text']").length == 1){
+                                    mau_ao_le = row.find("input.mau_ao_le[type='text']").val()
                                   }else{
-                                    console.log("mau ao le != "+$(this).parents("tr").find("input:checked").val())
-                                    mau_ao_le = $(this).parents("tr").find("input:checked").val()
+                                    mau_ao_le = row.find("input.mau_ao_le[type='radio']:checked").val() || ""
                                   }
-                                  //console.log("mau ao le != "+$(this).parents("tr").find(".mau_ao_le").length)
-                                  let req = {
-                                    title: title,
-                                    date: date,
-                                    id_le_theo_mua_phung_vu: id_le_theo_mua_phung_vu,
+
+                                  return {
+                                    title: row.find("td.title").text(),
+                                    date: dateInput.val(),
+                                    old_date: (dateInput.attr("data-old-date") || "").trim(),
+                                    id_le_theo_mua_phung_vu: button.siblings(".id_le_theo_mua_phung_vu").val(),
                                     mau_ao_le: mau_ao_le
                                   }
+                                }
+
+                                function showSaveNotice(type, message){
+                                  let notice = $("#save-result-notice")
+                                  notice.removeClass("d-none alert-success alert-danger alert-warning alert-info")
+                                  notice.addClass("alert-" + type)
+                                  notice.text(message)
+                                }
+
+                                function saveRow(button){
+                                  let req = buildSaveRequest(button)
+                                  if(!req.date && !req.old_date){
+                                    showSaveNotice("warning", "Chưa chọn ngày cho \"" + req.title + "\".")
+                                    return
+                                  }
                                   console.log(JSON.stringify(req))
-                                  // const xhttp = new XMLHttpRequest();
-                                  // xhttp.onload = function() {
-                                  //   // document.getElementById("demo").innerHTML = this.responseText;
-                                  //   console.log(this.responseText)
-                                  //   }                                
-                                  // xhttp.open("GET", "/submit-data", true);
-                                  // xhttp.send();
-                                  $.get("/submitdata", req,                                  
-                                    function(data, status){
-                                      console.log("Data: " + data.data + "\nStatus: " + status);
+                                  $.get("/submitdata", req, function(data, status){
+                                    if(status === "success"){
+                                      button.parents("tr").find("input.i-date").attr("data-old-date", req.date || "")
+                                      showSaveNotice("success", (data && data.message ? data.message : "Đã lưu dữ liệu") + " (" + req.title + ")")
                                     }
-                                  );
+                                    console.log("Data: " + data.data + "\nStatus: " + status);
+                                  })
+                                  .fail(function(xhr){
+                                    let message = "Lưu thất bại"
+                                    if(xhr && xhr.responseJSON && xhr.responseJSON.message){
+                                      message = xhr.responseJSON.message
+                                    }
+                                    showSaveNotice("danger", message + " (" + req.title + ")")
+                                  })
                                   console.log("--------------------------")
-                                  
+                                }
+
+                                $(".btn-save").click(function(){
+                                  saveRow($(this))
                                 })
                                 $(".check-all").click(function(){
                                     $(".checkbox").prop("checked", $(this).is(":checked"))
                                 })
                                 $(".save-all").click(function(){
-                                    
+                                    let rowsNeedSave = 0
                                     $(".btn-save").each(function(){
-                                        // console.log($(this).parents("tr").find(".checkbox").is(":checked"))
-                                        if($(this).parents("tr").find(".checkbox").is(":checked") == true){
-                                        let title = $(this).parents("tr").find("td.title").text()
-                                        let date = $(this).parents("tr").find("input.i-date").val()
-                                        let id_le_theo_mua_phung_vu = $(this).siblings(".id_le_theo_mua_phung_vu").val()
-                                        let mau_ao_le = ""
-                                        if($(this).parents("tr").find(".mau_ao_le").length == 1){
-                                            
-                                            mau_ao_le = $(this).parents("tr").find(".mau_ao_le").val()
-                                        }else{
-                                            console.log("mau ao le != "+$(this).parents("tr").find("input:checked").val())
-                                            mau_ao_le = $(this).parents("tr").find("input:checked").val()
-                                        }
-                                        //console.log("mau ao le != "+$(this).parents("tr").find(".mau_ao_le").length)
-                                        let req = {
-                                            title: title,
-                                            date: date,
-                                            id_le_theo_mua_phung_vu: id_le_theo_mua_phung_vu,
-                                            mau_ao_le: mau_ao_le
-                                        }
-                                        console.log(JSON.stringify(req))
-                                        // const xhttp = new XMLHttpRequest();
-                                        // xhttp.onload = function() {
-                                        //   // document.getElementById("demo").innerHTML = this.responseText;
-                                        //   console.log(this.responseText)
-                                        //   }                                
-                                        // xhttp.open("GET", "/submit-data", true);
-                                        // xhttp.send();
-                                        $.get("/submitdata", req,                                  
-                                            function(data, status){
-                                            console.log("Data: " + data.data + "\nStatus: " + status);
-                                            }
-                                        );
-                                        console.log("--------------------------")
-                                        }
-                                        
+                                      let rowDateInput = $(this).parents("tr").find("input.i-date")
+                                      let rowDate = rowDateInput.val()
+                                      let rowOldDate = (rowDateInput.attr("data-old-date") || "").trim()
+                                      if(rowDate || rowOldDate){
+                                        rowsNeedSave++
+                                        saveRow($(this))
+                                      }
                                     })
+                                    if(rowsNeedSave === 0){
+                                      showSaveNotice("info", "Không có dòng nào có dữ liệu cần lưu.")
+                                    }
                                 })
                                 
                               })
                             </script>
-                            <button type="button" class="btn btn-danger save-all">Save All</button>
                             <tbody>
                               <% numofuser.forEach(function(u){
                                 const title = String((u && u.title) || '')
@@ -490,8 +490,8 @@
                                     data.forEach(function(e) {
                                         console.log(JSON.stringify(e._id))
                                         
-                                        $("tr#"+e.id_le_theo_mua_phung_vu).css("background-color", "#ffc107")   
-                                        $("tr#"+e.id_le_theo_mua_phung_vu).find(".i-date").val(e.date)
+                                        $("tr#"+e.id_le_theo_mua_phung_vu).css("background-color", "#ffc107")
+                                        $("tr#"+e.id_le_theo_mua_phung_vu).find(".i-date").val(e.date).attr("data-old-date", e.date)
                                                                          
                                     });
                                 })
@@ -661,6 +661,13 @@
                 </div>
             </div> -->
             <!-- Widgets End -->
+
+            <div class="container-fluid px-4 sticky-save-bar">
+                <div class="py-3 d-flex align-items-center gap-2">
+                    <div id="save-result-notice" class="alert d-none mb-0 flex-grow-1" role="alert"></div>
+                    <button type="button" class="btn btn-danger save-all flex-shrink-0">Save All</button>
+                </div>
+            </div>
 
 
             <!-- Footer Start -->

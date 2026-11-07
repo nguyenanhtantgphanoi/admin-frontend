@@ -432,13 +432,13 @@
                                 <div class="col-md-6 input-group">
                                     <span class="input-group-text"><strong>Regular Date</strong></span>
                                     <input type="text" class="form-control r-date" value="<%= u.date %>">
-                                    <span class="input-group-text"><strong>In 2025-26</strong></span>
+                                    <span class="input-group-text"><strong>In 2026-27</strong></span>
                                     <% if(u.hasOwnProperty('assigned_date')){%>
                                     <!-- Tạm thời fix cứng cho 2 năm 2025-2026 -->
-                                    <% if(u.assigned_date.hasOwnProperty('2025')){%>
-                                        <input type="date" class="form-control assigned-date" value="<%= u.assigned_date['2025']%>">
-                                    <%}else{%>
+                                    <% if(u.assigned_date.hasOwnProperty('2026')){%>
                                         <input type="date" class="form-control assigned-date" value="<%= u.assigned_date['2026']%>">
+                                    <%}else{%>
+                                        <input type="date" class="form-control assigned-date" value="<%= u.assigned_date['2027']%>">
                                     <%}
                                     }else{%>
                                         <input type="date" class="form-control assigned-date">
