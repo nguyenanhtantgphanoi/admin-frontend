@@ -147,7 +147,7 @@ async function getCalendarYear(request, reply) {
     const startDate = `2026-01-01`
     const endDate = `2027-12-31`
     const list = await tb_lich.find({ date: { $gte: startDate, $lte: endDate } }).sort({ date: 1 }).toArray()
-    return { data: list }
+    return list 
   } catch (err) {
     return err
   }
