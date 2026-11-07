@@ -139,12 +139,13 @@ async function getCalendarYear(request, reply) {
   const { year } = request.query
 
   if (!year) {
-    return reply.code(400).send({ error: 'Missing required parameter: year' })
+    return { data: [] }
+    //return reply.code(400).send({ error: 'Missing required parameter: year' })
   }
 
   try {
-    const startDate = `${year}-01-01`
-    const endDate = `${year}-12-31`
+    const startDate = `2026-01-01`
+    const endDate = `2027-12-31`
     const list = await tb_lich.find({ date: { $gte: startDate, $lte: endDate } }).sort({ date: 1 }).toArray()
     return { data: list }
   } catch (err) {
