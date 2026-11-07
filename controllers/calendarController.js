@@ -139,7 +139,7 @@ async function getCalendarYear(request, reply) {
   const { year } = request.query
 
   if (!year) {
-    return { data: [] }
+    //return { data: [] }
     //return reply.code(400).send({ error: 'Missing required parameter: year' })
   }
 
