@@ -123,27 +123,66 @@ async function notificationPage(request, reply) {
 }
 
 async function pushNotification(request, reply) {
-  const { message, title } = request.body
+  const { title, body, data = {}, tokens = [] } = request.body || {}
 
-  if (!message || !title) {
-    return reply.code(500).send({ error: 'Not Finding title or message' })
+  if (!title || !body) {
+    return reply.code(400).send({ error: 'Missing required fields: title and body' })
   }
 
-  const cmd = `curl --location 'http://localhost:3456/notification/push/all' --header 'Content-Type: application/json' --data '{"title": "${title}","body": "${message}"}'`
+  const normalizedTokens = Array.isArray(tokens)
+    ? tokens.filter((token) => typeof token === 'string' && token.trim()).map((token) => token.trim())
+    : []
 
-  return new Promise((resolve, reject) => {
-    exec(cmd, (error, stdout, stderr) => {
-      if (error) {
-        console.error('exec error PPP:', error)
-        reply.code(500).send({ error: stderr })
-        reject(error)
-        return
-      }
+  const payload = {
+    title,
+    body,
+    ...(Object.keys(data || {}).length > 0 ? { data } : {})
+  }
 
-      reply.send({ output: stdout })
-      resolve(stdout)
+  if (normalizedTokens.length > 0) {
+    payload.tokens = normalizedTokens
+  }
+
+  const endpoint = normalizedTokens.length > 0
+    ? 'http://localhost:3456/notification/push/tokens'
+    : 'http://localhost:3456/notification/push/all'
+
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     })
-  })
+
+    const rawText = await response.text()
+    let responseBody
+
+    try {
+      responseBody = JSON.parse(rawText)
+    } catch (error) {
+      responseBody = rawText
+    }
+
+    if (!response.ok) {
+      return reply.code(response.status).send({
+        error: responseBody,
+        endpoint,
+        payload
+      })
+    }
+
+    return reply.send({
+      endpoint,
+      payload,
+      response: responseBody
+    })
+  } catch (error) {
+    return reply.code(500).send({
+      error: error.message,
+      endpoint,
+      payload
+    })
+  }
 }
 
 async function addCronJob(request, reply) {
