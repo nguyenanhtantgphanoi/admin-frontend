@@ -53,6 +53,18 @@ function sortArrCacLeByBacLe (arrCacLe = []) {
     .map((entry) => entry.item)
 }
 
+function normalizeDateToYyyyMmDd (dateInput) {
+  const parsedDate = new Date(dateInput)
+  if (isNaN(parsedDate)) {
+    return null
+  }
+
+  const year = parsedDate.getFullYear()
+  const month = String(parsedDate.getMonth() + 1).padStart(2, '0')
+  const day = String(parsedDate.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 async function buildArrCacLeForDate ({ mongo, ngayLeCollection, articlesCollection, date }) {
   const dayValue = new Date(date)
   if (isNaN(dayValue)) {
@@ -164,9 +176,14 @@ async function getOneDay(request, reply) {
   }
 
   try {
-    const item = await tb_lich.findOne({ date: day })
+    const normalizedDay = normalizeDateToYyyyMmDd(day)
+    if (!normalizedDay) {
+      return reply.code(400).send({ error: 'Invalid parameter: day' })
+    }
+
+    const item = await tb_lich.findOne({ date: normalizedDay })
     if (!item) {
-      return { date: day }
+      return { date: normalizedDay }
     }
 
     item.arr_cac_le = await buildArrCacLeForDate({
