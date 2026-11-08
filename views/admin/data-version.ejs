@@ -39,22 +39,7 @@
   ]
 
   let latestResponse = null
-  function normalizePath(path) {
-    return path.replace(/\/{2,}/g, '/')
-  }
-
-  function buildApiCandidates() {
-    const currentPath = window.location.pathname || ''
-    const suffix = '/data-version-manager'
-    const basePrefix = currentPath.endsWith(suffix)
-      ? currentPath.slice(0, currentPath.length - suffix.length)
-      : ''
-
-    const prefixed = normalizePath(`${basePrefix}/api/data-versions`)
-    return Array.from(new Set([prefixed, '/api/data-versions']))
-  }
-
-  const apiCandidates = buildApiCandidates()
+  const apiBase = '/api/data-versions'
 
   async function parseApiResponse(response) {
     const raw = await response.text()
@@ -67,25 +52,6 @@
     } catch (error) {
       return { raw }
     }
-  }
-
-  async function fetchWithCandidates(options) {
-    let lastFailure = null
-
-    for (const base of apiCandidates) {
-      try {
-        const response = await fetch(base + options.pathSuffix, options.requestInit || {})
-        if (response.status !== 404) {
-          return { response, usedBase: base }
-        }
-
-        lastFailure = { status: 404, usedBase: base }
-      } catch (error) {
-        lastFailure = { usedBase: base, error: error.message }
-      }
-    }
-
-    throw new Error(`All API candidates failed: ${JSON.stringify(lastFailure)}`)
   }
 
   function setResultBox(value) {
@@ -121,11 +87,7 @@
 
   async function fetchVersions() {
     try {
-      const result = await fetchWithCandidates({
-        pathSuffix: '',
-        requestInit: { method: 'GET' }
-      })
-      const response = result.response
+      const response = await fetch(apiBase, { method: 'GET' })
 
       if (response.status === 304) {
         if (latestResponse) {
@@ -161,10 +123,7 @@
       latestResponse = body
       renderVersionTable(body.data || {})
       document.getElementById('serverTimeValue').textContent = body.serverTime || '-'
-      setResultBox({
-        usedApiBase: result.usedBase,
-        ...body
-      })
+      setResultBox(body)
     } catch (error) {
       setResultBox({ success: false, message: error.message })
     }
@@ -172,20 +131,13 @@
 
   async function purgeFields(targetFields) {
     try {
-      const result = await fetchWithCandidates({
-        pathSuffix: '/purge',
-        requestInit: {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fields: targetFields })
-        }
+      const response = await fetch(`${apiBase}/purge`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fields: targetFields })
       })
-      const response = result.response
       const body = await parseApiResponse(response)
-      setResultBox({
-        usedApiBase: result.usedBase,
-        ...body
-      })
+      setResultBox(body)
 
       if (response.ok) {
         latestResponse = body
@@ -203,16 +155,9 @@
     }
 
     try {
-      const result = await fetchWithCandidates({
-        pathSuffix: '/purge-all',
-        requestInit: { method: 'POST' }
-      })
-      const response = result.response
+      const response = await fetch(`${apiBase}/purge-all`, { method: 'POST' })
       const body = await parseApiResponse(response)
-      setResultBox({
-        usedApiBase: result.usedBase,
-        ...body
-      })
+      setResultBox(body)
 
       if (response.ok) {
         latestResponse = body
