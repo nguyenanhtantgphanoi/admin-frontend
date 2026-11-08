@@ -39,6 +39,20 @@
   ]
 
   let latestResponse = null
+  const apiBase = 'api/data-versions'
+
+  async function parseApiResponse(response) {
+    const raw = await response.text()
+    if (!raw) {
+      return null
+    }
+
+    try {
+      return JSON.parse(raw)
+    } catch (error) {
+      return { raw }
+    }
+  }
 
   function setResultBox(value) {
     document.getElementById('resultBox').textContent = JSON.stringify(value, null, 2)
@@ -73,11 +87,36 @@
 
   async function fetchVersions() {
     try {
-      const response = await fetch('/api/data-versions', { method: 'GET' })
-      const body = await response.json()
+      const response = await fetch(apiBase, { method: 'GET' })
+
+      if (response.status === 304) {
+        if (latestResponse) {
+          renderVersionTable(latestResponse.data || {})
+          document.getElementById('serverTimeValue').textContent = latestResponse.serverTime || '-'
+          setResultBox({
+            success: true,
+            message: 'Not modified (304), đang dùng dữ liệu phiên gần nhất.',
+            data: latestResponse.data,
+            serverTime: latestResponse.serverTime
+          })
+          return
+        }
+      }
+
+      const body = await parseApiResponse(response)
 
       if (!response.ok) {
-        setResultBox(body)
+        setResultBox(body || { success: false, message: `Request failed: ${response.status}` })
+        return
+      }
+
+      if (!body || !body.data) {
+        setResultBox({
+          success: false,
+          message: 'Invalid response payload from /api/data-versions',
+          status: response.status,
+          body
+        })
         return
       }
 
@@ -92,12 +131,12 @@
 
   async function purgeFields(targetFields) {
     try {
-      const response = await fetch('/api/data-versions/purge', {
+      const response = await fetch(`${apiBase}/purge`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ fields: targetFields })
       })
-      const body = await response.json()
+      const body = await parseApiResponse(response)
       setResultBox(body)
 
       if (response.ok) {
@@ -116,8 +155,8 @@
     }
 
     try {
-      const response = await fetch('/api/data-versions/purge-all', { method: 'POST' })
-      const body = await response.json()
+      const response = await fetch(`${apiBase}/purge-all`, { method: 'POST' })
+      const body = await parseApiResponse(response)
       setResultBox(body)
 
       if (response.ok) {
