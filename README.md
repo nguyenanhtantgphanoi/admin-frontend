@@ -90,6 +90,55 @@ plugins/
 - cập nhật thông tin `assigned_date`, `title`, `date`, `bac_le`, `mau_ao_le`, ...
 - đã được xử lý để kiểm tra `_id`, dữ liệu null, và lỗi hợp lệ để tránh 500 không cần thiết
 
+### Data version cho Mobile cache
+
+- `GET /api/data-versions`
+- trả metadata version để app quyết định có cần purge cache hay không
+- có hỗ trợ `ETag` + `Cache-Control: public, max-age=45`
+
+Ví dụ response:
+
+```json
+{
+  "success": true,
+  "data": {
+    "lichCongGiaoDaycardVersion": "7ca3328225b30730701f5d06d849e8d3f43f7f33",
+    "lichCongGiaoYearVersion": "90e5fcf3cbf7f605232f7f4e310df5de48f1233d",
+    "kinhNguyenVersion": "46ad8c59f8058c4ef3fb4b53f9a78563de9f6a03",
+    "nghiThucVersion": "6de760a9fa18ed2a6b10d85b3dd4bc2ae2c90fa0"
+  },
+  "serverTime": "2026-11-08T12:00:00.000Z"
+}
+```
+
+Error response (500):
+
+```json
+{
+  "success": false,
+  "message": "Failed to get data versions"
+}
+```
+
+Route quản trị:
+
+- `GET /data-version-manager`: trang xem version hiện tại + purge cache theo từng nhóm hoặc toàn bộ
+- `POST /api/data-versions/purge` với body:
+
+```json
+{
+  "fields": ["lichCongGiaoDaycardVersion"]
+}
+```
+
+- `POST /api/data-versions/purge-all`
+
+Schema ghi nhận purge version:
+
+- Collection: `data-version-overrides`
+- Index: unique `{ moduleKey: 1 }`
+- Được tự động tạo khi gọi API lần đầu, không cần migration thủ công.
+
 ## Hướng dẫn sử dụng
 
 ### 1. Truy cập dashboard
@@ -136,4 +185,3 @@ Trường `_id` là bắt buộc. Nếu thiếu hoặc không hợp lệ, hệ t
 - Fastify: https://fastify.dev/
 - MongoDB Node driver: https://www.mongodb.com/docs/drivers/node/current/
 - Bootstrap: https://getbootstrap.com/
-

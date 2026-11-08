@@ -162,6 +162,7 @@ const calendarController = require('../controllers/calendarController')
 const ritualController = require('../controllers/ritualController')
 const documentController = require('../controllers/documentController')
 const notificationController = require('../controllers/notificationController')
+const dataVersionController = require('../controllers/dataVersionController')
 
 module.exports = async function (fastify, opts) {
   fastify.get('/', rootController.index)
@@ -732,6 +733,14 @@ module.exports = async function (fastify, opts) {
   fastify.get('/notification', notificationController.notificationPage)
 
   fastify.post('/push-notif', notificationController.pushNotification)
+
+  fastify.get('/data-version-manager', dataVersionController.dataVersionPage)
+  fastify.options('/api/data-versions', dataVersionController.preflightDataVersions)
+  fastify.options('/api/data-versions/purge', dataVersionController.preflightDataVersions)
+  fastify.options('/api/data-versions/purge-all', dataVersionController.preflightDataVersions)
+  fastify.get('/api/data-versions', dataVersionController.getDataVersions)
+  fastify.post('/api/data-versions/purge', dataVersionController.purgeDataVersions)
+  fastify.post('/api/data-versions/purge-all', dataVersionController.purgeAllDataVersions)
 
   fastify.addHook('onClose', async () => {
     notificationController.cleanupCronTasks()

@@ -1,0 +1,137 @@
+<div class="container-fluid pt-4 px-4">
+  <div class="bg-light rounded h-100 p-4">
+    <h4 class="mb-3">Data Version Manager</h4>
+    <p class="mb-4">Mobile app chỉ xóa cache khi version đổi. Bạn có thể purge từng nhóm hoặc toàn bộ để buộc app tải lại dữ liệu.</p>
+
+    <div class="table-responsive mb-4">
+      <table class="table align-middle table-bordered bg-white" id="versionTable">
+        <thead>
+          <tr>
+            <th style="width: 28%;">Field</th>
+            <th>Current Version</th>
+            <th style="width: 18%;">Action</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="d-flex gap-2 mb-4">
+      <button class="btn btn-danger" id="purgeAllBtn" type="button">Purge All Cache</button>
+      <button class="btn btn-outline-primary" id="refreshBtn" type="button">Refresh Versions</button>
+    </div>
+
+    <div class="mb-2"><strong>Server Time:</strong> <span id="serverTimeValue">-</span></div>
+
+    <div class="mt-4">
+      <h6>Kết quả API</h6>
+      <pre id="resultBox" style="max-height: 360px; overflow: auto; background: #0f172a; color: #e2e8f0; padding: 12px; border-radius: 8px;">{}</pre>
+    </div>
+  </div>
+</div>
+
+<script>
+  const fields = [
+    'lichCongGiaoDaycardVersion',
+    'lichCongGiaoYearVersion',
+    'kinhNguyenVersion',
+    'nghiThucVersion'
+  ]
+
+  let latestResponse = null
+
+  function setResultBox(value) {
+    document.getElementById('resultBox').textContent = JSON.stringify(value, null, 2)
+  }
+
+  function renderVersionTable(data) {
+    const tbody = document.querySelector('#versionTable tbody')
+    tbody.innerHTML = fields.map((field) => {
+      const value = data && data[field] ? data[field] : '-'
+      return `
+        <tr>
+          <td><code>${field}</code></td>
+          <td>${value}</td>
+          <td>
+            <button class="btn btn-sm btn-warning" data-field="${field}" type="button">Purge</button>
+          </td>
+        </tr>
+      `
+    }).join('')
+
+    tbody.querySelectorAll('button[data-field]').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const field = button.getAttribute('data-field')
+        if (!confirm(`Bạn có chắc muốn purge cache cho ${field}?`)) {
+          return
+        }
+
+        await purgeFields([field])
+      })
+    })
+  }
+
+  async function fetchVersions() {
+    try {
+      const response = await fetch('/api/data-versions', { method: 'GET' })
+      const body = await response.json()
+
+      if (!response.ok) {
+        setResultBox(body)
+        return
+      }
+
+      latestResponse = body
+      renderVersionTable(body.data || {})
+      document.getElementById('serverTimeValue').textContent = body.serverTime || '-'
+      setResultBox(body)
+    } catch (error) {
+      setResultBox({ success: false, message: error.message })
+    }
+  }
+
+  async function purgeFields(targetFields) {
+    try {
+      const response = await fetch('/api/data-versions/purge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fields: targetFields })
+      })
+      const body = await response.json()
+      setResultBox(body)
+
+      if (response.ok) {
+        latestResponse = body
+        renderVersionTable(body.data || {})
+        document.getElementById('serverTimeValue').textContent = body.serverTime || '-'
+      }
+    } catch (error) {
+      setResultBox({ success: false, message: error.message })
+    }
+  }
+
+  async function purgeAll() {
+    if (!confirm('Bạn có chắc muốn purge ALL cache version?')) {
+      return
+    }
+
+    try {
+      const response = await fetch('/api/data-versions/purge-all', { method: 'POST' })
+      const body = await response.json()
+      setResultBox(body)
+
+      if (response.ok) {
+        latestResponse = body
+        renderVersionTable(body.data || {})
+        document.getElementById('serverTimeValue').textContent = body.serverTime || '-'
+      }
+    } catch (error) {
+      setResultBox({ success: false, message: error.message })
+    }
+  }
+
+  document.getElementById('purgeAllBtn').addEventListener('click', purgeAll)
+  document.getElementById('refreshBtn').addEventListener('click', fetchVersions)
+
+  fetchVersions()
+</script>
