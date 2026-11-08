@@ -92,7 +92,7 @@ plugins/
 
 ### Data version cho Mobile cache
 
-- `GET /api/data-versions`
+- `GET /api-fastify/data-versions`
 - trả metadata version để app quyết định có cần purge cache hay không
 - có hỗ trợ `ETag` + `Cache-Control: public, max-age=45`
 
@@ -123,7 +123,7 @@ Error response (500):
 Route quản trị:
 
 - `GET /data-version-manager`: trang xem version hiện tại + purge cache theo từng nhóm hoặc toàn bộ
-- `POST /api/data-versions/purge` với body:
+- `POST /api-fastify/data-versions/purge` với body:
 
 ```json
 {
@@ -131,7 +131,7 @@ Route quản trị:
 }
 ```
 
-- `POST /api/data-versions/purge-all`
+- `POST /api-fastify/data-versions/purge-all`
 
 Schema ghi nhận purge version:
 

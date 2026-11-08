@@ -50,8 +50,8 @@
       ? currentPath.slice(0, currentPath.length - suffix.length)
       : ''
 
-    const prefixed = normalizePath(`${basePrefix}/api/data-versions`)
-    return Array.from(new Set([prefixed, '/api/data-versions']))
+    const prefixed = normalizePath(`${basePrefix}/api-fastify/data-versions`)
+    return Array.from(new Set([prefixed, '/api-fastify/data-versions']))
   }
 
   const apiCandidates = buildApiCandidates()
@@ -151,7 +151,7 @@
       if (!body || !body.data) {
         setResultBox({
           success: false,
-          message: 'Invalid response payload from /api/data-versions',
+          message: 'Invalid response payload from /api-fastify/data-versions',
           status: response.status,
           body
         })
