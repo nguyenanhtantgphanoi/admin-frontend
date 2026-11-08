@@ -741,6 +741,12 @@ module.exports = async function (fastify, opts) {
   fastify.get('/api/data-versions', dataVersionController.getDataVersions)
   fastify.post('/api/data-versions/purge', dataVersionController.purgeDataVersions)
   fastify.post('/api/data-versions/purge-all', dataVersionController.purgeAllDataVersions)
+  fastify.options('/data-versions', dataVersionController.preflightDataVersions)
+  fastify.options('/data-versions/purge', dataVersionController.preflightDataVersions)
+  fastify.options('/data-versions/purge-all', dataVersionController.preflightDataVersions)
+  fastify.get('/data-versions', dataVersionController.getDataVersions)
+  fastify.post('/data-versions/purge', dataVersionController.purgeDataVersions)
+  fastify.post('/data-versions/purge-all', dataVersionController.purgeAllDataVersions)
 
   fastify.addHook('onClose', async () => {
     notificationController.cleanupCronTasks()
