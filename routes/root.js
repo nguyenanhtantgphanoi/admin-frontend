@@ -616,6 +616,111 @@ module.exports = async function (fastify, opts) {
       return err
     }
   });
+  fastify.get('/get-calendar-for-web-lcg', async function (request, reply) {
+    const tb_lich = this.mongo.db.collection('lich-cong-giao')
+    const ngay_le = this.mongo.db.collection('ngay-le')
+
+    // const tb_ngayle = this.mongo.db.collection('ngay-le')
+    // if the id is an ObjectId format, you need to create a new ObjectId
+    //const id = this.mongo.ObjectId(req.params.id)
+    try {
+      const { month } = request.query
+      if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month || '')) {
+        return reply.code(400).send({ error: 'Invalid or missing parameter: month (expected YYYY-MM)' })
+      }
+
+      const allDays = await tb_lich.find({ date: { $regex: `^${month}-\\d{2}` } }).sort({ date: 1 }).toArray()
+      if (allDays.length === 0) {
+        return { data: [] }
+      }
+
+      const datesByYear = {}
+      for (const day of allDays) {
+        const dayDate = new Date(day.date)
+        if (isNaN(dayDate)) {
+          continue
+        }
+        const dayYear = dayDate.getFullYear()
+        if (!datesByYear[dayYear]) {
+          datesByYear[dayYear] = new Set()
+        }
+        datesByYear[dayYear].add(day.date)
+      }
+
+      const yearOrConditions = Object.entries(datesByYear).map(([dayYear, dateSet]) => ({
+        [`assigned_date.${dayYear}`]: { $in: Array.from(dateSet) }
+      }))
+
+      const allNgayLe = yearOrConditions.length > 0
+        ? await ngay_le.find({ $or: yearOrConditions }).toArray()
+        : []
+
+      const feastByDateYear = new Map()
+      for (const feast of allNgayLe) {
+        if (!feast.assigned_date) {
+          continue
+        }
+        for (const [assignedYear, assignedDate] of Object.entries(feast.assigned_date)) {
+          if (!datesByYear[assignedYear] || !datesByYear[assignedYear].has(assignedDate)) {
+            continue
+          }
+          const mapKey = `${assignedYear}|${assignedDate}`
+          if (!feastByDateYear.has(mapKey)) {
+            feastByDateYear.set(mapKey, [])
+          }
+          feastByDateYear.get(mapKey).push(feast)
+        }
+      }
+
+      const buildArrCacLeForDay = (day) => {
+        const dayDate = new Date(day.date)
+        if (isNaN(dayDate)) {
+          return []
+        }
+
+        const dayYear = dayDate.getFullYear()
+        const mapKey = `${dayYear}|${day.date}`
+        const matchedFeasts = feastByDateYear.get(mapKey) || []
+        const arr_cac_le = []
+
+        for (const sourceFeast of matchedFeasts) {
+          const sourceBanVan = sourceFeast.ban_van || {}
+          const { assigned_date, ...feastWithoutAssignedDate } = sourceFeast
+          const feast = { ...feastWithoutAssignedDate, ban_van: {} }
+          let bd1LeTrichTu = sourceBanVan.bd1_le_trich_tu
+          let dapCaLeTrichTu = sourceBanVan.dap_ca_le_trich_tu
+          const hasChanBanVan = sourceBanVan.bd1_chan_trich_tu != '' && sourceBanVan.bd1_chan_trich_tu != undefined
+          if (hasChanBanVan && dayYear % 2 === 0) {
+            bd1LeTrichTu = sourceBanVan.bd1_chan_trich_tu
+            dapCaLeTrichTu = sourceBanVan.dap_ca_chan_trich_tu
+          }
+
+          feast.ban_van = {
+            bd1_le_trich_tu: bd1LeTrichTu,
+            dap_ca_le_trich_tu: dapCaLeTrichTu,
+            bd2_trich_tu: sourceBanVan.bd2_trich_tu,
+            phuc_am_trich_tu: sourceBanVan.phuc_am_trich_tu,
+            cau_phuc_am_tom_gon: sourceBanVan.cau_phuc_am_tom_gon,
+            url: sourceBanVan.url
+          }
+
+          delete feast.bai_viet
+
+          arr_cac_le.push(feast)
+        }
+
+        return sortArrCacLeByBacLe(arr_cac_le)
+      }
+
+      for (const day of allDays) {
+        day.arr_cac_le = buildArrCacLeForDay(day)
+      }
+
+      return { data: allDays }
+    } catch (err) {
+      return err
+    }
+  });
   fastify.get('/get-one-day', calendarController.getOneDay);
   fastify.get('/get-calendar-year', calendarController.getCalendarYear);
   fastify.post('/update-ngay-lich', async function (request, reply) {
