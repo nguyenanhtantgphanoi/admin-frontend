@@ -87,7 +87,19 @@
                         </div>
                         <div class="mb-3">
                             <label for="under-title" class="form-label"><strong>Lưu ý sau tiêu đề</strong></label>
-                            <textarea class="form-control" id="under-title"></textarea>
+                            <div class="input-group input-group-sm mb-1" role="toolbar" aria-label="Định dạng lưu ý sau tiêu đề">
+                                <select class="form-select editor-font-family" aria-label="Phông chữ" style="max-width: 150px"><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Times New Roman">Times New Roman</option><option value="Verdana">Verdana</option></select>
+                                <select class="form-select editor-font-size" aria-label="Cỡ chữ" style="max-width: 100px"><option value="3">Cỡ chữ</option><option value="2">Nhỏ</option><option value="3">Vừa</option><option value="4">Lớn</option><option value="5">Rất lớn</option></select>
+                                <input type="color" class="form-control form-control-color editor-font-color" value="#000000" title="Màu chữ" aria-label="Màu chữ">
+                                <button type="button" class="btn btn-outline-secondary editor-command" data-command="bold" aria-label="In đậm"><strong>B</strong></button>
+                                <button type="button" class="btn btn-outline-secondary editor-command" data-command="italic" aria-label="In nghiêng"><em>I</em></button>
+                                <button type="button" class="btn btn-outline-secondary editor-command" data-command="underline" aria-label="Gạch chân"><u>U</u></button>
+                                <button type="button" class="btn btn-outline-secondary editor-link" aria-label="Gán liên kết">Link</button>
+                            </div>
+                            <div class="input-group input-group-sm mt-1 mb-1 editor-link-input d-none"><input type="url" class="form-control" placeholder="https://example.com" aria-label="URL liên kết"><button type="button" class="btn btn-primary editor-link-confirm">OK</button></div>
+                                <div class="form-control rich-text-editor" id="under-title-editor" contenteditable="true" role="textbox" aria-multiline="true" style="min-height: 90px; height: auto; white-space: pre-wrap;"></div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary mt-1 editor-mode-toggle" data-editor="#under-title-editor" data-field="#under-title">Sửa HTML</button>
+                            <textarea class="d-none form-control mt-1 editor-html-source" id="under-title" rows="5" spellcheck="false"></textarea>
                         </div>
                         <div class="input-group mb-3">
                             <button class="input-group-text">URL</button>
@@ -143,7 +155,19 @@
                         </div>
                         <div class="mb-3">
                             <label for="luu-y" class="form-label"><strong>Lưu ý khác</strong></label>
-                            <textarea class="form-control" id="luu-y"></textarea>
+                            <div class="input-group input-group-sm mb-1" role="toolbar" aria-label="Định dạng lưu ý khác">
+                                <select class="form-select editor-font-family" aria-label="Phông chữ" style="max-width: 150px"><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Times New Roman">Times New Roman</option><option value="Verdana">Verdana</option></select>
+                                <select class="form-select editor-font-size" aria-label="Cỡ chữ" style="max-width: 100px"><option value="3">Cỡ chữ</option><option value="2">Nhỏ</option><option value="3">Vừa</option><option value="4">Lớn</option><option value="5">Rất lớn</option></select>
+                                <input type="color" class="form-control form-control-color editor-font-color" value="#000000" title="Màu chữ" aria-label="Màu chữ">
+                                <button type="button" class="btn btn-outline-secondary editor-command" data-command="bold" aria-label="In đậm"><strong>B</strong></button>
+                                <button type="button" class="btn btn-outline-secondary editor-command" data-command="italic" aria-label="In nghiêng"><em>I</em></button>
+                                <button type="button" class="btn btn-outline-secondary editor-command" data-command="underline" aria-label="Gạch chân"><u>U</u></button>
+                                <button type="button" class="btn btn-outline-secondary editor-link" aria-label="Gán liên kết">Link</button>
+                            </div>
+                            <div class="input-group input-group-sm mt-1 mb-1 editor-link-input d-none"><input type="url" class="form-control" placeholder="https://example.com" aria-label="URL liên kết"><button type="button" class="btn btn-primary editor-link-confirm">OK</button></div>
+                            <div class="form-control rich-text-editor" id="luu-y-editor" contenteditable="true" role="textbox" aria-multiline="true" style="min-height: 90px; height: auto; white-space: pre-wrap;"></div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary mt-1 editor-mode-toggle" data-editor="#luu-y-editor" data-field="#luu-y">Sửa HTML</button>
+                            <textarea class="d-none form-control mt-1 editor-html-source" id="luu-y" rows="5" spellcheck="false"></textarea>
                         </div>
                         <div class="card">
                             <div class="card-body">
@@ -258,6 +282,118 @@
     $(document).ready(function(){
         const showAllLichStorageKey = 'showall-lich-start-date';
 
+        const richTextFields = [
+            { editor: '#under-title-editor', field: '#under-title' },
+            { editor: '#luu-y-editor', field: '#luu-y' }
+        ];
+        function cleanEditorHtml(html) {
+            const doc = new DOMParser().parseFromString(html || '', 'text/html');
+            const allowedTags = new Set(['A', 'B', 'I', 'U', 'STRONG', 'EM', 'FONT', 'SPAN', 'DIV', 'P', 'BR']);
+            const cleanNode = (node) => {
+                Array.from(node.children || []).forEach(child => {
+                    cleanNode(child);
+                    if (!allowedTags.has(child.tagName)) {
+                        child.replaceWith(...child.childNodes);
+                        return;
+                    }
+                    Array.from(child.attributes).forEach(attr => {
+                        const safeLink = child.tagName === 'A' && attr.name === 'href' && /^(https?:|mailto:|tel:|\/|#|\.?\.?\/)/i.test(attr.value.trim());
+                        const allowed = safeLink || (child.tagName === 'FONT' && ['face', 'size', 'color'].includes(attr.name)) ||
+                            (child.tagName === 'SPAN' && attr.name === 'style' && /^((font-family|font-size|color):\s*[-#(),.%\w "']+;?\s*)+$/i.test(attr.value));
+                        if (!allowed) child.removeAttribute(attr.name);
+                    });
+                });
+            };
+            cleanNode(doc.body);
+            return doc.body.innerHTML;
+        }
+        function setEditorValue(editorSelector, value) {
+            const editor = $(editorSelector).get(0);
+            const fieldSelector = editorSelector === '#under-title-editor' ? '#under-title' : '#luu-y';
+            $(fieldSelector).addClass('d-none').data('html-mode', false);
+            $(`.editor-mode-toggle[data-editor="${editorSelector}"]`).text('Sửa HTML');
+            $(editorSelector).removeClass('d-none');
+            const text = value || '';
+            editor.innerHTML = /<\/?(?:a|b|i|u|strong|em|font|span|div|p|br)\b/i.test(text)
+                ? cleanEditorHtml(text)
+                : $('<div>').text(text).html().replace(/\r?\n/g, '<br>');
+            $(editorSelector).trigger('input');
+        }
+        richTextFields.forEach(({ editor, field }) => {
+            let editorSelectionRange = null;
+            const editorElement = $(editor).get(0);
+            document.addEventListener('selectionchange', function() {
+                const selection = window.getSelection();
+                if (selection && !selection.isCollapsed && selection.rangeCount > 0 &&
+                    editorElement.contains(selection.getRangeAt(0).commonAncestorContainer)) {
+                    editorSelectionRange = selection.getRangeAt(0).cloneRange();
+                }
+            });
+            $(editor).on('input', function() { $(field).val(cleanEditorHtml(this.innerHTML)); });
+            $(editor).closest('.mb-3').find('.editor-command').on('mousedown', function(event) {
+                event.preventDefault();
+                $(editor).trigger('focus');
+                document.execCommand($(this).data('command'), false, null);
+                $(editor).trigger('input');
+            });
+            $(editor).closest('.mb-3').find('.editor-font-family').on('change', function() {
+                $(editor).trigger('focus');
+                document.execCommand('fontName', false, this.value);
+                $(editor).trigger('input');
+            });
+            $(editor).closest('.mb-3').find('.editor-font-size').on('change', function() {
+                $(editor).trigger('focus');
+                document.execCommand('fontSize', false, this.value);
+                $(editor).trigger('input');
+            });
+            $(editor).closest('.mb-3').find('.editor-font-color').on('input', function() {
+                $(editor).trigger('focus');
+                document.execCommand('foreColor', false, this.value);
+                $(editor).trigger('input');
+            });
+            const linkContainer = $(editor).closest('.mb-3');
+            linkContainer.find('.editor-link').on('mousedown', function(event) {
+                event.preventDefault();
+                const selection = window.getSelection();
+                if (selection && !selection.isCollapsed && selection.rangeCount > 0 &&
+                    editorElement.contains(selection.getRangeAt(0).commonAncestorContainer)) {
+                    editorSelectionRange = selection.getRangeAt(0).cloneRange();
+                }
+            }).on('click', function() {
+                if (!editorSelectionRange) {
+                    alert('Hãy bôi đen đoạn chữ cần gán liên kết trước.');
+                    return;
+                }
+                linkContainer.find('.editor-link-input').removeClass('d-none').find('input').val('').trigger('focus');
+            });
+            linkContainer.find('.editor-link-confirm').on('click', function() {
+                const url = linkContainer.find('.editor-link-input input').val().trim();
+                if (!url || !editorSelectionRange) return;
+                const selection = window.getSelection();
+                $(editor).trigger('focus');
+                selection.removeAllRanges();
+                selection.addRange(editorSelectionRange);
+                document.execCommand('createLink', false, url);
+                editorSelectionRange = null;
+                linkContainer.find('.editor-link-input').addClass('d-none');
+                $(editor).trigger('input');
+            });
+        });
+        $('.editor-mode-toggle').on('click', function() {
+            const editor = $($(this).data('editor'));
+            const field = $($(this).data('field'));
+            if (!field.data('html-mode')) {
+                field.val(cleanEditorHtml(editor.html())).removeClass('d-none').data('html-mode', true).trigger('focus');
+                editor.addClass('d-none');
+                $(this).text('Sửa nội dung');
+            } else {
+                editor.html(cleanEditorHtml(field.val()));
+                field.data('html-mode', false).addClass('d-none');
+                editor.removeClass('d-none').trigger('input').trigger('focus');
+                $(this).text('Sửa HTML');
+            }
+        });
+
         function applyShowAllLichFilter() {
             const selectedDate = $('#showall-lich-start-date').val();
 
@@ -371,6 +507,10 @@
             to_send.tin_mung = $("form input#tin-mung").val()
             to_send.cau_loi_chua = $("form textarea#cau-loi-chua").val()
             to_send.xu_chau_luot = $("form textarea#xu-chau-luot").val()
+            richTextFields.forEach(({ editor, field }) => {
+                if (!$(field).data('html-mode')) $(field).val(cleanEditorHtml($(editor).html()));
+                else $(field).val(cleanEditorHtml($(field).val()));
+            });
             to_send.luu_y = $("form textarea#luu-y").val()
             to_send.under_title = $("form textarea#under-title").val()
 
@@ -528,6 +668,8 @@
                     l_xu_chau_luot.val("")
                     l_luu_y.val("")
                     l_under_title.val("")
+                    setEditorValue('#luu-y-editor', '')
+                    setEditorValue('#under-title-editor', '')
 
                     $("#_id").val(l_id)
                     if(data.lich.date != undefined){
@@ -593,10 +735,10 @@
                         l_xu_chau_luot.val(data.lich.xu_chau_luot)
                     }
                     if(data.lich.luu_y != undefined){
-                        l_luu_y.val(data.lich.luu_y)
+                        setEditorValue('#luu-y-editor', data.lich.luu_y)
                     }
                     if(data.lich.under_title != undefined){
-                        l_under_title.val(data.lich.under_title)
+                        setEditorValue('#under-title-editor', data.lich.under_title)
                     }
                     $("#col-ngay-le").empty()
                     data.ngay_le.forEach(function(e){
