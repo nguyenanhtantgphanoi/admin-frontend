@@ -97,6 +97,7 @@
                                 <button type="button" class="btn btn-outline-secondary editor-link" aria-label="Gán liên kết">Link</button>
                             </div>
                             <div class="input-group input-group-sm mt-1 mb-1 editor-link-input d-none"><input type="url" class="form-control" placeholder="https://example.com" aria-label="URL liên kết"><button type="button" class="btn btn-primary editor-link-confirm">OK</button></div>
+                            <div class="input-group input-group-sm mt-1 mb-1 paragraph-border-controls"><span class="input-group-text">Viền</span><select class="form-select paragraph-border-style" aria-label="Kiểu viền"><option value="solid">Solid</option><option value="dotted">Dotted</option><option value="dashed">Dashed</option><option value="double">Double</option><option value="groove">Groove</option><option value="ridge">Ridge</option><option value="inset">Inset</option><option value="outset">Outset</option><option value="hidden">Hidden</option><option value="none">None</option></select><span class="input-group-text">Padding (px)</span><input type="number" class="form-control paragraph-border-padding" min="0" max="100" value="8" aria-label="Padding của viền"><button type="button" class="btn btn-outline-primary apply-paragraph-border">Áp dụng cho đoạn chọn</button></div>
                                 <div class="form-control rich-text-editor" id="under-title-editor" contenteditable="true" role="textbox" aria-multiline="true" style="min-height: 90px; height: auto; white-space: pre-wrap;"></div>
                             <button type="button" class="btn btn-sm btn-outline-secondary mt-1 editor-mode-toggle" data-editor="#under-title-editor" data-field="#under-title">Sửa HTML</button>
                             <textarea class="d-none form-control mt-1 editor-html-source" id="under-title" rows="5" spellcheck="false"></textarea>
@@ -165,9 +166,27 @@
                                 <button type="button" class="btn btn-outline-secondary editor-link" aria-label="Gán liên kết">Link</button>
                             </div>
                             <div class="input-group input-group-sm mt-1 mb-1 editor-link-input d-none"><input type="url" class="form-control" placeholder="https://example.com" aria-label="URL liên kết"><button type="button" class="btn btn-primary editor-link-confirm">OK</button></div>
+                            <div class="input-group input-group-sm mt-1 mb-1 paragraph-border-controls"><span class="input-group-text">Viền</span><select class="form-select paragraph-border-style" aria-label="Kiểu viền"><option value="solid">Solid</option><option value="dotted">Dotted</option><option value="dashed">Dashed</option><option value="double">Double</option><option value="groove">Groove</option><option value="ridge">Ridge</option><option value="inset">Inset</option><option value="outset">Outset</option><option value="hidden">Hidden</option><option value="none">None</option></select><span class="input-group-text">Padding (px)</span><input type="number" class="form-control paragraph-border-padding" min="0" max="100" value="8" aria-label="Padding của viền"><button type="button" class="btn btn-outline-primary apply-paragraph-border">Áp dụng cho đoạn chọn</button></div>
                             <div class="form-control rich-text-editor" id="luu-y-editor" contenteditable="true" role="textbox" aria-multiline="true" style="min-height: 90px; height: auto; white-space: pre-wrap;"></div>
                             <button type="button" class="btn btn-sm btn-outline-secondary mt-1 editor-mode-toggle" data-editor="#luu-y-editor" data-field="#luu-y">Sửa HTML</button>
                             <textarea class="d-none form-control mt-1 editor-html-source" id="luu-y" rows="5" spellcheck="false"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sunday_catechism" class="form-label"><strong>Sunday Catechism</strong></label>
+                            <div class="input-group input-group-sm mb-1" role="toolbar" aria-label="Format Sunday Catechism">
+                                <select class="form-select editor-font-family" aria-label="Font family" style="max-width: 150px"><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Times New Roman">Times New Roman</option><option value="Verdana">Verdana</option></select>
+                                <select class="form-select editor-font-size" aria-label="Font size" style="max-width: 100px"><option value="3">Size</option><option value="2">Small</option><option value="3">Normal</option><option value="4">Large</option><option value="5">Larger</option></select>
+                                <input type="color" class="form-control form-control-color editor-font-color" value="#000000" title="Text color" aria-label="Text color">
+                                <button type="button" class="btn btn-outline-secondary editor-command" data-command="bold"><strong>B</strong></button>
+                                <button type="button" class="btn btn-outline-secondary editor-command" data-command="italic"><em>I</em></button>
+                                <button type="button" class="btn btn-outline-secondary editor-command" data-command="underline"><u>U</u></button>
+                                <button type="button" class="btn btn-outline-secondary editor-link">Link</button>
+                            </div>
+                            <div class="input-group input-group-sm mt-1 mb-1 editor-link-input d-none"><input type="url" class="form-control" placeholder="https://example.com" aria-label="Link URL"><button type="button" class="btn btn-primary editor-link-confirm">OK</button></div>
+                            <div class="input-group input-group-sm mt-1 mb-1 paragraph-border-controls"><span class="input-group-text">Border</span><select class="form-select paragraph-border-style" aria-label="Border style"><option value="solid">Solid</option><option value="dotted">Dotted</option><option value="dashed">Dashed</option><option value="double">Double</option><option value="groove">Groove</option><option value="ridge">Ridge</option><option value="inset">Inset</option><option value="outset">Outset</option><option value="hidden">Hidden</option><option value="none">None</option></select><span class="input-group-text">Padding (px)</span><input type="number" class="form-control paragraph-border-padding" min="0" max="100" value="8" aria-label="Border padding"><button type="button" class="btn btn-outline-primary apply-paragraph-border">Apply to selected paragraph</button></div>
+                            <div class="form-control rich-text-editor" id="sunday-catechism-editor" contenteditable="true" role="textbox" aria-multiline="true" style="min-height: 90px; height: auto; white-space: pre-wrap;"></div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary mt-1 editor-mode-toggle" data-editor="#sunday-catechism-editor" data-field="#sunday_catechism">Edit HTML</button>
+                            <textarea class="d-none form-control mt-1 editor-html-source" id="sunday_catechism" name="sunday_catechism" rows="5" spellcheck="false"></textarea>
                         </div>
                         <div class="card">
                             <div class="card-body">
@@ -284,11 +303,21 @@
 
         const richTextFields = [
             { editor: '#under-title-editor', field: '#under-title' },
-            { editor: '#luu-y-editor', field: '#luu-y' }
+            { editor: '#luu-y-editor', field: '#luu-y' },
+            { editor: '#sunday-catechism-editor', field: '#sunday_catechism' }
         ];
         function cleanEditorHtml(html) {
             const doc = new DOMParser().parseFromString(html || '', 'text/html');
             const allowedTags = new Set(['A', 'B', 'I', 'U', 'STRONG', 'EM', 'FONT', 'SPAN', 'DIV', 'P', 'BR']);
+            const cleanInlineStyle = (styleText) => styleText.split(';').map(declaration => {
+                const separator = declaration.indexOf(':');
+                if (separator < 1) return '';
+                const property = declaration.slice(0, separator).trim();
+                const value = declaration.slice(separator + 1).trim();
+                const safeProperty = /^-?[a-z][a-z0-9-]*$/i.test(property) && !/^(behavior|-moz-binding)$/i.test(property);
+                const safeValue = value && !/[<>]/.test(value) && !/(url\s*\(|expression\s*\(|javascript:|@import)/i.test(value);
+                return safeProperty && safeValue ? `${property}: ${value}` : '';
+            }).filter(Boolean).join('; ');
             const cleanNode = (node) => {
                 Array.from(node.children || []).forEach(child => {
                     cleanNode(child);
@@ -296,27 +325,35 @@
                         child.replaceWith(...child.childNodes);
                         return;
                     }
+                    if (child.hasAttribute('style')) {
+                        const safeStyle = cleanInlineStyle(child.getAttribute('style'));
+                        if (safeStyle) child.setAttribute('style', safeStyle);
+                        else child.removeAttribute('style');
+                    }
                     Array.from(child.attributes).forEach(attr => {
                         const safeLink = child.tagName === 'A' && attr.name === 'href' && /^(https?:|mailto:|tel:|\/|#|\.?\.?\/)/i.test(attr.value.trim());
                         const allowed = safeLink || (child.tagName === 'FONT' && ['face', 'size', 'color'].includes(attr.name)) ||
-                            (child.tagName === 'SPAN' && attr.name === 'style' && /^((font-family|font-size|color):\s*[-#(),.%\w "']+;?\s*)+$/i.test(attr.value));
+                            (attr.name === 'style' && ['SPAN', 'P', 'DIV', 'A'].includes(child.tagName));
                         if (!allowed) child.removeAttribute(attr.name);
                     });
                 });
             };
             cleanNode(doc.body);
+            if (!doc.body.textContent.trim()) return '';
             return doc.body.innerHTML;
         }
         function setEditorValue(editorSelector, value) {
             const editor = $(editorSelector).get(0);
-            const fieldSelector = editorSelector === '#under-title-editor' ? '#under-title' : '#luu-y';
+            const fieldSelector = richTextFields.find(item => item.editor === editorSelector).field;
             $(fieldSelector).addClass('d-none').data('html-mode', false);
             $(`.editor-mode-toggle[data-editor="${editorSelector}"]`).text('Sửa HTML');
             $(editorSelector).removeClass('d-none');
             const text = value || '';
-            editor.innerHTML = /<\/?(?:a|b|i|u|strong|em|font|span|div|p|br)\b/i.test(text)
-                ? cleanEditorHtml(text)
-                : $('<div>').text(text).html().replace(/\r?\n/g, '<br>');
+            editor.innerHTML = !text
+                ? ''
+                : /<\/?(?:a|b|i|u|strong|em|font|span|div|p|br)\b/i.test(text)
+                    ? cleanEditorHtml(text)
+                    : text.split(/\r?\n/).map(line => `<p>${$('<div>').text(line).html() || '<br>'}</p>`).join('');
             $(editorSelector).trigger('input');
         }
         richTextFields.forEach(({ editor, field }) => {
@@ -376,6 +413,42 @@
                 document.execCommand('createLink', false, url);
                 editorSelectionRange = null;
                 linkContainer.find('.editor-link-input').addClass('d-none');
+                $(editor).trigger('input');
+            });
+            linkContainer.find('.apply-paragraph-border').on('mousedown', function(event) {
+                event.preventDefault();
+                const selection = window.getSelection();
+                if (selection && !selection.isCollapsed && selection.rangeCount > 0 &&
+                    editorElement.contains(selection.getRangeAt(0).commonAncestorContainer)) {
+                    editorSelectionRange = selection.getRangeAt(0).cloneRange();
+                }
+            }).on('click', function() {
+                if (!editorSelectionRange || editorSelectionRange.collapsed) {
+                    alert('Hãy bôi đen paragraph cần tạo viền trước.');
+                    return;
+                }
+                const range = editorSelectionRange;
+                const intersects = (element) => {
+                    try { return range.intersectsNode(element); } catch (err) { return false; }
+                };
+                const paragraphs = Array.from(editorElement.querySelectorAll('p')).filter(intersects);
+                const blocks = paragraphs.length
+                    ? paragraphs
+                    : Array.from(editorElement.querySelectorAll('div')).filter(element => intersects(element) &&
+                        !Array.from(element.querySelectorAll('div')).some(intersects));
+                if (!blocks.length) {
+                    alert('Đoạn được chọn chưa nằm trong paragraph. Hãy tạo paragraph bằng phím Enter rồi thử lại.');
+                    return;
+                }
+                const borderStyle = linkContainer.find('.paragraph-border-style').val();
+                const padding = Math.max(0, Math.min(100, Number(linkContainer.find('.paragraph-border-padding').val()) || 0));
+                blocks.forEach(block => {
+                    block.style.borderStyle = borderStyle;
+                    block.style.borderWidth = borderStyle === 'none' || borderStyle === 'hidden' ? '0' : '1px';
+                    block.style.borderColor = '#555';
+                    block.style.padding = `${padding}px`;
+                });
+                editorSelectionRange = null;
                 $(editor).trigger('input');
             });
         });
@@ -513,6 +586,7 @@
             });
             to_send.luu_y = $("form textarea#luu-y").val()
             to_send.under_title = $("form textarea#under-title").val()
+            to_send.sunday_catechism = $("form textarea#sunday_catechism").val()
 
             console.log(to_send)
             $.ajax({
@@ -668,6 +742,7 @@
                     l_xu_chau_luot.val("")
                     l_luu_y.val("")
                     l_under_title.val("")
+                    setEditorValue('#sunday-catechism-editor', '')
                     setEditorValue('#luu-y-editor', '')
                     setEditorValue('#under-title-editor', '')
 
@@ -739,6 +814,9 @@
                     }
                     if(data.lich.under_title != undefined){
                         setEditorValue('#under-title-editor', data.lich.under_title)
+                    }
+                    if(data.lich.sunday_catechism != undefined){
+                        setEditorValue('#sunday-catechism-editor', data.lich.sunday_catechism)
                     }
                     $("#col-ngay-le").empty()
                     data.ngay_le.forEach(function(e){
