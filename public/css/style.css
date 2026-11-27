@@ -94,10 +94,34 @@ main.container-xxl {
     transition: 0.5s;
 }
 
+.showall-lich-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin: 1rem -0.75rem -1rem;
+    padding: 0.75rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(6px);
+}
+
+.showall-lich-alerts {
+    flex: 1;
+    min-width: 0;
+}
+
+.showall-lich-alerts .alert {
+    margin-bottom: 0;
+}
+
 @media (min-width: 992px) {
     .sidebar { margin-left: 0; }
     .sidebar.open { margin-left: -250px; }
-    .content { width: calc(100% - 250px); }
+    .content { width: calc(100%); }
     .content.open { width: 100%; margin-left: 0; }
 }
 

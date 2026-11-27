@@ -98,7 +98,7 @@
                             </div>
                             <div class="input-group input-group-sm mt-1 mb-1 editor-link-input d-none"><input type="url" class="form-control" placeholder="https://example.com" aria-label="URL liên kết"><button type="button" class="btn btn-primary editor-link-confirm">OK</button></div>
                             <div class="input-group input-group-sm mt-1 mb-1 paragraph-border-controls"><span class="input-group-text">Viền</span><select class="form-select paragraph-border-style" aria-label="Kiểu viền"><option value="solid">Solid</option><option value="dotted">Dotted</option><option value="dashed">Dashed</option><option value="double">Double</option><option value="groove">Groove</option><option value="ridge">Ridge</option><option value="inset">Inset</option><option value="outset">Outset</option><option value="hidden">Hidden</option><option value="none">None</option></select><span class="input-group-text">Padding (px)</span><input type="number" class="form-control paragraph-border-padding" min="0" max="100" value="8" aria-label="Padding của viền"><button type="button" class="btn btn-outline-primary apply-paragraph-border">Áp dụng cho đoạn chọn</button></div>
-                                <div class="form-control rich-text-editor" id="under-title-editor" contenteditable="true" role="textbox" aria-multiline="true" style="min-height: 90px; height: auto; white-space: pre-wrap;"></div>
+                                <div class="form-control rich-text-editor" id="under-title-editor" contenteditable="true" role="textbox" aria-multiline="true" style="min-height: 90px; height: auto; white-space: normal;"></div>
                             <button type="button" class="btn btn-sm btn-outline-secondary mt-1 editor-mode-toggle" data-editor="#under-title-editor" data-field="#under-title">Sửa HTML</button>
                             <textarea class="d-none form-control mt-1 editor-html-source" id="under-title" rows="5" spellcheck="false"></textarea>
                         </div>
@@ -167,7 +167,7 @@
                             </div>
                             <div class="input-group input-group-sm mt-1 mb-1 editor-link-input d-none"><input type="url" class="form-control" placeholder="https://example.com" aria-label="URL liên kết"><button type="button" class="btn btn-primary editor-link-confirm">OK</button></div>
                             <div class="input-group input-group-sm mt-1 mb-1 paragraph-border-controls"><span class="input-group-text">Viền</span><select class="form-select paragraph-border-style" aria-label="Kiểu viền"><option value="solid">Solid</option><option value="dotted">Dotted</option><option value="dashed">Dashed</option><option value="double">Double</option><option value="groove">Groove</option><option value="ridge">Ridge</option><option value="inset">Inset</option><option value="outset">Outset</option><option value="hidden">Hidden</option><option value="none">None</option></select><span class="input-group-text">Padding (px)</span><input type="number" class="form-control paragraph-border-padding" min="0" max="100" value="8" aria-label="Padding của viền"><button type="button" class="btn btn-outline-primary apply-paragraph-border">Áp dụng cho đoạn chọn</button></div>
-                            <div class="form-control rich-text-editor" id="luu-y-editor" contenteditable="true" role="textbox" aria-multiline="true" style="min-height: 90px; height: auto; white-space: pre-wrap;"></div>
+                            <div class="form-control rich-text-editor" id="luu-y-editor" contenteditable="true" role="textbox" aria-multiline="true" style="min-height: 90px; height: auto; white-space: normal;"></div>
                             <button type="button" class="btn btn-sm btn-outline-secondary mt-1 editor-mode-toggle" data-editor="#luu-y-editor" data-field="#luu-y">Sửa HTML</button>
                             <textarea class="d-none form-control mt-1 editor-html-source" id="luu-y" rows="5" spellcheck="false"></textarea>
                         </div>
@@ -184,7 +184,7 @@
                             </div>
                             <div class="input-group input-group-sm mt-1 mb-1 editor-link-input d-none"><input type="url" class="form-control" placeholder="https://example.com" aria-label="Link URL"><button type="button" class="btn btn-primary editor-link-confirm">OK</button></div>
                             <div class="input-group input-group-sm mt-1 mb-1 paragraph-border-controls"><span class="input-group-text">Border</span><select class="form-select paragraph-border-style" aria-label="Border style"><option value="solid">Solid</option><option value="dotted">Dotted</option><option value="dashed">Dashed</option><option value="double">Double</option><option value="groove">Groove</option><option value="ridge">Ridge</option><option value="inset">Inset</option><option value="outset">Outset</option><option value="hidden">Hidden</option><option value="none">None</option></select><span class="input-group-text">Padding (px)</span><input type="number" class="form-control paragraph-border-padding" min="0" max="100" value="8" aria-label="Border padding"><button type="button" class="btn btn-outline-primary apply-paragraph-border">Apply to selected paragraph</button></div>
-                            <div class="form-control rich-text-editor" id="sunday-catechism-editor" contenteditable="true" role="textbox" aria-multiline="true" style="min-height: 90px; height: auto; white-space: pre-wrap;"></div>
+                            <div class="form-control rich-text-editor" id="sunday-catechism-editor" contenteditable="true" role="textbox" aria-multiline="true" style="min-height: 90px; height: auto; white-space: normal;"></div>
                             <button type="button" class="btn btn-sm btn-outline-secondary mt-1 editor-mode-toggle" data-editor="#sunday-catechism-editor" data-field="#sunday_catechism">Edit HTML</button>
                             <textarea class="d-none form-control mt-1 editor-html-source" id="sunday_catechism" name="sunday_catechism" rows="5" spellcheck="false"></textarea>
                         </div>
@@ -194,20 +194,17 @@
                                 <p class="card-text" id="view-in-lich"></p>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <div class="alert alert-success " role="alert" id="alert-success" style="display: none;">
-                                Cập nhật thành công!                            
-                            </div>
-                            <div class="alert alert-danger " role="alert" id="alert-failed" style="display: none;">
-                                Cập nhật thất bại!
-                                
-                            </div>
-                        </div>
-                                                
                     </form>
                     <hr/>
-                    <div class="mb-3">
-                        
+                    <div class="showall-lich-actions">
+                        <div class="showall-lich-alerts">
+                            <div class="alert alert-success mb-0" role="alert" id="alert-success" style="display: none;">
+                                Cập nhật thành công!
+                            </div>
+                            <div class="alert alert-danger mb-0" role="alert" id="alert-failed" style="display: none;">
+                                Cập nhật thất bại!
+                            </div>
+                        </div>
                         <button type="button" class="btn btn-danger" id="delete-ngay-lich">Xóa <i class="bi bi-x-square-fill"></i></button>
                         <button type="button" class="btn btn-success" id="update-ngay-lich">Lưu <i class="bi bi-save-fill"></i></button>
                         
@@ -314,6 +311,7 @@
                 if (separator < 1) return '';
                 const property = declaration.slice(0, separator).trim();
                 const value = declaration.slice(separator + 1).trim();
+                if (property.toLowerCase() === 'font-size') return '';
                 const safeProperty = /^-?[a-z][a-z0-9-]*$/i.test(property) && !/^(behavior|-moz-binding)$/i.test(property);
                 const safeValue = value && !/[<>]/.test(value) && !/(url\s*\(|expression\s*\(|javascript:|@import)/i.test(value);
                 return safeProperty && safeValue ? `${property}: ${value}` : '';
@@ -565,6 +563,7 @@
             }
         })
         $('#update-ngay-lich').click(function(){
+            $('#alert-success, #alert-failed').hide()
             let to_send = {}
             to_send._id = $("form input#_id").val()
             to_send.title = $("form input#title").val()
